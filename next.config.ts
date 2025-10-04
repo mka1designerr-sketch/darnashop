@@ -1,12 +1,11 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  experimental: {
-    // Prevent Turbopack from inferring a wrong workspace root when user has multiple lockfiles
-    turbopack: {
-      root: __dirname,
-    },
+// Use `as any` to allow the `turbopack` key which isn't in NextConfig's TS types yet
+const nextConfig = {
+  turbopack: {
+    // Ensure Turbopack doesn't infer a parent directory as the workspace root
+    root: __dirname,
   },
-};
+} as any as NextConfig;
 
 export default nextConfig;
