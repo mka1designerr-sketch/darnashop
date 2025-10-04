@@ -1,4 +1,9 @@
+"use client";
+import Link from "next/link";
+import { useCart } from "@/contexts/CartContext";
+
 export default function ShopPage() {
+  const { addItem } = useCart();
   const products = [
     {
       name: "Chemise en lin",
@@ -51,6 +56,13 @@ export default function ShopPage() {
   ];
 
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DZD`;
+
+  const go = (p: (typeof products)[number]) => ({
+    href: `/product?name=${encodeURIComponent(p.name)}`,
+  });
+
+  const add = (p: (typeof products)[number]) =>
+    addItem({ id: p.name, name: p.name, price: p.price, image: p.img }, 1);
 
   return (
     <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -126,10 +138,7 @@ export default function ShopPage() {
           <h1 className="text-4xl font-bold mb-6">Produits</h1>
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((p) => (
-              <div
-                key={p.name}
-                className="group relative bg-[var(--color-background-light)] border border-[var(--color-subtle-light)] rounded-lg overflow-hidden transition-shadow hover:shadow-xl"
-              >
+              <div key={p.name} className="group relative overflow-hidden rounded-lg border border-[var(--color-subtle-light)] bg-[var(--color-background-light)] transition-shadow hover:shadow-xl">
                 <div className="absolute top-2 right-2 z-10">
                   <button className="p-2 rounded-full bg-white/60 text-black/70 hover:text-red-500 transition-colors">
                     <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -142,16 +151,17 @@ export default function ShopPage() {
                     </svg>
                   </button>
                 </div>
-                <div
-                  className="aspect-square w-full bg-cover bg-center"
-                  style={{ backgroundImage: `url('${p.img}')` }}
-                />
+                <Link href={go(p).href}>
+                  <div className="aspect-square w-full bg-cover bg-center" style={{ backgroundImage: `url('${p.img}')` }} />
+                </Link>
                 <div className="p-4">
-                  <h4 className="font-semibold text-base truncate">{p.name}</h4>
+                  <Link href={go(p).href} className="font-semibold text-base truncate hover:text-[var(--color-primary)]">
+                    {p.name}
+                  </Link>
                   <p className="font-bold text-lg text-[var(--color-primary)] mt-1">{fmt(p.price)}</p>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[var(--color-background-light)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-4 group-hover:translate-y-0">
-                  <button className="w-full bg-[var(--color-primary)] text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors">
+                  <button onClick={() => add(p)} className="w-full bg-[var(--color-primary)] text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors">
                     Ajouter au Panier
                   </button>
                 </div>

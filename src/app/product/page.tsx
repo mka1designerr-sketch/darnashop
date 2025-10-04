@@ -1,4 +1,8 @@
+"use client";
+import { useCart } from "@/contexts/CartContext";
+
 export default function ProductPage() {
+  const { addItem } = useCart();
   const gallery = [
     "https://lh3.googleusercontent.com/aida-public/AB6AXuBEvfzseZhZySo1YppNPX0h6wqbm4joj-_Azd9p1xfCDuW62TR3Y5TR4fksSxvDAU45oYhekrYxNt2mbU-fq6Z-El0y2MjxbDCbkIxrHybZR8LX-Ncg8z9CJPKwnt1uVlQzW2Gs4e1IV8m1ISrKWgINjo35ZluSax2N9Z_Fhdg0d7X9ZOfBw344pdVEGQJ97foDgrmnrRHWiv5Ecyz9YpVOmYDs2Afv_MchVtPvGZBhUQHg7NDU8NUtcnDY9v9VCaYi1-raHDRFKGfy",
     "https://lh3.googleusercontent.com/aida-public/AB6AXuB1hRpED-pkKkVm9xMJtt5AqXFUv18dBeHS3twLvmUp94IJtSHxZ22OLKY6iw8SQKNw1Lz77euCFyrFV733M8H_e3sHFfHwF3CK5APYlwDFj6_BjNx3HKvcAAty0201eQXRrzREaU1LZlOLSvjBIw5NavD091ZYYPyeGgHHOELfiuCrN_z2KSDi2umorFtnPYv6NsMos99YXeKS2X_EScZG8qkgIDQXwo8JI2GY-eLuq4x3hopwGhWw2AWT7tkkL2_S13Ix9txGi8TR",
@@ -112,10 +116,18 @@ export default function ProductPage() {
           </div>
 
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <button className="flex w-full items-center justify-center rounded-lg bg-[var(--color-primary)] px-6 py-3 text-base font-semibold text-white shadow-sm transition-all hover:bg-[var(--color-primary)]/90">
+            <button
+              onClick={() =>
+                addItem({ id: "robe-ete", name: "Robe d'été à fleurs", price: 3500, image: gallery[0] }, 1)
+              }
+              className="flex w-full items-center justify-center rounded-lg bg-[var(--color-primary)] px-6 py-3 text-base font-semibold text-white shadow-sm transition-all hover:bg-[var(--color-primary)]/90"
+            >
               Acheter Maintenant
             </button>
-            <button className="flex w-full items-center justify-center rounded-lg border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-200/70">
+            <button
+              onClick={() => addItem({ id: "robe-ete", name: "Robe d'été à fleurs", price: 3500, image: gallery[0] }, 1)}
+              className="flex w-full items-center justify-center rounded-lg border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-200/70"
+            >
               Ajouter au Panier
             </button>
           </div>

@@ -1,6 +1,10 @@
+"use client";
+import { useCart } from "@/contexts/CartContext";
+
 export default function CheckoutPage() {
+  const { items, subtotal: subFromCart, clearCart } = useCart();
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DA`;
-  const subtotal = 12000;
+  const subtotal = items.length ? subFromCart : 12000; // fallback to demo values
   const shipping = 500;
   const total = subtotal + shipping; // 12500
   return (
@@ -107,22 +111,30 @@ export default function CheckoutPage() {
             </h2>
 
             <div className="flex-grow space-y-4">
-              {[
-                {
-                  name: "Chemise en coton",
-                  qty: 2,
-                  price: 6000,
-                  img:
-                    "https://lh3.googleusercontent.com/aida-public/AB6AXuADCxSa-GlgB74H0QNRzfc14I6-5h6nY0ZBZWEvypXFzQZJGzr-tAqLkJt9PPJTWavABN-JEOknBaGOU5uY8r2eZ4BDHh7fV4G6Ohz4c_Mi4WMiXDG4umIHilHVPfsSmikaIGwE8WxjoBfFEFmgGfw5ph4J2F_Cbh0AoPIbEsSEssB2E9FSCmZ_r8m7Occn0kZIqeeP9ocEJtHulcnJGBJQbVlwqXLOQI7UOfCwtX9qbjSy-_uoorjAKCYB_3d9SPeHE2rBFPulyayQ",
-                },
-                {
-                  name: "Pantalon en lin",
-                  qty: 1,
-                  price: 6000,
-                  img:
-                    "https://lh3.googleusercontent.com/aida-public/AB6AXuCg3o73NjAXk45qv4zTdbhjZzHp9zGII4upkFTUnf1ZrqHFmbcObWZcbsi6-sAjU_jNn39IwGjnmFNbfWOWjJvVmVTBY5hnRH9yaweqSbRIxjxcLEcDF9HdUWwLLCqrPZ9JTETSrnq2pbAUtkuSsSpaNBFC23DkXlprdgPmGXbPIKFKtQrYNhH9EQz6P5qFr1Y0zs0nT1VHqHsmXgOO0lukVkS-LvyWObggJIqOpHEy-GZoZKz61dazLvPG_VrYSO4SgLjUVyghwOcV",
-                },
-              ].map((it) => (
+              {(items.length
+                ? items.map((it) => ({
+                    name: it.name,
+                    qty: it.qty,
+                    price: it.price * it.qty,
+                    img: it.image,
+                  }))
+                : [
+                    {
+                      name: "Chemise en coton",
+                      qty: 2,
+                      price: 6000,
+                      img:
+                        "https://lh3.googleusercontent.com/aida-public/AB6AXuADCxSa-GlgB74H0QNRzfc14I6-5h6nY0ZBZWEvypXFzQZJGzr-tAqLkJt9PPJTWavABN-JEOknBaGOU5uY8r2eZ4BDHh7fV4G6Ohz4c_Mi4WMiXDG4umIHilHVPfsSmikaIGwE8WxjoBfFEFmgGfw5ph4J2F_Cbh0AoPIbEsSEssB2E9FSCmZ_r8m7Occn0kZIqeeP9ocEJtHulcnJGBJQbVlwqXLOQI7UOfCwtX9qbjSy-_uoorjAKCYB_3d9SPeHE2rBFPulyayQ",
+                    },
+                    {
+                      name: "Pantalon en lin",
+                      qty: 1,
+                      price: 6000,
+                      img:
+                        "https://lh3.googleusercontent.com/aida-public/AB6AXuCg3o73NjAXk45qv4zTdbhjZzHp9zGII4upkFTUnf1ZrqHFmbcObWZcbsi6-sAjU_jNn39IwGjnmFNbfWOWjJvVmVTBY5hnRH9yaweqSbRIxjxcLEcDF9HdUWwLLCqrPZ9JTETSrnq2pbAUtkuSsSpaNBFC23DkXlprdgPmGXbPIKFKtQrYNhH9EQz6P5qFr1Y0zs0nT1VHqHsmXgOO0lukVkS-LvyWObggJIqOpHEy-GZoZKz61dazLvPG_VrYSO4SgLjUVyghwOcV",
+                    },
+                  ]
+              ).map((it) => (
                 <div key={it.name} className="flex items-center gap-4">
                   <div
                     className="h-16 w-16 flex-shrink-0 rounded-lg bg-cover bg-center"
@@ -132,7 +144,7 @@ export default function CheckoutPage() {
                     <p className="font-semibold text-slate-800">{it.name}</p>
                     <p className="text-sm text-slate-500">Quantité: {it.qty}</p>
                   </div>
-                  <p className="font-semibold text-slate-800">{it.price.toLocaleString("fr-DZ")} DA</p>
+                  <p className="font-semibold text-slate-800">{fmt(it.price)}</p>
                 </div>
               ))}
             </div>
@@ -174,10 +186,23 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <div className="mt-8">
-              <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-4 text-lg font-bold text-white shadow-sm transition-all hover:bg-[var(--color-primary)]/90 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/50">
-                <span>✅</span> Valider ma Commande
-              </button>
+            <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(
+                  `Bonjour DARNA SHOP, je confirme ma commande: ${items
+                    .map((i) => `${i.name} x${i.qty}`)
+                    .join(", ")}. Total: ${fmt(total)}`
+                )}`}
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-4 text-lg font-bold text-white shadow-sm transition-all hover:bg-[var(--color-primary)]/90"
+              >
+                ✅ WhatsApp
+              </a>
+              <a
+                href={`tel:+213XXXXXXXXX`}
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-4 text-lg font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-200/70"
+              >
+                📞 Appel téléphonique
+              </a>
             </div>
           </aside>
         </div>
