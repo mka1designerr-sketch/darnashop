@@ -43,15 +43,15 @@ export default function ProductPage() {
                   </a>
                 </li>
                 <li className="text-slate-400">/</li>
-                <li className="font-medium text-slate-700">Robe d'été</li>
+                <li className="font-medium text-slate-700">Robe d&apos;été</li>
               </ol>
             </nav>
 
-            <h1 className="text-3xl font-extrabold tracking-tight">Robe d'été à fleurs</h1>
+            <h1 className="text-3xl font-extrabold tracking-tight">Robe d&apos;été à fleurs</h1>
             <p className="text-sm text-slate-500">Marque: Zina Mode</p>
             <p className="text-3xl font-bold text-[var(--color-primary)]">3,500 DZD</p>
             <p className="text-base text-slate-600">
-              Une robe d'été légère et aérée, parfaite pour les journées chaudes. Motifs floraux délicats, coupe
+              Une robe d&apos;été légère et aérée, parfaite pour les journées chaudes. Motifs floraux délicats, coupe
               fluide et confortable.
             </p>
           </div>
@@ -83,7 +83,7 @@ export default function ProductPage() {
                     { c: "#f2f2f2", checked: true },
                     { c: "#336699" },
                     { c: "#ffcc33" },
-                  ].map((o, i) => (
+                  ].map((o) => (
                     <label
                       key={o.c}
                       className="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 ring-slate-400 focus:outline-none has-[:checked]:ring has-[:checked]:ring-offset-1"
@@ -139,9 +139,9 @@ export default function ProductPage() {
           </div>
           <div className="prose prose-slate max-w-none">
             <p>
-              Cette robe d'été est fabriquée à partir de coton biologique, assurant un confort optimal et une
+              Cette robe d&apos;été est fabriquée à partir de coton biologique, assurant un confort optimal et une
               respirabilité maximale. Les motifs floraux sont imprimés avec des encres écologiques, respectueuses de
-              l'environnement. Disponible en plusieurs tailles et couleurs pour s'adapter à toutes les morphologies et
+              l&apos;environnement. Disponible en plusieurs tailles et couleurs pour s&apos;adapter à toutes les morphologies et
               préférences.
             </p>
           </div>
