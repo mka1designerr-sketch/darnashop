@@ -11,6 +11,7 @@
   --color-subtle-dark: #202c3a;
   --color-accent-orange: #e67e22;
   --color-accent-yellow: #f1c40f;
+  --radio-dot-svg: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='%2308335e' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
 }
 
 :root {
