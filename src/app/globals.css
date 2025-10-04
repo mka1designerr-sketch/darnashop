@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+/* DARNA SHOP theme tokens matching provided HTML */
+:root {
+  --color-primary: #08335e;
+  --color-background-light: #f6f7f8;
+  --color-background-dark: #101922;
+  --color-text-light: #111418;
+  --color-text-dark: #f6f7f8;
+  --color-subtle-light: #e3e5e8;
+  --color-subtle-dark: #202c3a;
+  --color-accent-orange: #e67e22;
+  --color-accent-yellow: #f1c40f;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.hero-slide {
+  background-image: linear-gradient(
+      to top,
+      rgba(8, 51, 94, 0.6) 0%,
+      rgba(8, 51, 94, 0) 50%
+    ),
+    var(--bg-image);
+}
