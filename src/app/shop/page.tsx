@@ -1,9 +1,14 @@
 "use client";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
 
 export default function ShopPage() {
   const { addItem } = useCart();
+  const { toggle, has } = useFavorites();
+  const params = useSearchParams();
+  const r = useRouter();
   const products = [
     {
       name: "Chemise en lin",
@@ -57,12 +62,36 @@ export default function ShopPage() {
 
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DZD`;
 
+  // filters from URL
+  const q = (params.get("q") || "").toLowerCase();
+  const category = params.get("category") || "";
+  const min = Number(params.get("min") || 0);
+  const max = Number(params.get("max") || 1e9);
+  const onlyFav = params.get("fav") === "1";
+
+  const filtered = products.filter((p) => {
+    if (q && !p.name.toLowerCase().includes(q)) return false;
+    if (category && !p.name.toLowerCase().includes(category.toLowerCase())) return false; // demo category match by name
+    if (p.price < min || p.price > max) return false;
+    if (onlyFav && !has(p.name)) return false;
+    return true;
+  });
+
   const go = (p: (typeof products)[number]) => ({
     href: `/product?name=${encodeURIComponent(p.name)}`,
   });
 
   const add = (p: (typeof products)[number]) =>
     addItem({ id: p.name, name: p.name, price: p.price, image: p.img }, 1);
+
+  const setFilter = (next: Record<string, string | number | undefined>) => {
+    const url = new URL(window.location.href);
+    Object.entries(next).forEach(([k, v]) => {
+      if (v === undefined || v === "") url.searchParams.delete(k);
+      else url.searchParams.set(k, String(v));
+    });
+    r.push(`/shop${url.search}`);
+  };
 
   return (
     <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -76,9 +105,9 @@ export default function ShopPage() {
               <ul className="space-y-2">
                 {["Vêtements", "Jouets", "Électronique"].map((c) => (
                   <li key={c}>
-                    <a className="block px-4 py-2 rounded hover:bg-[var(--color-primary)]/10 font-semibold transition-colors" href="#">
+                    <button onClick={() => setFilter({ category: c })} className="block w-full rounded px-4 py-2 font-semibold transition-colors hover:bg-[var(--color-primary)]/10 text-left">
                       {c}
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -88,19 +117,15 @@ export default function ShopPage() {
               <h3 className="text-xl font-bold mb-4 border-b-2 border-[var(--color-primary)] pb-2">
                 Filtrer par Prix
               </h3>
-              <div className="p-4">
-                <div className="relative h-1 bg-[var(--color-subtle-light)] rounded-full">
-                  <div className="absolute h-1 bg-[var(--color-primary)] rounded-full" style={{ left: "15%", right: "25%" }} />
-                  <div className="absolute -top-1.5" style={{ left: "15%" }}>
-                    <div className="w-4 h-4 bg-[var(--color-primary)] rounded-full border-2 border-[var(--color-background-light)]" />
-                  </div>
-                  <div className="absolute -top-1.5" style={{ right: "25%" }}>
-                    <div className="w-4 h-4 bg-[var(--color-primary)] rounded-full border-2 border-[var(--color-background-light)]" />
-                  </div>
+              <div className="p-4 space-y-3">
+                <div className="flex items-center gap-2">
+                  <input type="number" min={0} placeholder="Min" defaultValue={min || ""} className="w-24 rounded border px-2 py-1" onBlur={(e) => setFilter({ min: e.target.value })} />
+                  <input type="number" min={0} placeholder="Max" defaultValue={max && max < 1e9 ? max : ""} className="w-24 rounded border px-2 py-1" onBlur={(e) => setFilter({ max: e.target.value })} />
+                  <button onClick={() => setFilter({ min: 0, max: 1e9 })} className="rounded border px-2 py-1 text-sm">Réinitialiser</button>
                 </div>
-                <div className="flex justify-between text-sm mt-2 text-black/80">
-                  <span>1000 DZD</span>
-                  <span>10000 DZD</span>
+                <div className="flex justify-between text-sm mt-1 text-black/80">
+                  <span>{min ? `${min} DZD` : "Min"}</span>
+                  <span>{max && max < 1e9 ? `${max} DZD` : "Max"}</span>
                 </div>
               </div>
             </div>
@@ -137,10 +162,10 @@ export default function ShopPage() {
         <section className="w-full lg:w-3/4 xl:w-4/5">
           <h1 className="text-4xl font-bold mb-6">Produits</h1>
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map((p) => (
+            {filtered.map((p) => (
               <div key={p.name} className="group relative overflow-hidden rounded-lg border border-[var(--color-subtle-light)] bg-[var(--color-background-light)] transition-shadow hover:shadow-xl">
                 <div className="absolute top-2 right-2 z-10">
-                  <button className="p-2 rounded-full bg-white/60 text-black/70 hover:text-red-500 transition-colors">
+                  <button onClick={() => toggle({ id: p.name, name: p.name, image: p.img, price: p.price })} className={`p-2 rounded-full bg-white/60 transition-colors ${has(p.name) ? "text-red-500" : "text-black/70 hover:text-red-500"}`}>
                     <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path
                         d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"

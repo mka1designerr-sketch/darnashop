@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, El_Messiri, Tajawal } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/contexts/CartContext";
 import Header from "@/components/Header";
+import { FavoritesProvider } from "@/contexts/FavoritesContext";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -37,8 +38,10 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${plusJakarta.variable} ${elMessiri.variable} ${tajawal.variable} antialiased bg-[var(--color-background-light)] text-[var(--color-text-light)]`}>
         <CartProvider>
-          <Header />
-          {children}
+          <FavoritesProvider>
+            <Header />
+            {children}
+          </FavoritesProvider>
         </CartProvider>
       </body>
     </html>
