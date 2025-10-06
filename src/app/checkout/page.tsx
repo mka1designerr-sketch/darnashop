@@ -1,8 +1,16 @@
 "use client";
 import { useCart } from "@/contexts/CartContext";
+import { useAlgeriaLocations } from "@/hooks/useAlgeriaLocations";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function CheckoutPage() {
   const { items, subtotal: subFromCart } = useCart();
+  const { wilayas, byWilaya } = useAlgeriaLocations();
+  const { lang } = ((): any => {
+    try { return require("@/contexts/I18nContext"); } catch { return {}; }
+  })();
+  const [selectedWilaya, setSelectedWilaya] = React.useState<string>("");
+  const [selectedCommune, setSelectedCommune] = React.useState<string>("");
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DA`;
   const subtotal = items.length ? subFromCart : 12000; // fallback to demo values
   const shipping = 500;
@@ -56,36 +64,34 @@ export default function CheckoutPage() {
               </h2>
               <div className="space-y-4">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="wilaya">
-                    Wilaya
-                  </label>
+                  <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="wilaya">Wilaya</label>
                   <select
                     id="wilaya"
                     name="wilaya"
                     className="w-full rounded-lg border border-slate-300 bg-white text-slate-900 shadow-sm focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]"
-                    defaultValue=""
+                    value={selectedWilaya}
+                    onChange={(e) => { setSelectedWilaya(e.target.value); setSelectedCommune(""); }}
                   >
-                    <option value="" disabled>
-                      Sélectionnez votre wilaya
-                    </option>
-                    <option>Alger</option>
-                    <option>Oran</option>
-                    <option>Constantine</option>
+                    <option value="" disabled>Choisir...</option>
+                    {wilayas.map((w) => (
+                      <option key={w.code} value={w.code}>{w.name}</option>
+                    ))}
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="commune">
-                    Commune
-                  </label>
+                  <label className="mb-1 block text-sm font-medium text-slate-700" htmlFor="commune">Commune</label>
                   <select
                     id="commune"
                     name="commune"
                     className="w-full rounded-lg border border-slate-300 bg-white text-slate-900 shadow-sm focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]"
-                    defaultValue=""
+                    value={selectedCommune}
+                    onChange={(e) => setSelectedCommune(e.target.value)}
+                    disabled={!selectedWilaya}
                   >
-                    <option value="" disabled>
-                      Sélectionnez votre commune
-                    </option>
+                    <option value="" disabled>Choisir...</option>
+                    {selectedWilaya && byWilaya(selectedWilaya).map((c) => (
+                      <option key={`${selectedWilaya}-${c.name}`} value={c.name}>{c.name}</option>
+                    ))}
                   </select>
                 </div>
                 <div>
@@ -191,7 +197,7 @@ export default function CheckoutPage() {
                 href={`https://wa.me/?text=${encodeURIComponent(
                   `Bonjour DARNA SHOP, je confirme ma commande: ${items
                     .map((i) => `${i.name} x${i.qty}`)
-                    .join(", ")}. Total: ${fmt(total)}`
+                    .join(", ")}. Total: ${fmt(total)} | Wilaya: ${selectedWilaya} | Commune: ${selectedCommune}`
                 )}`}
                 className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-4 text-lg font-bold text-white shadow-sm transition-all hover:bg-[var(--color-primary)]/90"
               >

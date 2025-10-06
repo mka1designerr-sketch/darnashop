@@ -3,6 +3,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useProducts } from "@/contexts/ProductsContext";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { useAlgeriaLocations } from "@/hooks/useAlgeriaLocations";
 
 export default function ProductPage() {
   const { addItem } = useCart();
@@ -17,7 +18,8 @@ export default function ProductPage() {
   const webhook = process.env.NEXT_PUBLIC_ORDERS_WEBHOOK_URL;
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [buyer, setBuyer] = useState({ name: "", phone: "", address: "", size: "M" });
+  const [buyer, setBuyer] = useState({ name: "", phone: "", address: "", size: "M", wilaya: "", commune: "" });
+  const { wilayas, byWilaya } = useAlgeriaLocations();
 
   useEffect(() => {
     setVariantIdx(0);
@@ -49,6 +51,8 @@ export default function ProductPage() {
       name: buyer.name,
       phone: buyer.phone,
       address: buyer.address,
+      wilaya: buyer.wilaya,
+      commune: buyer.commune,
       createdAt: new Date().toISOString(),
     };
     try {
@@ -169,6 +173,18 @@ export default function ProductPage() {
                 <input className="rounded border p-2" placeholder="Nom complet" value={buyer.name} onChange={(e) => setBuyer((b) => ({ ...b, name: e.target.value }))} />
                 <input className="rounded border p-2" placeholder="Téléphone" value={buyer.phone} onChange={(e) => setBuyer((b) => ({ ...b, phone: e.target.value }))} />
                 <input className="rounded border p-2 sm:col-span-2" placeholder="Adresse complète" value={buyer.address} onChange={(e) => setBuyer((b) => ({ ...b, address: e.target.value }))} />
+                <select className="rounded border p-2" value={buyer.wilaya} onChange={(e) => setBuyer((b) => ({ ...b, wilaya: e.target.value, commune: "" }))}>
+                  <option value="">Wilaya</option>
+                  {wilayas.map((w) => (
+                    <option key={w.code} value={w.code}>{w.name}</option>
+                  ))}
+                </select>
+                <select className="rounded border p-2" value={buyer.commune} onChange={(e) => setBuyer((b) => ({ ...b, commune: e.target.value }))} disabled={!buyer.wilaya}>
+                  <option value="">Commune</option>
+                  {buyer.wilaya && byWilaya(buyer.wilaya).map((c) => (
+                    <option key={`${buyer.wilaya}-${c.name}`} value={c.name}>{c.name}</option>
+                  ))}
+                </select>
               </div>
               <div className="mt-4 flex gap-2">
                 <button disabled={submitting} onClick={submitOrder} className="rounded bg-[var(--color-primary)] px-4 py-2 font-bold text-white disabled:opacity-50">

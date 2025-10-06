@@ -11,7 +11,8 @@ export default function Header() {
   const { count, items, removeItem, updateQty } = useCart();
   const [openCart, setOpenCart] = useState(false);
   const [query, setQuery] = useState("");
-  const { t } = useI18n();
+  const { t, lang } = useI18n() as any;
+  const isRTL = lang === "ar";
   const r = useRouter();
   const submitSearch = () => {
     if (!query.trim()) return;
@@ -72,18 +73,19 @@ export default function Header() {
             </svg>
           </Link>
           {/* Mini cart */}
+          <div className="relative">
           <button onClick={() => setOpenCart((v) => !v)} className="relative rounded-full p-2 hover:bg-[var(--color-subtle-light)]">
             <svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg">
               <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V64A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM176,88a48,48,0,0,1-96,0,8,8,0,0,1,16,0,32,32,0,0,0,64,0,8,8,0,0,1,16,0Z"></path>
             </svg>
             {count > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--color-accent-orange)] text-xs font-bold text-white">
+              <span className={`absolute ${isRTL ? "-left-1" : "-right-1"} -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--color-accent-orange)] text-xs font-bold text-white`}>
                 {count}
               </span>
             )}
           </button>
           {openCart && (
-            <div className="absolute right-2 top-14 z-30 w-[320px] rounded-lg border border-[var(--color-subtle-light)] bg-white p-3 shadow-xl">
+            <div className={`absolute ${isRTL ? "left-0" : "right-0"} top-12 z-30 w-[320px] rounded-lg border border-[var(--color-subtle-light)] bg-white p-3 shadow-xl`}>
               <div className="max-h-64 space-y-3 overflow-auto">
                 {items.length === 0 && <p className="text-sm text-slate-600">Votre panier est vide.</p>}
                 {items.map((it) => (
@@ -118,6 +120,7 @@ export default function Header() {
               </div>
             </div>
           )}
+          </div>
         </div>
       </div>
     </header>
