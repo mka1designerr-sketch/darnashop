@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { useI18n } from "@/contexts/I18nContext";
 
