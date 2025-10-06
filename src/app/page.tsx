@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div className="flex min-h-screen w-full flex-col bg-[var(--color-background-light)] text-[var(--color-text-light)]">
@@ -77,21 +79,18 @@ export default function Home() {
           <h2 className="mb-6 text-2xl font-bold">Meilleures Ventes</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {[
-              { name: "Chemise en lin", price: "3,499 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuDLrPG1qXWQ4hioSagVYjShAkRR_HKhX8zuvuXuud3IBnik10tsvotnfSdYPzZxORDBy_4WkbViKvRJ2ISU9AQHLrcpYQswfxZcEa_PuB9OyP3vk8Sistai-o9a4tfIlmzkyPdU79faEdT5I-xxV-MwrPswpSQQFscMP6z0sLNVglpDSJfKRJwu10mRqLXSJgtBT56RmDcmR9wsSkOQRUhkGUjptIrhosOn7mH6WspTWM81tzC4dAN21PvTdYgftWQ6tFm9xDc4DIyp" },
-              { name: "Robe d'été", price: "4,999 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuBDEC4eVKo5dM8tVc4MLHFB8CXBY8TJmCaZ5osjgeMSno_3xhvAuyh2pyA9MfecfscYwTe6T32Jmk2IPGUKZVtcjX4R-STR3_tGs0kf10vm4_FdGYGRIwikInG0C8VtsdrCUmTMWs5ERL-k-UKQpDXo4DOm7T5osNRm2a0Y9kxfcD4-pduy6M6iq4Lsd1ydMLtHUejg2nskA5nrDbRPMQvif-M2MoASVK3q2L-MC44tgMXD4eu8EWLQ_0iknrRo13DkHICt2Spv5XpU" },
-              { name: "Casque sans fil", price: "7,800 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCkJTx-e_f7vov0TUvRZHxdhhfql4JITt2_tepO2ldOOdIRmq3vapkawts7IY1nem0LMwZjnscwWgQmEXOyMchMwxmrroivTmGwFWGVUnfR16LfK3MlYvb6rQ1fae2KxhO57KENARbmJSArF1uc5QA56bAf21my2E-y03j7O32-R_t2woL345fW4JmiPGN5_X6ta1R7LFIeAxOSETKCScUXfLvFIgZPhX2LHPlZPhG401Mk7S8rWPH3YaCquKaYXOOwHl5c6gXZvkGE" },
-              { name: "Jeu de construction", price: "2,500 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuBK1Oasg4cXBwHDYUykxTVbHg2tvkzSjP5y0SXyHGFf1iwCQqcS32d3aosLU_D7U2vEDH_IKk3vbPChs5A61gnw_ZNgSp6cxel4B_kdwhnbc0CGcpPvTizMsqAx854gdETENGP8vi_lQkE5KVm1Lv3d7dLUVnC2BQi6QmDTmci5b93uyKXM2xT8N4SemH_qCe-NBor0gI2zCvnlJRhvTCKXtqjXKkPnXqNmUYyev0eZBNVm_ODhgVGwSyHR3gkVaSVBTzDiRi7DpfcW" },
-              { name: "Montre connectée", price: "9,990 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuDt-Xd2U4BFLmdB84DtfUUcp5UpXIZ4GAR4-A7vLmpKo5FWywQAq9WmE2ADUV7jbVliKWL7Hkxnjx4T5Dw58TgZy0IS7RrzKnmBlxbAaZ9S-ns6eQcAneLvddQdR9TN583NuyOVo3V-QUX3fGBK-qe4WQDwRfQLOAvXdv4kusVQi-ml_h-SGA56-g5wG_CQzpP4wxELS6RoODVlTs2fbU3XbuustuJkqQwXVBHWl5ByigqvjD1uNeIerDBMFNnonUztf3fbkvpxveT_" },
-              { name: "Sac à dos", price: "4,200 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCsYlvAstFpbpZN0NOVmF33rX1PSgqNeffkjW4HOFGw7W82E00h3NWyTvvOlzaO6wl-EeSL_EyCvYf4vBvBzPX53HyycawSGR2CFapvTMLuMY19DjlhtNBfMCNpQa8CW2lqaFfuRmwVNarmQCFDqikblfpWILmxUjCgxfLSnd8QWzi1Vp3WyY36ZDSTwQMWg3n37E_WgTJ6Hhz9ganImbM_fDR2WhGvDSaT12zvEn_Af1HMvQy8dh9Q_hkmuhpybhshj7JVpD28y1TC" },
+              { id: "chemise-lin", name: "Chemise en lin", price: "3,499 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuDLrPG1qXWQ4hioSagVYjShAkRR_HKhX8zuvuXuud3IBnik10tsvotnfSdYPzZxORDBy_4WkbViKvRJ2ISU9AQHLrcpYQswfxZcEa_PuB9OyP3vk8Sistai-o9a4tfIlmzkyPdU79faEdT5I-xxV-MwrPswpSQQFscMP6z0sLNVglpDSJfKRJwu10mRqLXSJgtBT56RmDcmR9wsSkOQRUhkGUjptIrhosOn7mH6WspTWM81tzC4dAN21PvTdYgftWQ6tFm9xDc4DIyp" },
+              { id: "robe-ete", name: "Robe d'été", price: "4,999 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuBDEC4eVKo5dM8tVc4MLHFB8CXBY8TJmCaZ5osjgeMSno_3xhvAuyh2pyA9MfecfscYwTe6T32Jmk2IPGUKZVtcjX4R-STR3_tGs0kf10vm4_FdGYGRIwikInG0C8VtsdrCUmTMWs5ERL-k-UKQpDXo4DOm7T5osNRm2a0Y9kxfcD4-pduy6M6iq4Lsd1ydMLtHUejg2nskA5nrDbRPMQvif-M2MoASVK3q2L-MC44tgMXD4eu8EWLQ_0iknrRo13DkHICt2Spv5XpU" },
+              { id: "casque-audio", name: "Casque sans fil", price: "7,800 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCkJTx-e_f7vov0TUvRZHxdhhfql4JITt2_tepO2ldOOdIRmq3vapkawts7IY1nem0LMwZjnscwWgQmEXOyMchMwxmrroivTmGwFWGVUnfR16LfK3MlYvb6rQ1fae2KxhO57KENARbmJSArF1uc5QA56bAf21my2E-y03j7O32-R_t2woL345fW4JmiPGN5_X6ta1R7LFIeAxOSETKCScUXfLvFIgZPhX2LHPlZPhG401Mk7S8rWPH3YaCquKaYXOOwHl5c6gXZvkGE" },
             ].map((p) => (
-              <div key={p.name} className="group">
+              <Link key={p.id} className="group" href={`/product?id=${encodeURIComponent(p.id)}`}>
                 <div className="mb-2 w-full overflow-hidden rounded-lg bg-cover bg-center">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img alt={p.name} className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105" src={p.src} />
                 </div>
-                <h3 className="font-medium">{p.name}</h3>
+                <h3 className="font-medium text-[var(--color-primary)]">{p.name}</h3>
                 <p className="font-bold text-[var(--color-primary)]">{p.price}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </section>
@@ -114,11 +113,11 @@ export default function Home() {
                 bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuBxS-merjzq6c37NiF5gQJWBA4o8a3NlrZumKClL8F-9b8BCRxdyHyhU1bOlSBt2Rmif47cP-uer08BK4S1sfs2XNwo_vWcugp_TkMeYa69Rm1t294_Qtj_yH6Mttqu13vajBCrZQUJA66QV6zCPkELlp3CdhtGRrRVazA8pSbiOOEE2mxIxCpVrZmbluZ8yHlFeJIugwAsWiDAQ-7meC5SorXQ4n3w-kbwnddejhCHwWWZHCWMjfoKXHh0Yk61molsTi6Kvro2kie6",
               },
             ].map((c) => (
-              <a key={c.title} className="group relative flex aspect-video items-end justify-start overflow-hidden rounded-lg p-6 text-white" href="#">
+              <Link key={c.title} className="group relative flex aspect-video items-end justify-start overflow-hidden rounded-lg p-6 text-white" href={`/shop?category=${encodeURIComponent(c.title)}`}>
                 <div className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-110" style={{ backgroundImage: `url('${c.bg}')` }} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <h3 className="relative z-10 text-2xl font-bold">{c.title}</h3>
-              </a>
+              </Link>
             ))}
           </div>
         </section>

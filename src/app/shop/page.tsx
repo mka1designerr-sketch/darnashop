@@ -3,62 +3,14 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
+import { useProducts } from "@/contexts/ProductsContext";
 
 export default function ShopPage() {
   const { addItem } = useCart();
   const { toggle, has } = useFavorites();
   const params = useSearchParams();
   const r = useRouter();
-  const products = [
-    {
-      name: "Chemise en lin",
-      price: 2500,
-      img:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuApwks67sac6VrF_M7auwEyzntrUFO6Egej29c61GNHTLIyRuqFguWfXnXw9OhfI2xWTdoQoVw-CFX5kVsArkCPqJ64zkUIlcLIh0h4bi3Wt-yJJnHmWhnh4uJjoRxnyW72MteDdOExzAogzAtIg225BEXPpMtWkEiKjg2hSkGu2zdyYRRZzpp02FYaBOiR9m6Sb3zZI85qfs6IVAyAWCW0MTYiuaKlkNobfDBWW2_xjS60xM6op7QkW3Vz6tUFAYxfhC9qKXGa7ibI",
-    },
-    {
-      name: "Robe d'été",
-      price: 3000,
-      img:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuBkcPZrnMcIt5GOaICwqjnK1pOA0zOFhlykRYNqukO6GtYX1djs9lu2gdy8QFS-iLdJSbdlH9L-IJgv4O6m_ot_CQbNOyEdQu0SoDYYv5lvRaRIr-nMwi-oQGXUGaVZfGvNROmXWGF88_r95Vf4-PDH0_UZ83QZ2m4jlJ-mGfPzePWp4v3DWbx_HPrc0P1aClFg0L03WF7yQgUrl5ih5OtNZQsAv3HCCtIyhxHwO3Mob4amyFtxkvm_LvketvNs7R38CHH2tcdoCkZD",
-    },
-    {
-      name: "Casque audio sans fil",
-      price: 4500,
-      img:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDuM3CD74ixrUqYC9a451KuPmIMQDMaoV74UoFm5PvW6oGVIz1gGofdtI50gudrKWh4Thm5J0uD3O3dYDasZ4oeKzRIr3WK_y3I6WlEu_Bx6rpCkuljMsS9GE2ih6WoBzZwb5MCYVkSbAUojrWUSGHgNN1TB4jpYvJl2q76RFzKF0tkmBAtQMcTcdinGHcoFjffJ95ujoz2ZREkrtF9_2FFWq5EMe5iLyQL0tn_WVxvr8-BOndAPnGrVgWjnHk9YguzVjmZfEAObXQB",
-    },
-    {
-      name: "Jeu de construction",
-      price: 1500,
-      img:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDZoZ-0zTxgDDcQKdxK7hB_QbuYCP8ApRCeNKoSIjqcCDL_AUf2SbdIgnEN-OxpADZjuLGs9HHjyGglw7WbG2QR80iFSXnppMfiCfteL4ADIPaMOtCeaMWD5EyQPm94kGd_ZmJeOwsDZCHQYSpI-Ysv0fiIkOLVimbKDuptxr_6fVxQvpMJcByOmRuw4Y1syr-6hag_oY0w1DCkKrWJskw_ACtO5v3j2-6nyO5emhR7KVBNwFi_-73PXSZ_54WOtqPWsJ3xhyxR0-SB",
-    },
-    {
-      name: "Pantalon cargo",
-      price: 3500,
-      img:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuBHzxF8aiwsz4wa3I0GbnzlLEqB1-CUkbiMOq3fmGfzDxsrZJUfYtbOrn2Ndx0ZC1kjP6SCKKKDzEG5kteZV6FgKLW90ilJUjLvm6NLArqK5yAI2A2NqzrxiykPWj0b4GS-5FcS5BYA54f_IoXTyoqG54RFGq1m32e-sRk24FfM63TunnH4-hzJuE8OAiIauD0ps2TcMAWBVrmD9TYwNE3uhopdcKGJ9Hiv1GKCxVhCDj6F7NC1ewfEKdSDdkypvqDCZ_QZz4ic0wKT",
-    },
-    {
-      name: "T-shirt imprimé",
-      price: 1800,
-      img:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuABKfkl34tV21ArCixO_lVlorICcHToQ5ciRuslFBo2KuxP8o5NIuBp1WVdhK8Zei7wXNdUxx702j-sdJofMgaerLiL-N9lSX8-Bms4N0guvXHrnmAfq3Q2_uKBnWvru9T8pm7LaF9nWz3QIiuhgy7Xz8-roSrCgQ05ZMu3_1ErXq_HrySWWrMONDG3eHnRHmlNIxCZxu78LQEZ_g3-SK3wF14LyKxalvz0_W8I5P-I3y43xYsru2RqZx3adZu-pl7nFy1kNzvS2HMh",
-    },
-    {
-      name: "Montre connectée",
-      price: 6000,
-      img:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuAYGUUnYkvtBdlrZuBWdlrVfYKcnk0YvgsCHFw5kJbAxPhmCOQobYiRprAQ__rBEJV5MobbEPdjwuVuhKmgv9V3MzErrRnshpnTYv4UD_S2KEIaSP_pDT5399dBP-Z3UcIKlJQRvVQL4zlf4VC5mmn-xU6Tk9hkwsOhnkiq4ix71jnPukk2qO3E6BhFOcj8Ei4GpxJ39A2QK93n3TJ2cqjXa2q8zT0y2Xv6u3oY_sION0G69pLpAOBOFFEXJPt_LMaq8O2p3WpwLoDr",
-    },
-    {
-      name: "Poupée articulée",
-      price: 1200,
-      img:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuCih_fjgPo7TB5Ltz-b125TAOXCvhBh9Plf877zlUA1JfCYWitgreHrh6pE1NB_XFr9X1A5QGzms23DprVjTe0B1-EnO-4-bR7l5NB4KnlWPtbSXxrmoRDHrSr-XelEWSNz9eEq0cUS6kEnpXyA5JnV2J-_vHkUOqYD7kgcoDuXaPz9Impn6EBKGeJIP-ElSS9s-osb9hOimHZaWNNCN1HLF5ts5RXiS9MM45FDXr-_g4wkvB9RxlvkrOW3tS9oXdhSJsRuUHr1Wvkk",
-    },
-  ];
+  const { products } = useProducts();
 
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DZD`;
 
@@ -69,20 +21,27 @@ export default function ShopPage() {
   const max = Number(params.get("max") || 1e9);
   const onlyFav = params.get("fav") === "1";
 
-  const filtered = products.filter((p) => {
+  const items = products.map((p) => ({
+    id: p.id,
+    name: p.name,
+    price: p.price,
+    img: p.variants[0]?.images[0] || "",
+    categories: p.categories,
+  }));
+
+  const filtered = items.filter((p) => {
     if (q && !p.name.toLowerCase().includes(q)) return false;
-    if (category && !p.name.toLowerCase().includes(category.toLowerCase())) return false; // demo category match by name
+    if (category && !p.categories.some((c) => c.toLowerCase().includes(category.toLowerCase()))) return false;
     if (p.price < min || p.price > max) return false;
-    if (onlyFav && !has(p.name)) return false;
+    if (onlyFav && !has(p.id)) return false;
     return true;
   });
 
-  const go = (p: (typeof products)[number]) => ({
-    href: `/product?name=${encodeURIComponent(p.name)}`,
+  const go = (p: (typeof items)[number]) => ({
+    href: `/product?id=${encodeURIComponent(p.id)}`,
   });
 
-  const add = (p: (typeof products)[number]) =>
-    addItem({ id: p.name, name: p.name, price: p.price, image: p.img }, 1);
+  const add = (p: (typeof items)[number]) => addItem({ id: p.id, name: p.name, price: p.price, image: p.img }, 1);
 
   const setFilter = (next: Record<string, string | number | undefined>) => {
     const url = new URL(window.location.href);
@@ -165,7 +124,7 @@ export default function ShopPage() {
             {filtered.map((p) => (
               <div key={p.name} className="group relative overflow-hidden rounded-lg border border-[var(--color-subtle-light)] bg-[var(--color-background-light)] transition-shadow hover:shadow-xl">
                 <div className="absolute top-2 right-2 z-10">
-                  <button onClick={() => toggle({ id: p.name, name: p.name, image: p.img, price: p.price })} className={`p-2 rounded-full bg-white/60 transition-colors ${has(p.name) ? "text-red-500" : "text-black/70 hover:text-red-500"}`}>
+                  <button onClick={() => toggle({ id: p.id, name: p.name, image: p.img, price: p.price })} className={`p-2 rounded-full bg-white/60 transition-colors ${has(p.id) ? "text-red-500" : "text-black/70 hover:text-red-500"}`}>
                     <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path
                         d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
