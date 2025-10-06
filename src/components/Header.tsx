@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCart } from "@/contexts/CartContext";
+import LanguageToggle from "@/components/LanguageToggle";
 
 export default function Header() {
   const { count } = useCart();
@@ -37,6 +38,7 @@ export default function Header() {
           </nav>
         </div>
         <div className="flex items-center gap-3">
+          <LanguageToggle />
           <div className="relative hidden md:block">
             <input
               className="w-full rounded-full border-[var(--color-subtle-light)] bg-[var(--color-background-light)] py-2 pl-10 pr-4 text-sm focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]"
