@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function Home() {
+  const { t } = useI18n();
   return (
     <div className="flex min-h-screen w-full flex-col bg-[var(--color-background-light)] text-[var(--color-text-light)]">
 
@@ -76,7 +78,7 @@ export default function Home() {
 
         {/* Best sellers */}
         <section className="mb-12">
-          <h2 className="mb-6 text-2xl font-bold">Meilleures Ventes</h2>
+          <h2 className="mb-6 text-2xl font-bold">{t("best_sellers")}</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {[
               { id: "chemise-lin", name: "Chemise en lin", price: "3,499 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuDLrPG1qXWQ4hioSagVYjShAkRR_HKhX8zuvuXuud3IBnik10tsvotnfSdYPzZxORDBy_4WkbViKvRJ2ISU9AQHLrcpYQswfxZcEa_PuB9OyP3vk8Sistai-o9a4tfIlmzkyPdU79faEdT5I-xxV-MwrPswpSQQFscMP6z0sLNVglpDSJfKRJwu10mRqLXSJgtBT56RmDcmR9wsSkOQRUhkGUjptIrhosOn7mH6WspTWM81tzC4dAN21PvTdYgftWQ6tFm9xDc4DIyp" },
@@ -97,7 +99,7 @@ export default function Home() {
 
         {/* Categories */}
         <section>
-          <h2 className="mb-6 text-2xl font-bold">Catégories Principales</h2>
+          <h2 className="mb-6 text-2xl font-bold">{t("main_categories")}</h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[
               {

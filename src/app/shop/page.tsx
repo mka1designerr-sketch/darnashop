@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useProducts } from "@/contexts/ProductsContext";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function ShopPage() {
   const { addItem } = useCart();
@@ -11,6 +12,7 @@ export default function ShopPage() {
   const params = useSearchParams();
   const r = useRouter();
   const { products } = useProducts();
+  const { t } = useI18n();
 
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DZD`;
 
@@ -58,9 +60,7 @@ export default function ShopPage() {
         <aside className="w-full lg:w-1/4 xl:w-1/5">
           <div className="space-y-8">
             <div>
-              <h3 className="text-xl font-bold mb-4 border-b-2 border-[var(--color-primary)] pb-2">
-                Catégories
-              </h3>
+              <h3 className="text-xl font-bold mb-4 border-b-2 border-[var(--color-primary)] pb-2">{t("categories")}</h3>
               <ul className="space-y-2">
                 {["Vêtements", "Jouets", "Électronique"].map((c) => (
                   <li key={c}>
@@ -73,9 +73,7 @@ export default function ShopPage() {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-4 border-b-2 border-[var(--color-primary)] pb-2">
-                Filtrer par Prix
-              </h3>
+              <h3 className="text-xl font-bold mb-4 border-b-2 border-[var(--color-primary)] pb-2">{t("filter_price")}</h3>
               <div className="p-4 space-y-3">
                 <div className="flex items-center gap-2">
                   <input type="number" min={0} placeholder="Min" defaultValue={min || ""} className="w-24 rounded border px-2 py-1" onBlur={(e) => setFilter({ min: e.target.value })} />
@@ -90,9 +88,7 @@ export default function ShopPage() {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-4 border-b-2 border-[var(--color-primary)] pb-2">
-                Trier par
-              </h3>
+              <h3 className="text-xl font-bold mb-4 border-b-2 border-[var(--color-primary)] pb-2">{t("sort_by")}</h3>
               <div className="space-y-3">
                 {[
                   "Popularité",
@@ -119,7 +115,7 @@ export default function ShopPage() {
         </aside>
 
         <section className="w-full lg:w-3/4 xl:w-4/5">
-          <h1 className="text-4xl font-bold mb-6">Produits</h1>
+          <h1 className="text-4xl font-bold mb-6">{t("products")}</h1>
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
             {filtered.map((p) => (
               <div key={p.name} className="group relative overflow-hidden rounded-lg border border-[var(--color-subtle-light)] bg-[var(--color-background-light)] transition-shadow hover:shadow-xl">

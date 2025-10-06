@@ -1,26 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-const KEY = "darna_lang";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function LanguageToggle() {
-  const [lang, setLang] = useState<"fr" | "ar">("fr");
-
-  useEffect(() => {
-    const saved = (typeof window !== "undefined" && (localStorage.getItem(KEY) as "fr" | "ar")) || "fr";
-    setLang(saved);
-  }, []);
-
-  useEffect(() => {
-    if (typeof document !== "undefined") {
-      document.documentElement.lang = lang;
-      document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-      localStorage.setItem(KEY, lang);
-    }
-  }, [lang]);
-
-  const toggle = () => setLang((p) => (p === "fr" ? "ar" : "fr"));
+  const { lang, setLang } = useI18n();
+  const toggle = () => setLang(lang === "fr" ? "ar" : "fr");
 
   return (
     <button

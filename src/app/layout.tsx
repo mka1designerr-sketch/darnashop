@@ -5,6 +5,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import Header from "@/components/Header";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import { ProductsProvider } from "@/contexts/ProductsContext";
+import { I18nProvider } from "@/contexts/I18nContext";
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -38,14 +39,16 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${plusJakarta.variable} ${elMessiri.variable} ${tajawal.variable} antialiased bg-[var(--color-background-light)] text-[var(--color-text-light)]`}>
-        <ProductsProvider>
-          <CartProvider>
-            <FavoritesProvider>
-              <Header />
-              {children}
-            </FavoritesProvider>
-          </CartProvider>
-        </ProductsProvider>
+        <I18nProvider>
+          <ProductsProvider>
+            <CartProvider>
+              <FavoritesProvider>
+                <Header />
+                {children}
+              </FavoritesProvider>
+            </CartProvider>
+          </ProductsProvider>
+        </I18nProvider>
       </body>
     </html>
   );

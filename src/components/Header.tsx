@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
 import LanguageToggle from "@/components/LanguageToggle";
 import { useState } from "react";
+import { useI18n } from "@/contexts/I18nContext";
 
 export default function Header() {
   const { count, items, removeItem, updateQty } = useCart();
   const [openCart, setOpenCart] = useState(false);
   const [query, setQuery] = useState("");
+  const { t } = useI18n();
   const r = useRouter();
   const submitSearch = () => {
     if (!query.trim()) return;
@@ -27,22 +29,22 @@ export default function Header() {
           </Link>
           <nav className="hidden items-center gap-4 xl:gap-6 lg:flex">
             <Link href="/shop" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
-              Nouveautés
+              {t("nav_new")}
             </Link>
             <Link href="/shop" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
-              Femme
+              {t("nav_women")}
             </Link>
             <Link href="/shop" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
-              Homme
+              {t("nav_men")}
             </Link>
             <Link href="/shop" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
-              Enfants
+              {t("nav_kids")}
             </Link>
             <Link href="/shop" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
-              Électronique
+              {t("nav_elec")}
             </Link>
             <Link href="/shop?promo=1" className="rounded-full bg-[var(--color-accent-orange)] px-3 py-1 text-sm font-bold text-white hover:bg-opacity-90">
-              Promotions
+              {t("nav_promos")}
             </Link>
           </nav>
         </div>
@@ -51,7 +53,7 @@ export default function Header() {
           <div className="relative hidden md:block min-w-40 max-w-xs">
             <input
               className="w-full rounded-full border-[var(--color-subtle-light)] bg-white py-2 pl-10 pr-4 text-sm text-[var(--color-primary)] placeholder-black/40 focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]"
-              placeholder="Rechercher..."
+              placeholder={t("search_placeholder")}
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
