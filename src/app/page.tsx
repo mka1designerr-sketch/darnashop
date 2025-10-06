@@ -1,9 +1,6 @@
 export default function Home() {
   return (
     <div className="flex min-h-screen w-full flex-col bg-[var(--color-background-light)] text-[var(--color-text-light)]">
-      {/* Shared Header */}
-      {/* eslint-disable-next-line @typescript-eslint/no-var-requires */}
-      {require("@/components/Header").default({})}
 
       <main className="container mx-auto grow px-4 py-8 lg:px-8">
         {/* Hero */}

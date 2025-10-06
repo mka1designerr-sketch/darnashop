@@ -2,7 +2,7 @@
 import { useCart } from "@/contexts/CartContext";
 
 export default function CheckoutPage() {
-  const { items, subtotal: subFromCart, clearCart } = useCart();
+  const { items, subtotal: subFromCart } = useCart();
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DA`;
   const subtotal = items.length ? subFromCart : 12000; // fallback to demo values
   const shipping = 500;
