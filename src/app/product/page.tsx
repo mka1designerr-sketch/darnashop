@@ -7,7 +7,7 @@ import { useAlgeriaLocations } from "@/hooks/useAlgeriaLocations";
 import { useOrderStats } from "@/contexts/OrderStatsContext";
 
 export default function ProductPage() {
-  const { addItem } = useCart();
+  const { addItem, clearCart } = useCart();
   const { byId } = useProducts();
   const params = useSearchParams();
   const router = useRouter();
@@ -74,6 +74,7 @@ export default function ProductPage() {
         body: JSON.stringify(payload),
       });
       try { increment(product.id, qty); } catch {}
+      try { clearCart(); } catch {}
       alert("Merci pour votre commande !");
       router.push("/");
     } catch (e) {
