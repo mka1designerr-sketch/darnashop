@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 
 type Wilaya = { code: string; name: string; name_ar?: string };
 type Commune = { name: string; name_ar?: string; wilaya_code: string };
+type DeliveryMethod = "home" | "desk";
+type Pricing = Record<string, { home: number; desk: number }>;
 
 const W_KEY = "dz_wilayas_cache_v1";
 const C_KEY = "dz_communes_cache_v1";
@@ -13,6 +15,7 @@ export function useAlgeriaLocations() {
   const [communes, setCommunes] = useState<Commune[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pricing, setPricing] = useState<Pricing>({});
 
   useEffect(() => {
     let cancelled = false;
@@ -79,5 +82,11 @@ export function useAlgeriaLocations() {
 
   const byWilaya = (code: string) => communes.filter((c) => c.wilaya_code === code);
 
-  return { wilayas, communes, byWilaya, loading, error };
+  function deliveryPrice(code: string, method: DeliveryMethod): number {
+    const p = pricing[code];
+    if (!p) return 0;
+    return method === "home" ? p.home : p.desk;
+  }
+
+  return { wilayas, communes, byWilaya, loading, error, deliveryPrice };
 }
