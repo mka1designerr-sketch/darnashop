@@ -20,7 +20,8 @@ export default function ProductPage() {
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [buyer, setBuyer] = useState({ name: "", phone: "", address: "", size: "M", wilaya: "", commune: "" });
-  const { wilayas, byWilaya } = useAlgeriaLocations();
+  const { wilayas, byWilaya, deliveryPrice } = useAlgeriaLocations();
+  const [method, setMethod] = useState<"home" | "desk">("home");
   const { increment } = useOrderStats();
 
   useEffect(() => {
@@ -41,6 +42,9 @@ export default function ProductPage() {
   }
 
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DZD`;
+  const subtotal = (product?.price || 0) * qty;
+  const shipping = buyer.wilaya ? deliveryPrice(buyer.wilaya, method) : 0;
+  const total = subtotal + shipping;
 
   async function submitOrder() {
     setSubmitting(true);
@@ -54,8 +58,13 @@ export default function ProductPage() {
       name: buyer.name,
       phone: buyer.phone,
       address: buyer.address,
-      wilaya: buyer.wilaya,
+      wilaya_code: buyer.wilaya,
+      wilaya: wilayas.find((w) => w.code === buyer.wilaya)?.name || "",
       commune: buyer.commune,
+      delivery_method: method,
+      delivery_price: shipping,
+      subtotal,
+      total,
       createdAt: new Date().toISOString(),
     };
     try {
@@ -187,6 +196,24 @@ export default function ProductPage() {
                     <option key={`${buyer.wilaya}-${c.name}`} value={c.name}>{c.name}</option>
                   ))}
                 </select>
+                <div className="sm:col-span-2">
+                  <span className="mb-1 block text-sm font-medium">Méthode de livraison</span>
+                  <div className="flex gap-3">
+                    <label className="flex cursor-pointer items-center rounded-lg border border-slate-300 p-2 has-[:checked]:border-[var(--color-primary)] has-[:checked]:bg-[var(--color-primary)]/10">
+                      <input type="radio" name="delivery-method" className="sr-only" defaultChecked onChange={() => setMethod("home")} />
+                      <span>À domicile</span>
+                    </label>
+                    <label className="flex cursor-pointer items-center rounded-lg border border-slate-300 p-2 has-[:checked]:border-[var(--color-primary)] has-[:checked]:bg-[var(--color-primary)]/10">
+                      <input type="radio" name="delivery-method" className="sr-only" onChange={() => setMethod("desk")} />
+                      <span>Bureau le plus proche</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4 space-y-2 text-sm">
+                <div className="flex justify-between"><span>Sous-total</span><span>{fmt(subtotal)}</span></div>
+                <div className="flex justify-between"><span>Frais de livraison</span><span>{fmt(shipping)}</span></div>
+                <div className="flex justify-between font-bold"><span>Total</span><span>{fmt(total)}</span></div>
               </div>
               <div className="mt-4 flex gap-2">
                 <button disabled={submitting} onClick={submitOrder} className="rounded bg-[var(--color-primary)] px-4 py-2 font-bold text-white disabled:opacity-50">
