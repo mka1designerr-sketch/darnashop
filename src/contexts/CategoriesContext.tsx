@@ -19,11 +19,44 @@ const Ctx = createContext<CategoriesState | undefined>(undefined);
 
 export function CategoriesProvider({ children }: { children: React.ReactNode }) {
   const [categories, setCategories] = useState<Category[]>([]);
+  const seed: Category[] = [
+    {
+      id: "nouveautes",
+      name: "Nouveautés",
+      cover: "https://picsum.photos/seed/nouveautes/1200/800",
+    },
+    {
+      id: "femme",
+      name: "Femme",
+      cover: "https://picsum.photos/seed/femme/1200/800",
+    },
+    {
+      id: "homme",
+      name: "Homme",
+      cover: "https://picsum.photos/seed/homme/1200/800",
+    },
+    {
+      id: "enfants",
+      name: "Enfants",
+      cover: "https://picsum.photos/seed/enfants/1200/800",
+    },
+    {
+      id: "electronique",
+      name: "Électronique",
+      cover: "https://picsum.photos/seed/electronique/1200/800",
+    },
+    {
+      id: "promotions",
+      name: "Promotions",
+      cover: "https://picsum.photos/seed/promotions/1200/800",
+    },
+  ];
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
       if (raw) setCategories(JSON.parse(raw));
+      else setCategories(seed);
     } catch {}
   }, []);
 

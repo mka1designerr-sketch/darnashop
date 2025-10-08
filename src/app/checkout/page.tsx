@@ -1,4 +1,5 @@
 "use client";
+import React, { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { useAlgeriaLocations } from "@/hooks/useAlgeriaLocations";
 import { useI18n } from "@/contexts/I18nContext";
@@ -11,8 +12,8 @@ export default function CheckoutPage() {
     try { return require("@/contexts/I18nContext"); } catch { return {}; }
   })();
   const { incrementMany } = useOrderStats();
-  const [selectedWilaya, setSelectedWilaya] = React.useState<string>("");
-  const [selectedCommune, setSelectedCommune] = React.useState<string>("");
+  const [selectedWilaya, setSelectedWilaya] = useState<string>("");
+  const [selectedCommune, setSelectedCommune] = useState<string>("");
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DA`;
   const subtotal = items.length ? subFromCart : 12000; // fallback to demo values
   const shipping = 500;

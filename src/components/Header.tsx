@@ -29,22 +29,22 @@ export default function Header() {
             <span className="text-2xl font-bold tracking-tight text-[var(--color-primary)]">DARNA SHOP</span>
           </Link>
           <nav className="hidden items-center gap-4 xl:gap-6 lg:flex">
-            <Link href="/shop" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
+            <Link href={`/shop?category=${encodeURIComponent("Nouveautés")}`} className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
               {t("nav_new")}
             </Link>
-            <Link href="/shop" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
+            <Link href={`/shop?category=${encodeURIComponent("Femme")}`} className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
               {t("nav_women")}
             </Link>
-            <Link href="/shop" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
+            <Link href={`/shop?category=${encodeURIComponent("Homme")}`} className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
               {t("nav_men")}
             </Link>
-            <Link href="/shop" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
+            <Link href={`/shop?category=${encodeURIComponent("Enfants")}`} className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
               {t("nav_kids")}
             </Link>
-            <Link href="/shop" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
+            <Link href={`/shop?category=${encodeURIComponent("Électronique")}`} className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
               {t("nav_elec")}
             </Link>
-            <Link href="/shop?promo=1" className="rounded-full bg-[var(--color-accent-orange)] px-3 py-1 text-sm font-bold text-white hover:bg-opacity-90">
+            <Link href={`/shop?category=${encodeURIComponent("Promotions")}`} className="rounded-full bg-[var(--color-accent-orange)] px-3 py-1 text-sm font-bold text-white hover:bg-opacity-90">
               {t("nav_promos")}
             </Link>
           </nav>

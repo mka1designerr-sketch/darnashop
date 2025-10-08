@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { ProductsProvider } from "@/contexts/ProductsContext";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -35,5 +36,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
-  return <ProductsProvider>{children}</ProductsProvider>;
+  return (
+    <ProductsProvider>
+      <header className="border-b bg-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
+          <h1 className="text-xl font-bold text-[var(--color-primary)]">Admin</h1>
+          <nav className="flex items-center gap-4 text-sm font-semibold">
+            <Link href="/admin/products" className="hover:underline">Produits</Link>
+            <Link href="/admin/categories" className="hover:underline">Catégories</Link>
+          </nav>
+        </div>
+      </header>
+      {children}
+    </ProductsProvider>
+  );
 }
