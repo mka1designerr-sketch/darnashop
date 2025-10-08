@@ -58,13 +58,11 @@ export default function ProductPage() {
       createdAt: new Date().toISOString(),
     };
     try {
-      if (webhook) {
-        await fetch(webhook, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-      }
+      await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
       try { increment(product.id, qty); } catch {}
       alert("Merci pour votre commande !");
       router.push("/");
