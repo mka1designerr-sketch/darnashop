@@ -4,6 +4,7 @@ import { useProducts } from "@/contexts/ProductsContext";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useAlgeriaLocations } from "@/hooks/useAlgeriaLocations";
+import { useOrderStats } from "@/contexts/OrderStatsContext";
 
 export default function ProductPage() {
   const { addItem } = useCart();
@@ -20,6 +21,7 @@ export default function ProductPage() {
   const [submitting, setSubmitting] = useState(false);
   const [buyer, setBuyer] = useState({ name: "", phone: "", address: "", size: "M", wilaya: "", commune: "" });
   const { wilayas, byWilaya } = useAlgeriaLocations();
+  const { increment } = useOrderStats();
 
   useEffect(() => {
     setVariantIdx(0);
@@ -63,6 +65,7 @@ export default function ProductPage() {
           body: JSON.stringify(payload),
         });
       }
+      try { increment(product.id, qty); } catch {}
       alert("Merci pour votre commande !");
       router.push("/");
     } catch (e) {

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Product, ProductVariant, useProducts } from "@/contexts/ProductsContext";
+import { useCategories } from "@/contexts/CategoriesContext";
 import Link from "next/link";
 
 function readFileAsDataURL(file: File): Promise<string> {
@@ -18,7 +19,8 @@ export default function NewProductPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState<number>(0);
   const [qty, setQty] = useState<number>(0);
-  const [categories, setCategories] = useState<string>("");
+  const { categories: available } = useCategories();
+  const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [mainImages, setMainImages] = useState<string[]>([]);
   const [variants, setVariants] = useState<ProductVariant[]>([]);
   const [saving, setSaving] = useState(false);
@@ -55,7 +57,7 @@ export default function NewProductPage() {
       name,
       price: Number(price || 0),
       qty: Number(qty || 0),
-      categories: categories.split(",").map((s) => s.trim()).filter(Boolean),
+      categories: selectedCats,
       variants: variants.length ? variants : [{ colorName: "Default", images: mainImages }],
     };
     add(p);
@@ -89,8 +91,23 @@ export default function NewProductPage() {
             <input className="mt-1 w-full rounded border p-2" type="number" value={qty} onChange={(e) => setQty(Number(e.target.value || 0))} />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium">Categories (comma separated)</label>
-            <input className="mt-1 w-full rounded border p-2" value={categories} onChange={(e) => setCategories(e.target.value)} placeholder="Clothing, Men" />
+            <div className="flex items-center justify-between">
+              <label className="block text-sm font-medium">Categories</label>
+              <Link href="/admin/categories" className="text-xs text-[var(--color-primary)] hover:underline">Manage categories</Link>
+            </div>
+            <select
+              multiple
+              className="mt-1 w-full rounded border p-2"
+              value={selectedCats}
+              onChange={(e) => setSelectedCats(Array.from(e.target.selectedOptions).map((o) => o.value))}
+            >
+              {available.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+            {available.length === 0 && (
+              <p className="mt-1 text-xs text-slate-500">No categories yet. Create some in Admin → Categories.</p>
+            )}
           </div>
         </div>
 

@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useProducts } from "@/contexts/ProductsContext";
+import { useCategories } from "@/contexts/CategoriesContext";
 import { useI18n } from "@/contexts/I18nContext";
 
 export default function ShopPage() {
@@ -12,6 +13,7 @@ export default function ShopPage() {
   const params = useSearchParams();
   const r = useRouter();
   const { products } = useProducts();
+  const { categories } = useCategories();
   const { t } = useI18n();
 
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DZD`;
@@ -62,7 +64,7 @@ export default function ShopPage() {
             <div>
               <h3 className="text-xl font-bold mb-4 border-b-2 border-[var(--color-primary)] pb-2">{t("categories")}</h3>
               <ul className="space-y-2">
-                {["Vêtements", "Jouets", "Électronique"].map((c) => (
+                {(categories.length ? categories.map((c) => c.name) : ["Vêtements", "Jouets", "Électronique"]).map((c) => (
                   <li key={c}>
                     <button onClick={() => setFilter({ category: c })} className="block w-full rounded px-4 py-2 font-semibold transition-colors hover:bg-[var(--color-primary)]/10 text-left">
                       {c}

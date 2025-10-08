@@ -2,6 +2,7 @@
 import { useCart } from "@/contexts/CartContext";
 import { useAlgeriaLocations } from "@/hooks/useAlgeriaLocations";
 import { useI18n } from "@/contexts/I18nContext";
+import { useOrderStats } from "@/contexts/OrderStatsContext";
 
 export default function CheckoutPage() {
   const { items, subtotal: subFromCart } = useCart();
@@ -9,6 +10,7 @@ export default function CheckoutPage() {
   const { lang } = ((): any => {
     try { return require("@/contexts/I18nContext"); } catch { return {}; }
   })();
+  const { incrementMany } = useOrderStats();
   const [selectedWilaya, setSelectedWilaya] = React.useState<string>("");
   const [selectedCommune, setSelectedCommune] = React.useState<string>("");
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DA`;
@@ -200,12 +202,14 @@ export default function CheckoutPage() {
                     .join(", ")}. Total: ${fmt(total)} | Wilaya: ${selectedWilaya} | Commune: ${selectedCommune}`
                 )}`}
                 className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-4 text-lg font-bold text-white shadow-sm transition-all hover:bg-[var(--color-primary)]/90"
+                onClick={() => incrementMany(items.map((i) => ({ id: i.id, qty: i.qty })))}
               >
                 ✅ WhatsApp
               </a>
               <a
                 href={`tel:+213XXXXXXXXX`}
                 className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-4 text-lg font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-200/70"
+                onClick={() => incrementMany(items.map((i) => ({ id: i.id, qty: i.qty })))}
               >
                 📞 Appel téléphonique
               </a>

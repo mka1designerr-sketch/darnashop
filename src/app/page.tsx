@@ -1,9 +1,20 @@
 "use client";
 import Link from "next/link";
 import { useI18n } from "@/contexts/I18nContext";
+import { useProducts } from "@/contexts/ProductsContext";
+import { useOrderStats } from "@/contexts/OrderStatsContext";
+import { useCategories } from "@/contexts/CategoriesContext";
 
 export default function Home() {
   const { t } = useI18n();
+  const { products } = useProducts();
+  const { top, total } = useOrderStats();
+  const { categories } = useCategories();
+
+  const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DZD`;
+
+  const bestIds = total > 0 ? top(5) : [];
+  const best = (bestIds.length ? bestIds.map((id) => products.find((p) => p.id === id)).filter(Boolean) : products.slice(0, 5)) as typeof products;
   return (
     <div className="flex min-h-screen w-full flex-col bg-[var(--color-background-light)] text-[var(--color-text-light)]">
 
@@ -81,18 +92,13 @@ export default function Home() {
         <section className="mb-12">
           <h2 className="mb-6 text-2xl font-bold">{t("best_sellers")}</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {[
-              { id: "chemise-lin", name: "Chemise en lin", price: "3,499 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuDLrPG1qXWQ4hioSagVYjShAkRR_HKhX8zuvuXuud3IBnik10tsvotnfSdYPzZxORDBy_4WkbViKvRJ2ISU9AQHLrcpYQswfxZcEa_PuB9OyP3vk8Sistai-o9a4tfIlmzkyPdU79faEdT5I-xxV-MwrPswpSQQFscMP6z0sLNVglpDSJfKRJwu10mRqLXSJgtBT56RmDcmR9wsSkOQRUhkGUjptIrhosOn7mH6WspTWM81tzC4dAN21PvTdYgftWQ6tFm9xDc4DIyp" },
-              { id: "robe-ete", name: "Robe d'été", price: "4,999 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuBDEC4eVKo5dM8tVc4MLHFB8CXBY8TJmCaZ5osjgeMSno_3xhvAuyh2pyA9MfecfscYwTe6T32Jmk2IPGUKZVtcjX4R-STR3_tGs0kf10vm4_FdGYGRIwikInG0C8VtsdrCUmTMWs5ERL-k-UKQpDXo4DOm7T5osNRm2a0Y9kxfcD4-pduy6M6iq4Lsd1ydMLtHUejg2nskA5nrDbRPMQvif-M2MoASVK3q2L-MC44tgMXD4eu8EWLQ_0iknrRo13DkHICt2Spv5XpU" },
-              { id: "casque-audio", name: "Casque sans fil", price: "7,800 DA", src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCkJTx-e_f7vov0TUvRZHxdhhfql4JITt2_tepO2ldOOdIRmq3vapkawts7IY1nem0LMwZjnscwWgQmEXOyMchMwxmrroivTmGwFWGVUnfR16LfK3MlYvb6rQ1fae2KxhO57KENARbmJSArF1uc5QA56bAf21my2E-y03j7O32-R_t2woL345fW4JmiPGN5_X6ta1R7LFIeAxOSETKCScUXfLvFIgZPhX2LHPlZPhG401Mk7S8rWPH3YaCquKaYXOOwHl5c6gXZvkGE" },
-            ].map((p) => (
+            {best.map((p) => (
               <Link key={p.id} className="group" href={`/product?id=${encodeURIComponent(p.id)}`}>
                 <div className="mb-2 w-full overflow-hidden rounded-lg bg-cover bg-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img alt={p.name} className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105" src={p.src} />
+                  <div className="aspect-square w-full bg-cover bg-center transition-transform duration-300 group-hover:scale-105" style={{ backgroundImage: `url('${p.variants[0]?.images[0] || ""}')` }} />
                 </div>
                 <h3 className="font-medium text-[var(--color-primary)]">{p.name}</h3>
-                <p className="font-bold text-[var(--color-primary)]">{p.price}</p>
+                <p className="font-bold text-[var(--color-primary)]">{fmt(p.price)}</p>
               </Link>
             ))}
           </div>
@@ -102,20 +108,23 @@ export default function Home() {
         <section>
           <h2 className="mb-6 text-2xl font-bold">{t("main_categories")}</h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                title: "Mode & Vêtements",
-                bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuBbhG36T44DaUGrgaHrkqOgSr6fvLILLocgLSKMBs1E4QaOlB-FVdHrvxviuGCwaHWvSUT-4MUok9kXJl7-0Ix-86EsBH41b1q-kUA6PxK8UaBVFJExbvpw0r19G2p3D6_ZQYq8bfGYtQavb9A8Vep7sFT8TRQVsptlcrScHZkF1Mz_zjGyulGhbXmPxehQfgGsG9MAZ9ZoM1d_3wtTOAYQzqB1XHP37cb2erTKyKAzbTkG7DzSQVMr-O1GjLTLIwig5KQy7zti0F-j",
-              },
-              {
-                title: "Jeux & Jouets",
-                bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuCtPQOipc1QxN_DTgck-843xIv8cvJIIZruLwUzLRy_U385jy3cc-DlYmde8O5dRLLgov86D1saKTFAlebM63AMQXlTIzdItbG8m7foecvcQb42Kvma-21XCZ2LHvNx6rdWQu31VUJBk7w30fnuvGd3m8pFB954PiIcuF68lszu8Pke_CTd_0PmjDTAYoTpcqJkue1wx0z_u-jVkEobfpVdK1-urxV8zZ53hrEQvV-Ysno275cWIMVxV_hjuHvSRPeK1LPo0nSnHVqY",
-              },
-              {
-                title: "Électronique & Gadgets",
-                bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuBxS-merjzq6c37NiF5gQJWBA4o8a3NlrZumKClL8F-9b8BCRxdyHyhU1bOlSBt2Rmif47cP-uer08BK4S1sfs2XNwo_vWcugp_TkMeYa69Rm1t294_Qtj_yH6Mttqu13vajBCrZQUJA66QV6zCPkELlp3CdhtGRrRVazA8pSbiOOEE2mxIxCpVrZmbluZ8yHlFeJIugwAsWiDAQ-7meC5SorXQ4n3w-kbwnddejhCHwWWZHCWMjfoKXHh0Yk61molsTi6Kvro2kie6",
-              },
-            ].map((c) => (
+            {(categories.length
+              ? categories.map((c) => ({ title: c.name, bg: c.cover }))
+              : [
+                  {
+                    title: "Mode & Vêtements",
+                    bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuBbhG36T44DaUGrgaHrkqOgSr6fvLILLocgLSKMBs1E4QaOlB-FVdHrvxviuGCwaHWvSUT-4MUok9kXJl7-0Ix-86EsBH41b1q-kUA6PxK8UaBVFJExbvpw0r19G2p3D6_ZQYq8bfGYtQavb9A8Vep7sFT8TRQVsptlcrScHZkF1Mz_zjGyulGhbXmPxehQfgGsG9MAZ9ZoM1d_3wtTOAYQzqB1XHP37cb2erTKyKAzbTkG7DzSQVMr-O1GjLTLIwig5KQy7zti0F-j",
+                  },
+                  {
+                    title: "Jeux & Jouets",
+                    bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuCtPQOipc1QxN_DTgck-843xIv8cvJIIZruLwUzLRy_U385jy3cc-DlYmde8O5dRLLgov86D1saKTFAlebM63AMQXlTIzdItbG8m7foecvcQb42Kvma-21XCZ2LHvNx6rdWQu31VUJBk7w30fnuvGd3m8pFB954PiIcuF68lszu8Pke_CTd_0PmjDTAYoTpcqJkue1wx0z_u-jVkEobfpVdK1-urxV8zZ53hrEQvV-Ysno275cWIMVxV_hjuHvSRPeK1LPo0nSnHVqY",
+                  },
+                  {
+                    title: "Électronique & Gadgets",
+                    bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuBxS-merjzq6c37NiF5gQJWBA4o8a3NlrZumKClL8F-9b8BCRxdyHyhU1bOlSBt2Rmif47cP-uer08BK4S1sfs2XNwo_vWcugp_TkMeYa69Rm1t294_Qtj_yH6Mttqu13vajBCrZQUJA66QV6zCPkELlp3CdhtGRrRVazA8pSbiOOEE2mxIxCpVrZmbluZ8yHlFeJIugwAsWiDAQ-7meC5SorXQ4n3w-kbwnddejhCHwWWZHCWMjfoKXHh0Yk61molsTi6Kvro2kie6",
+                  },
+                ]
+            ).map((c) => (
               <Link key={c.title} className="group relative flex aspect-video items-end justify-start overflow-hidden rounded-lg p-6 text-white" href={`/shop?category=${encodeURIComponent(c.title)}`}>
                 <div className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-110" style={{ backgroundImage: `url('${c.bg}')` }} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />

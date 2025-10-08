@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Product, ProductVariant, useProducts } from "@/contexts/ProductsContext";
+import { useCategories } from "@/contexts/CategoriesContext";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -22,7 +23,8 @@ export default function EditProductPage() {
   const [name, setName] = useState(base?.name || "");
   const [price, setPrice] = useState<number>(base?.price || 0);
   const [qty, setQty] = useState<number>(base?.qty || 0);
-  const [categories, setCategories] = useState<string>((base?.categories || []).join(", "));
+  const { categories: available } = useCategories();
+  const [selectedCats, setSelectedCats] = useState<string[]>(base?.categories || []);
   const [variants, setVariants] = useState<ProductVariant[]>(base?.variants || []);
   const [saving, setSaving] = useState(false);
 
@@ -31,7 +33,7 @@ export default function EditProductPage() {
     setName(base.name);
     setPrice(base.price);
     setQty(base.qty);
-    setCategories(base.categories.join(", "));
+    setSelectedCats(base.categories);
     setVariants(base.variants);
   }, [id]);
 
@@ -67,7 +69,7 @@ export default function EditProductPage() {
       name,
       price: Number(price || 0),
       qty: Number(qty || 0),
-      categories: categories.split(",").map((s) => s.trim()).filter(Boolean),
+      categories: selectedCats,
       variants,
     });
     setSaving(false);
@@ -100,8 +102,17 @@ export default function EditProductPage() {
             <input className="mt-1 w-full rounded border p-2" type="number" value={qty} onChange={(e) => setQty(Number(e.target.value || 0))} />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium">Categories (comma separated)</label>
-            <input className="mt-1 w-full rounded border p-2" value={categories} onChange={(e) => setCategories(e.target.value)} />
+            <label className="block text-sm font-medium">Categories</label>
+            <select
+              multiple
+              className="mt-1 w-full rounded border p-2"
+              value={selectedCats}
+              onChange={(e) => setSelectedCats(Array.from(e.target.selectedOptions).map((o) => o.value))}
+            >
+              {available.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
           </div>
         </div>
 
