@@ -55,9 +55,18 @@ export function CategoriesProvider({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
-      if (raw) setCategories(JSON.parse(raw));
-      else setCategories(seed);
-    } catch {}
+      if (raw) {
+        const parsed: Category[] = JSON.parse(raw);
+        // Ensure default categories always exist (merge by id)
+        const map = new Map<string, Category>(parsed.map((c) => [c.id, c]));
+        for (const s of seed) if (!map.has(s.id)) map.set(s.id, s);
+        setCategories(Array.from(map.values()));
+      } else {
+        setCategories(seed);
+      }
+    } catch {
+      setCategories(seed);
+    }
   }, []);
 
   useEffect(() => {

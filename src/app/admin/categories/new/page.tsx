@@ -18,6 +18,13 @@ export default function NewCategoryPage() {
   const [name, setName] = useState("");
   const [cover, setCover] = useState<string>("");
   const [saving, setSaving] = useState(false);
+  const slugify = (s: string) =>
+    s
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
 
   async function uploadCover(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
@@ -27,9 +34,10 @@ export default function NewCategoryPage() {
   }
 
   async function save() {
-    if (!id || !name || !cover) return alert("Tous les champs sont requis");
+    if (!name || !cover) return alert("Nom et image requis");
     setSaving(true);
-    add({ id, name, cover });
+    const finalId = id || slugify(name) || `cat-${Date.now()}`;
+    add({ id: finalId, name, cover });
     setSaving(false);
     window.location.href = "/admin/categories";
   }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
 import LanguageToggle from "@/components/LanguageToggle";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/contexts/I18nContext";
 
 export default function Header() {
@@ -18,6 +18,23 @@ export default function Header() {
     if (!query.trim()) return;
     r.push(`/shop?q=${encodeURIComponent(query.trim())}`);
   };
+  const cartRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (!cartRef.current) return;
+      if (!cartRef.current.contains(e.target as Node)) setOpenCart(false);
+    };
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenCart(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onEsc);
+    };
+  }, []);
+
   return (
     <header className="sticky top-0 z-20 w-full border-b border-[var(--color-subtle-light)] bg-[var(--color-background-light)]/80 backdrop-blur-sm">
       <div className="container mx-auto flex items-center justify-between px-4 py-3 lg:px-8">
@@ -73,7 +90,7 @@ export default function Header() {
             </svg>
           </Link>
           {/* Mini cart */}
-          <div className="relative">
+          <div className="relative" ref={cartRef}>
           <button onClick={() => setOpenCart((v) => !v)} className="relative rounded-full p-2 hover:bg-[var(--color-subtle-light)]">
             <svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg">
               <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V64A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM176,88a48,48,0,0,1-96,0,8,8,0,0,1,16,0,32,32,0,0,0,64,0,8,8,0,0,1,16,0Z"></path>
@@ -111,7 +128,7 @@ export default function Header() {
                 ))}
               </div>
               <div className="mt-3 flex gap-2">
-                <Link href="/checkout" className="w-full rounded-lg bg-[var(--color-primary)] px-3 py-2 text-center text-sm font-bold text-white">
+                <Link href="/checkout" className={`w-full rounded-lg px-3 py-2 text-center text-sm font-bold text-white ${items.length ? "bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/90" : "cursor-not-allowed bg-slate-300"}`} aria-disabled={items.length === 0}>
                   Valider
                 </Link>
                 <button onClick={() => setOpenCart(false)} className="whitespace-nowrap rounded-lg border border-[var(--color-subtle-light)] px-3 py-2 text-sm">

@@ -120,40 +120,17 @@ export default function CheckoutPage() {
             </h2>
 
             <div className="flex-grow space-y-4">
-              {(items.length
-                ? items.map((it) => ({
-                    name: it.name,
-                    qty: it.qty,
-                    price: it.price * it.qty,
-                    img: it.image,
-                  }))
-                : [
-                    {
-                      name: "Chemise en coton",
-                      qty: 2,
-                      price: 6000,
-                      img:
-                        "https://lh3.googleusercontent.com/aida-public/AB6AXuADCxSa-GlgB74H0QNRzfc14I6-5h6nY0ZBZWEvypXFzQZJGzr-tAqLkJt9PPJTWavABN-JEOknBaGOU5uY8r2eZ4BDHh7fV4G6Ohz4c_Mi4WMiXDG4umIHilHVPfsSmikaIGwE8WxjoBfFEFmgGfw5ph4J2F_Cbh0AoPIbEsSEssB2E9FSCmZ_r8m7Occn0kZIqeeP9ocEJtHulcnJGBJQbVlwqXLOQI7UOfCwtX9qbjSy-_uoorjAKCYB_3d9SPeHE2rBFPulyayQ",
-                    },
-                    {
-                      name: "Pantalon en lin",
-                      qty: 1,
-                      price: 6000,
-                      img:
-                        "https://lh3.googleusercontent.com/aida-public/AB6AXuCg3o73NjAXk45qv4zTdbhjZzHp9zGII4upkFTUnf1ZrqHFmbcObWZcbsi6-sAjU_jNn39IwGjnmFNbfWOWjJvVmVTBY5hnRH9yaweqSbRIxjxcLEcDF9HdUWwLLCqrPZ9JTETSrnq2pbAUtkuSsSpaNBFC23DkXlprdgPmGXbPIKFKtQrYNhH9EQz6P5qFr1Y0zs0nT1VHqHsmXgOO0lukVkS-LvyWObggJIqOpHEy-GZoZKz61dazLvPG_VrYSO4SgLjUVyghwOcV",
-                    },
-                  ]
-              ).map((it) => (
-                <div key={it.name} className="flex items-center gap-4">
-                  <div
-                    className="h-16 w-16 flex-shrink-0 rounded-lg bg-cover bg-center"
-                    style={{ backgroundImage: `url('${it.img}')` }}
-                  />
+              {items.length === 0 && (
+                <p className="text-sm text-slate-600">Votre panier est vide.</p>
+              )}
+              {items.map((it) => (
+                <div key={it.id} className="flex items-center gap-4">
+                  <div className="h-16 w-16 flex-shrink-0 rounded-lg bg-cover bg-center" style={{ backgroundImage: `url('${it.image}')` }} />
                   <div className="flex-grow">
                     <p className="font-semibold text-slate-800">{it.name}</p>
                     <p className="text-sm text-slate-500">Quantité: {it.qty}</p>
                   </div>
-                  <p className="font-semibold text-slate-800">{fmt(it.price)}</p>
+                  <p className="font-semibold text-slate-800">{fmt(it.price * it.qty)}</p>
                 </div>
               ))}
             </div>
@@ -202,14 +179,16 @@ export default function CheckoutPage() {
                     .map((i) => `${i.name} x${i.qty}`)
                     .join(", ")}. Total: ${fmt(total)} | Wilaya: ${selectedWilaya} | Commune: ${selectedCommune}`
                 )}`}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-4 text-lg font-bold text-white shadow-sm transition-all hover:bg-[var(--color-primary)]/90"
+                className={`flex w-full items-center justify-center gap-2 rounded-lg px-4 py-4 text-lg font-bold text-white shadow-sm transition-all ${items.length ? "bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/90" : "cursor-not-allowed bg-slate-300"}`}
+                aria-disabled={items.length === 0}
                 onClick={() => incrementMany(items.map((i) => ({ id: i.id, qty: i.qty })))}
               >
                 ✅ WhatsApp
               </a>
               <a
                 href={`tel:+213XXXXXXXXX`}
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-4 text-lg font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-200/70"
+                className={`flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-4 text-lg font-bold text-slate-700 shadow-sm transition-all ${items.length ? "hover:bg-slate-200/70" : "opacity-50 cursor-not-allowed"}`}
+                aria-disabled={items.length === 0}
                 onClick={() => incrementMany(items.map((i) => ({ id: i.id, qty: i.qty })))}
               >
                 📞 Appel téléphonique

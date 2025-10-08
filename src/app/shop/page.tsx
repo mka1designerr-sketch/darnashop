@@ -58,8 +58,8 @@ export default function ShopPage() {
 
   return (
     <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex flex-col lg:flex-row gap-8">
-        <aside className="w-full lg:w-1/4 xl:w-1/5">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 xl:grid-cols-5">
+        <aside className="lg:col-span-1 xl:col-span-1">
           <div className="space-y-8">
             <div>
               <h3 className="text-xl font-bold mb-4 border-b-2 border-[var(--color-primary)] pb-2">{t("categories")}</h3>
@@ -116,7 +116,7 @@ export default function ShopPage() {
           </div>
         </aside>
 
-        <section className="w-full lg:w-3/4 xl:w-4/5">
+        <section className="lg:col-span-3 xl:col-span-4">
           <h1 className="text-4xl font-bold mb-6">{t("products")}</h1>
           <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
             {filtered.map((p) => (
