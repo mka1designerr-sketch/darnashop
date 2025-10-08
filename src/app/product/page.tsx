@@ -29,7 +29,8 @@ export default function ProductPage() {
   }, [id]);
 
   const currentVariant = useMemo(() => product?.variants[variantIdx], [product, variantIdx]);
-  const gallery = currentVariant?.images || [];
+  const firstWithImages = useMemo(() => product?.variants.find((v) => v.images && v.images.length) || { images: [] }, [product]);
+  const gallery = (currentVariant?.images && currentVariant.images.length ? currentVariant.images : firstWithImages.images) || [];
 
   if (!product) {
     return (

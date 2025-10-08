@@ -26,13 +26,17 @@ export default function ShopPage() {
   const max = Number(params.get("max") || 1e9);
   const onlyFav = params.get("fav") === "1";
 
-  const items = products.map((p) => ({
-    id: p.id,
-    name: p.name,
-    price: p.price,
-    img: p.variants[0]?.images[0] || "",
-    categories: p.categories,
-  }));
+  const items = products.map((p) => {
+    const firstWithImg = p.variants.find((v) => v.images && v.images.length);
+    const cover = firstWithImg?.images?.[0] || "";
+    return {
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      img: cover,
+      categories: p.categories,
+    };
+  });
 
   const selectedCategoryName = categoryId ? (categories.find((c) => c.id === categoryId)?.name || "") : category;
   const filtered = items.filter((p) => {
