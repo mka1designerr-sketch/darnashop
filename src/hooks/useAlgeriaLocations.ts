@@ -83,8 +83,8 @@ const ALIASES: Record<string, string> = {
   [norm("Sidi Belabes")]: norm("Sidi Bel Abbes"),
 };
 
-const W_KEY = "dz_wilayas_cache_v1";
-const C_KEY = "dz_communes_cache_v1";
+const W_KEY = "dz_wilayas_cache_v2"; // bump to refresh from new API
+const C_KEY = "dz_communes_cache_v2";
 
 export function useAlgeriaLocations() {
   const [wilayas, setWilayas] = useState<Wilaya[]>([]);
@@ -111,8 +111,8 @@ export function useAlgeriaLocations() {
         }
 
         const [wRes, cRes] = await Promise.all([
-          fetch("https://raw.githubusercontent.com/dzcode-io/leblad/master/data/wilayas.json"),
-          fetch("https://raw.githubusercontent.com/dzcode-io/leblad/master/data/communes.json"),
+          fetch("/api/dz/wilayas"),
+          fetch("/api/dz/communes"),
         ]);
         if (!wRes.ok || !cRes.ok) throw new Error("Failed to load DZ data");
         const wJson = (await wRes.json()) as any[];

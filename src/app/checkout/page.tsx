@@ -1,11 +1,13 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
 import { useAlgeriaLocations } from "@/hooks/useAlgeriaLocations";
 import { useI18n } from "@/contexts/I18nContext";
 import { useOrderStats } from "@/contexts/OrderStatsContext";
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const { items, subtotal: subFromCart } = useCart();
   const { wilayas, byWilaya, deliveryPrice } = useAlgeriaLocations();
   const { lang } = ((): any => {
@@ -15,6 +17,7 @@ export default function CheckoutPage() {
   const [selectedWilaya, setSelectedWilaya] = useState<string>("");
   const [selectedCommune, setSelectedCommune] = useState<string>("");
   const [method, setMethod] = useState<"home" | "desk">("home");
+  const [buyer, setBuyer] = useState({ name: "", phone: "", address: "" });
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DA`;
   const subtotal = items.length ? subFromCart : 0;
   const shipping = selectedWilaya ? deliveryPrice(selectedWilaya, method) : 0;
@@ -28,7 +31,11 @@ export default function CheckoutPage() {
       delivery_method: method,
       delivery_price: shipping,
       total,
-      wilaya: selectedWilaya,
+      name: buyer.name,
+      phone: buyer.phone,
+      address: buyer.address,
+      wilaya_code: selectedWilaya,
+      wilaya: wilayas.find((w) => w.code === selectedWilaya)?.name || "",
       commune: selectedCommune,
       createdAt: new Date().toISOString(),
     };
@@ -40,9 +47,11 @@ export default function CheckoutPage() {
       });
       incrementMany(items.map((i) => ({ id: i.id, qty: i.qty })));
       alert("Commande envoyée ! Merci.");
+      router.push("/");
     } catch (e) {
       console.error(e);
       alert("Commande enregistrée localement. Vérifiez le webhook.");
+      router.push("/");
     }
   }
   return (
@@ -71,6 +80,8 @@ export default function CheckoutPage() {
                     type="text"
                     placeholder="Entrez votre nom complet"
                     className="w-full rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                    value={buyer.name}
+                    onChange={(e) => setBuyer((b) => ({ ...b, name: e.target.value }))}
                   />
                 </div>
                 <div>
@@ -83,6 +94,8 @@ export default function CheckoutPage() {
                     type="tel"
                     placeholder="Entrez votre numéro de téléphone"
                     className="w-full rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                    value={buyer.phone}
+                    onChange={(e) => setBuyer((b) => ({ ...b, phone: e.target.value }))}
                   />
                 </div>
               </div>
@@ -134,6 +147,8 @@ export default function CheckoutPage() {
                     rows={3}
                     placeholder="Entrez votre adresse détaillée"
                     className="w-full rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 shadow-sm focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                    value={buyer.address}
+                    onChange={(e) => setBuyer((b) => ({ ...b, address: e.target.value }))}
                   />
                 </div>
                 <div>
