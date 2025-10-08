@@ -5,7 +5,83 @@ import { useEffect, useMemo, useState } from "react";
 type Wilaya = { code: string; name: string; name_ar?: string };
 type Commune = { name: string; name_ar?: string; wilaya_code: string };
 type DeliveryMethod = "home" | "desk";
-type Pricing = Record<string, { home: number; desk: number }>;
+
+function norm(s: string) {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z\s]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const PRICES: Record<string, { home: number; desk: number }> = {
+  [norm("Adrar")]: { home: 1300, desk: 800 },
+  [norm("Chlef")]: { home: 900, desk: 400 },
+  [norm("Laghouat")]: { home: 1000, desk: 500 },
+  [norm("Oum El Bouaghi")]: { home: 900, desk: 400 },
+  [norm("Batna")]: { home: 900, desk: 400 },
+  [norm("Bejaia")]: { home: 900, desk: 400 },
+  [norm("Biskra")]: { home: 1000, desk: 600 },
+  [norm("Bechar")]: { home: 1000, desk: 600 },
+  [norm("Blida")]: { home: 900, desk: 400 },
+  [norm("Bouira")]: { home: 900, desk: 400 },
+  [norm("Tamanrasset")]: { home: 1600, desk: 1000 },
+  [norm("Tebessa")]: { home: 1000, desk: 600 },
+  [norm("Tlemcen")]: { home: 900, desk: 400 },
+  [norm("Tiaret")]: { home: 900, desk: 400 },
+  [norm("Tizi Ouzou")]: { home: 900, desk: 300 },
+  [norm("Alger")]: { home: 700, desk: 300 },
+  [norm("Djelfa")]: { home: 1000, desk: 600 },
+  [norm("Jijel")]: { home: 900, desk: 400 },
+  [norm("Setif")]: { home: 900, desk: 400 },
+  [norm("Saida")]: { home: 900, desk: 400 },
+  [norm("Skikda")]: { home: 900, desk: 400 },
+  [norm("Sidi Bel Abbes")]: { home: 700, desk: 300 },
+  [norm("Annaba")]: { home: 900, desk: 400 },
+  [norm("Guelma")]: { home: 900, desk: 400 },
+  [norm("Constantine")]: { home: 900, desk: 400 },
+  [norm("Medea")]: { home: 900, desk: 400 },
+  [norm("Mostaganem")]: { home: 700, desk: 300 },
+  [norm("Msila")]: { home: 900, desk: 400 },
+  [norm("Mascara")]: { home: 700, desk: 300 },
+  [norm("Ouargla")]: { home: 1000, desk: 600 },
+  [norm("Oran")]: { home: 300, desk: 300 },
+  [norm("Illizi")]: { home: 1800, desk: 1200 },
+  [norm("El Bayadh")]: { home: 1000, desk: 600 },
+  [norm("Bordj Bou Arreridj")]: { home: 900, desk: 400 },
+  [norm("Boumerdes")]: { home: 900, desk: 400 },
+  [norm("El Tarf")]: { home: 900, desk: 400 },
+  [norm("Tissemsilt")]: { home: 900, desk: 400 },
+  [norm("El Oued")]: { home: 1000, desk: 600 },
+  [norm("Tindouf")]: { home: 1600, desk: 1000 },
+  [norm("Khenchela")]: { home: 900, desk: 400 },
+  [norm("Souk Ahras")]: { home: 900, desk: 400 },
+  [norm("Tipaza")]: { home: 900, desk: 400 },
+  [norm("Mila")]: { home: 800, desk: 400 },
+  [norm("Ain Defla")]: { home: 900, desk: 400 },
+  [norm("Naama")]: { home: 1000, desk: 600 },
+  [norm("Ain Temouchent")]: { home: 700, desk: 300 },
+  [norm("Ghardaia")]: { home: 1000, desk: 600 },
+  [norm("Relizane")]: { home: 900, desk: 400 },
+};
+
+// Common spelling aliases from external tables to official names
+const ALIASES: Record<string, string> = {
+  [norm("Tamenrasset")]: norm("Tamanrasset"),
+  [norm("Media")]: norm("Medea"),
+  [norm("Mosta")]: norm("Mostaganem"),
+  [norm("Ouergla")]: norm("Ouargla"),
+  [norm("Khenchla")]: norm("Khenchela"),
+  [norm("Soukahras")]: norm("Souk Ahras"),
+  [norm("Bayed")]: norm("El Bayadh"),
+  [norm("Bordj Bouariridj")]: norm("Bordj Bou Arreridj"),
+  [norm("El Taref")]: norm("El Tarf"),
+  [norm("Tissemsilet")]: norm("Tissemsilt"),
+  [norm("Eloued")]: norm("El Oued"),
+  [norm("Sidi Belabes")]: norm("Sidi Bel Abbes"),
+};
 
 const W_KEY = "dz_wilayas_cache_v1";
 const C_KEY = "dz_communes_cache_v1";
@@ -15,7 +91,7 @@ export function useAlgeriaLocations() {
   const [communes, setCommunes] = useState<Commune[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [pricing, setPricing] = useState<Pricing>({});
+  // pricing table is embedded above (PRICES)
 
   useEffect(() => {
     let cancelled = false;
@@ -83,7 +159,11 @@ export function useAlgeriaLocations() {
   const byWilaya = (code: string) => communes.filter((c) => c.wilaya_code === code);
 
   function deliveryPrice(code: string, method: DeliveryMethod): number {
-    const p = pricing[code];
+    const name = wilayas.find((w) => w.code === code)?.name;
+    if (!name) return 0;
+    let key = norm(name);
+    if (ALIASES[key]) key = ALIASES[key];
+    const p = PRICES[key];
     if (!p) return 0;
     return method === "home" ? p.home : p.desk;
   }
