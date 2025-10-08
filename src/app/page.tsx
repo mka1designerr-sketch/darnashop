@@ -4,6 +4,7 @@ import { useI18n } from "@/contexts/I18nContext";
 import { useProducts } from "@/contexts/ProductsContext";
 import { useOrderStats } from "@/contexts/OrderStatsContext";
 import { useCategories } from "@/contexts/CategoriesContext";
+import CategoryCarousel from "@/components/CategoryCarousel";
 
 export default function Home() {
   const { t } = useI18n();
@@ -107,31 +108,7 @@ export default function Home() {
         {/* Categories */}
         <section>
           <h2 className="mb-6 text-2xl font-bold">{t("main_categories")}</h2>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {(categories.length
-              ? categories.map((c) => ({ title: c.name, bg: c.cover }))
-              : [
-                  {
-                    title: "Mode & Vêtements",
-                    bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuBbhG36T44DaUGrgaHrkqOgSr6fvLILLocgLSKMBs1E4QaOlB-FVdHrvxviuGCwaHWvSUT-4MUok9kXJl7-0Ix-86EsBH41b1q-kUA6PxK8UaBVFJExbvpw0r19G2p3D6_ZQYq8bfGYtQavb9A8Vep7sFT8TRQVsptlcrScHZkF1Mz_zjGyulGhbXmPxehQfgGsG9MAZ9ZoM1d_3wtTOAYQzqB1XHP37cb2erTKyKAzbTkG7DzSQVMr-O1GjLTLIwig5KQy7zti0F-j",
-                  },
-                  {
-                    title: "Jeux & Jouets",
-                    bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuCtPQOipc1QxN_DTgck-843xIv8cvJIIZruLwUzLRy_U385jy3cc-DlYmde8O5dRLLgov86D1saKTFAlebM63AMQXlTIzdItbG8m7foecvcQb42Kvma-21XCZ2LHvNx6rdWQu31VUJBk7w30fnuvGd3m8pFB954PiIcuF68lszu8Pke_CTd_0PmjDTAYoTpcqJkue1wx0z_u-jVkEobfpVdK1-urxV8zZ53hrEQvV-Ysno275cWIMVxV_hjuHvSRPeK1LPo0nSnHVqY",
-                  },
-                  {
-                    title: "Électronique & Gadgets",
-                    bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuBxS-merjzq6c37NiF5gQJWBA4o8a3NlrZumKClL8F-9b8BCRxdyHyhU1bOlSBt2Rmif47cP-uer08BK4S1sfs2XNwo_vWcugp_TkMeYa69Rm1t294_Qtj_yH6Mttqu13vajBCrZQUJA66QV6zCPkELlp3CdhtGRrRVazA8pSbiOOEE2mxIxCpVrZmbluZ8yHlFeJIugwAsWiDAQ-7meC5SorXQ4n3w-kbwnddejhCHwWWZHCWMjfoKXHh0Yk61molsTi6Kvro2kie6",
-                  },
-                ]
-            ).map((c) => (
-              <Link key={c.title} className="group relative flex aspect-video items-end justify-start overflow-hidden rounded-lg p-6 text-white" href={`/shop?category=${encodeURIComponent(c.title)}`}>
-                <div className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-110" style={{ backgroundImage: `url('${c.bg}')` }} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                <h3 className="relative z-10 text-2xl font-bold">{c.title}</h3>
-              </Link>
-            ))}
-          </div>
+          <CategoryCarousel />
         </section>
       </main>
     </div>
