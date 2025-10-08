@@ -21,6 +21,7 @@ export default function ShopPage() {
   // filters from URL
   const q = (params.get("q") || "").toLowerCase();
   const category = params.get("category") || "";
+  const categoryId = params.get("categoryId") || "";
   const min = Number(params.get("min") || 0);
   const max = Number(params.get("max") || 1e9);
   const onlyFav = params.get("fav") === "1";
@@ -33,9 +34,10 @@ export default function ShopPage() {
     categories: p.categories,
   }));
 
+  const selectedCategoryName = categoryId ? (categories.find((c) => c.id === categoryId)?.name || "") : category;
   const filtered = items.filter((p) => {
     if (q && !p.name.toLowerCase().includes(q)) return false;
-    if (category && !p.categories.some((c) => c.toLowerCase().includes(category.toLowerCase()))) return false;
+    if (selectedCategoryName && !p.categories.some((c) => c.toLowerCase().includes(selectedCategoryName.toLowerCase()))) return false;
     if (p.price < min || p.price > max) return false;
     if (onlyFav && !has(p.id)) return false;
     return true;

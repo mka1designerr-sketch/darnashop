@@ -46,22 +46,22 @@ export default function Header() {
             <span className="text-2xl font-bold tracking-tight text-[var(--color-primary)]">DARNA SHOP</span>
           </Link>
           <nav className="hidden items-center gap-4 xl:gap-6 lg:flex">
-            <Link href={`/shop?category=${encodeURIComponent("Nouveautés")}`} className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
+            <Link href="/shop?categoryId=nouveautes" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
               {t("nav_new")}
             </Link>
-            <Link href={`/shop?category=${encodeURIComponent("Femme")}`} className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
+            <Link href="/shop?categoryId=femme" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
               {t("nav_women")}
             </Link>
-            <Link href={`/shop?category=${encodeURIComponent("Homme")}`} className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
+            <Link href="/shop?categoryId=homme" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
               {t("nav_men")}
             </Link>
-            <Link href={`/shop?category=${encodeURIComponent("Enfants")}`} className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
+            <Link href="/shop?categoryId=enfants" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
               {t("nav_kids")}
             </Link>
-            <Link href={`/shop?category=${encodeURIComponent("Électronique")}`} className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
+            <Link href="/shop?categoryId=electronique" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
               {t("nav_elec")}
             </Link>
-            <Link href={`/shop?category=${encodeURIComponent("Promotions")}`} className="rounded-full bg-[var(--color-accent-orange)] px-3 py-1 text-sm font-bold text-white hover:bg-opacity-90">
+            <Link href="/shop?categoryId=promotions" className="rounded-full bg-[var(--color-accent-orange)] px-3 py-1 text-sm font-bold text-white hover:bg-opacity-90">
               {t("nav_promos")}
             </Link>
           </nav>
