@@ -8,7 +8,7 @@ import { useOrderStats } from "@/contexts/OrderStatsContext";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, subtotal: subFromCart } = useCart();
+  const { items, subtotal: subFromCart, clearCart } = useCart();
   const { wilayas, byWilaya, deliveryPrice } = useAlgeriaLocations();
   const { lang } = ((): any => {
     try { return require("@/contexts/I18nContext"); } catch { return {}; }
@@ -40,12 +40,19 @@ export default function CheckoutPage() {
       createdAt: new Date().toISOString(),
     };
     try {
-      await fetch("/api/orders", {
+      const resp = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok || data.ok === false) {
+        console.error("Webhook failed", data);
+        alert("Erreur d'envoi de la commande. Réessayez plus tard.");
+        return;
+      }
       incrementMany(items.map((i) => ({ id: i.id, qty: i.qty })));
+      clearCart();
       alert("Commande envoyée ! Merci.");
       router.push("/");
     } catch (e) {

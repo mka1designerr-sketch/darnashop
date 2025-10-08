@@ -26,7 +26,8 @@ export async function POST(req: NextRequest) {
         createdAt,
       };
 
-      const posts = body.items.map((it: any) => {
+      const results = [] as Array<{status: number; ok: boolean; body: string}>;
+      for (const it of body.items) {
         const row = {
           productId: it.id || body.productId || "",
           productName: it.name || body.productName || "",
@@ -36,17 +37,21 @@ export async function POST(req: NextRequest) {
           qty: it.qty ?? body.qty ?? 1,
           ...common,
         };
-        return fetch(webhook, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(row),
-        });
-      });
-
-      const results = await Promise.allSettled(posts);
-      const okCount = results.filter((r) => r.status === "fulfilled").length;
+        try {
+          const res = await fetch(webhook, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(row),
+          });
+          const text = await res.text().catch(() => "");
+          results.push({ status: res.status, ok: res.ok, body: text });
+        } catch (err: any) {
+          results.push({ status: 0, ok: false, body: String(err?.message || err) });
+        }
+      }
+      const okCount = results.filter((r) => r.ok).length;
       const failCount = results.length - okCount;
-      return NextResponse.json({ ok: failCount === 0, sent: okCount, failed: failCount });
+      return NextResponse.json({ ok: failCount === 0, sent: okCount, failed: failCount, results });
     }
 
     // Single-product payload: forward as-is
