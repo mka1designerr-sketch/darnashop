@@ -216,7 +216,7 @@ export default function ProductPage() {
                 <div className="flex justify-between font-bold"><span>Total</span><span>{fmt(total)}</span></div>
               </div>
               <div className="mt-4 flex gap-2">
-                <button disabled={submitting} onClick={submitOrder} className="rounded bg-[var(--color-primary)] px-4 py-2 font-bold text-white disabled:opacity-50">
+                <button disabled={submitting || !buyer.name || !buyer.phone || !buyer.wilaya || !buyer.commune} onClick={submitOrder} className="rounded bg-[var(--color-primary)] px-4 py-2 font-bold text-white disabled:opacity-50">
                   {submitting ? "Envoi..." : "Confirmer"}
                 </button>
                 <button onClick={() => setShowForm(false)} className="rounded border px-4 py-2">Annuler</button>
