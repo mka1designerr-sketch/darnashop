@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCategories } from "@/contexts/CategoriesContext";
 import { useI18n } from "@/contexts/I18nContext";
 
@@ -8,7 +8,8 @@ type Item = { title: string; bg: string };
 
 export default function CategoryCarousel() {
   const { categories } = useCategories();
-  const { dir } = useI18n();
+  const { lang } = useI18n();
+  const dir = lang === "ar" ? "rtl" : "ltr";
   const items: Item[] = (categories.length
     ? categories.map((c) => ({ title: c.name, bg: c.cover }))
     : [
