@@ -86,10 +86,24 @@ export default function ShopPage() {
           <div className="bg-gray-100 p-6 rounded-xl">
             <h3 className="text-xl font-bold mb-4">Filtrer par Prix</h3>
             <div className="space-y-4">
-              <input className="w-full h-1 bg-gray-300 rounded-lg appearance-none cursor-pointer" type="range" min={0} max={10000} value={rangeMax} onChange={(e)=> setRangeMax(Number(e.target.value))} onBlur={()=> setFilter({ max: rangeMax })} />
-              <div className="flex justify-between text-sm text-black/70">
-                <span className="text-sm">0 DZD</span>
-                <span className="text-sm">10 000+ DZD</span>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-black/70">0 DZD</span>
+                <span className="text-sm font-semibold">Jusqu'à {fmt(rangeMax)}</span>
+              </div>
+              <input
+                className="w-full h-1 bg-gray-300 rounded-lg appearance-none cursor-pointer"
+                type="range"
+                min={0}
+                max={10000}
+                value={rangeMax}
+                onChange={(e)=> setRangeMax(Number(e.target.value))}
+                onMouseUp={()=> setFilter({ max: rangeMax })}
+                onTouchEnd={()=> setFilter({ max: rangeMax })}
+                aria-valuenow={rangeMax}
+              />
+              <div className="flex justify-between text-xs text-black/50">
+                <span>0</span>
+                <span>10 000+</span>
               </div>
             </div>
           </div>
@@ -134,7 +148,7 @@ export default function ShopPage() {
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => add(p)} className="flex-1 bg-white border border-gray-300 text-black py-2 px-4 rounded-full hover:bg-gray-100 transition-colors text-sm">Ajouter au panier</button>
-                    <Link href={go(p).href} className="flex-1 bg-black text-white py-2 px-4 rounded-full hover:bg-black/90 transition-colors text-sm text-center">Acheter</Link>
+                    <Link href={go(p).href} className="flex-1 bg-black text-white py-2 px-4 rounded-full hover:bg-black/90 transition-colors text-sm text-center flex items-center justify-center leading-none">Acheter</Link>
                   </div>
                 </div>
               </div>
@@ -178,7 +192,7 @@ export default function ShopPage() {
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => add(p)} className="flex-1 bg-white border border-gray-300 text-black py-2 px-4 rounded-full hover:bg-gray-100 transition-colors text-sm">Ajouter au panier</button>
-                  <Link href={go(p).href} className="flex-1 bg-black text-white py-2 px-4 rounded-full hover:bg-black/90 transition-colors text-sm text-center">Acheter</Link>
+                  <Link href={go(p).href} className="flex-1 bg-black text-white py-2 px-4 rounded-full hover:bg-black/90 transition-colors text-sm text-center flex items-center justify-center leading-none">Acheter</Link>
                 </div>
               </div>
             </div>
@@ -193,8 +207,8 @@ export default function ShopPage() {
           <p className="text-gray-300 mb-8 max-w-2xl mx-auto">Soyez les premiers informés de nos derniers arrivages, de nos offres exclusives et de nos histoires en coulisses. Rejoignez la famille DARNA SHOP !</p>
           <div className="relative max-w-lg mx-auto">
             <input className="w-full bg-gray-700 border-transparent rounded-full py-4 pl-6 pr-16 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" placeholder="Entrez votre adresse e-mail" type="email" />
-            <button className="absolute inset-y-0 right-0 flex items-center justify-center w-14 h-14 bg-white text-gray-800 rounded-full my-1 mr-1 hover:bg-gray-200 transition-colors" type="button">
-              <span className="material-symbols-outlined">arrow_forward</span>
+            <button className="absolute right-1 top-1/2 -translate-y-1/2 grid place-items-center w-12 h-12 bg-white text-gray-800 rounded-full hover:bg-gray-200 transition-colors" type="button">
+              <span className="material-symbols-outlined leading-none">arrow_forward</span>
             </button>
           </div>
         </div>

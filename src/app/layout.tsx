@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, El_Messiri, Tajawal } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/contexts/CartContext";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import { ProductsProvider } from "@/contexts/ProductsContext";
 import { I18nProvider } from "@/contexts/I18nContext";
@@ -52,8 +53,11 @@ export default function RootLayout({
               <OrderStatsProvider>
                 <CartProvider>
                   <FavoritesProvider>
-                    <Header />
-                    {children}
+                    <div className="min-h-screen flex flex-col">
+                      <Header />
+                      <main className="flex-1">{children}</main>
+                      <Footer />
+                    </div>
                   </FavoritesProvider>
                 </CartProvider>
               </OrderStatsProvider>

@@ -174,7 +174,7 @@ export default function ProductPage() {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222A2 2 0 006.48 5h7.78a2 2 0 001.94-1.515l.8-3A1 1 0 0016 0H6a1 1 0 00-.98.804L4.78 2H3z" /><path d="M6 7a1 1 0 000 2h7a1 1 0 100-2H6z" /><path fillRule="evenodd" d="M3 6a1 1 0 011-1h12a1 1 0 011 1v8a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm3 9a1 1 0 100-2 1 1 0 000 2zm8-1a1 1 0 11-2 0 1 1 0 012 0z" clipRule="evenodd" /></svg>
               Ajouter au Panier
             </button>
-            <button onClick={() => setShowForm(true)} className="w-full bg-gray-900 text-white rounded-xl h-14 text-base font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all duration-300">
+            <button onClick={() => setShowForm(true)} className="w-full bg-gray-900 text-white rounded-xl h-14 text-base font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all duration-300 leading-none">
               Acheter Maintenant
             </button>
           </div>
@@ -269,8 +269,12 @@ export default function ProductPage() {
             <p className="mt-4 text-lg text-gray-500">Soyez le premier à connaître les nouveautés, les ventes et les offres exclusives.</p>
           </div>
           <form className="mt-8 flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onSubmit={(e)=>e.preventDefault()}>
-            <input className="w-full h-14 px-6 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 text-gray-900 placeholder-gray-400" placeholder="Entrez votre e-mail" type="email" />
-            <button className="w-full sm:w-auto bg-gray-900 text-white rounded-xl h-14 px-8 text-base font-bold flex items-center justify-center hover:bg-gray-800 transition-colors" type="submit">S'inscrire</button>
+            <div className="relative w-full sm:flex-1">
+              <input className="w-full h-14 pl-6 pr-16 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-400 text-gray-900 placeholder-gray-400" placeholder="Entrez votre e-mail" type="email" />
+              <button className="absolute right-1 top-1/2 -translate-y-1/2 grid place-items-center w-12 h-12 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors" type="submit">
+                <span className="material-symbols-outlined leading-none">arrow_forward</span>
+              </button>
+            </div>
           </form>
         </div>
       </section>
