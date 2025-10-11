@@ -24,6 +24,7 @@ export default function ShopPage() {
   const categoryId = params.get("categoryId") || "";
   const min = Number(params.get("min") || 0);
   const max = Number(params.get("max") || 1e9);
+  const [rangeMax, setRangeMax] = useState<number>(max && max < 1e9 ? max : 10000);
   const onlyFav = params.get("fav") === "1";
 
   const items = products.map((p) => {
@@ -63,101 +64,140 @@ export default function ShopPage() {
   };
 
   return (
-    <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 xl:grid-cols-5">
-        <aside className="lg:col-span-1 xl:col-span-1">
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4 border-b-2 border-[var(--color-primary)] pb-2">{t("categories")}</h3>
-              <ul className="space-y-2">
-                {(categories.length ? categories.map((c) => c.name) : ["Vêtements", "Jouets", "Électronique"]).map((c) => (
-                  <li key={c}>
-                    <button onClick={() => setFilter({ category: c })} className="block w-full rounded px-4 py-2 font-semibold transition-colors hover:bg-[var(--color-primary)]/10 text-left">
-                      {c}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
+    <main className="container mx-auto px-6 py-8 max-w-7xl">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <aside className="lg:col-span-1 space-y-6">
+          {/* Categories */}
+          <div className="bg-gray-100 p-6 rounded-xl">
+            <h3 className="text-xl font-bold mb-4">Catégories</h3>
+            <ul className="space-y-2">
+              {(categories.length ? categories.map((c) => c.name) : ["Vêtements", "Jouets", "Électronique", "Maison"]).map((c) => (
+                <li key={c}>
+                  <button onClick={() => setFilter({ category: c })} className={`block w-full rounded-lg px-4 py-2 text-left ${selectedCategoryName === c ? "bg-white font-semibold text-black" : "hover:bg-white"}`}>
+                    {c}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            <div>
-              <h3 className="text-xl font-bold mb-4 border-b-2 border-[var(--color-primary)] pb-2">{t("filter_price")}</h3>
-              <div className="p-4 space-y-3">
-                <div className="flex items-center gap-2">
-                  <input type="number" min={0} placeholder="Min" defaultValue={min || ""} className="w-24 rounded border px-2 py-1" onBlur={(e) => setFilter({ min: e.target.value })} />
-                  <input type="number" min={0} placeholder="Max" defaultValue={max && max < 1e9 ? max : ""} className="w-24 rounded border px-2 py-1" onBlur={(e) => setFilter({ max: e.target.value })} />
-                  <button onClick={() => setFilter({ min: 0, max: 1e9 })} className="rounded border px-2 py-1 text-sm">Réinitialiser</button>
-                </div>
-                <div className="flex justify-between text-sm mt-1 text-black/80">
-                  <span>{min ? `${min} DZD` : "Min"}</span>
-                  <span>{max && max < 1e9 ? `${max} DZD` : "Max"}</span>
-                </div>
+          {/* Price */}
+          <div className="bg-gray-100 p-6 rounded-xl">
+            <h3 className="text-xl font-bold mb-4">Filtrer par Prix</h3>
+            <div className="space-y-4">
+              <input className="w-full h-1 bg-gray-300 rounded-lg appearance-none cursor-pointer" type="range" min={0} max={10000} value={rangeMax} onChange={(e)=> setRangeMax(Number(e.target.value))} onBlur={()=> setFilter({ max: rangeMax })} />
+              <div className="flex justify-between text-sm text-black/70">
+                <span className="text-sm">0 DZD</span>
+                <span className="text-sm">10 000+ DZD</span>
               </div>
             </div>
+          </div>
 
-            <div>
-              <h3 className="text-xl font-bold mb-4 border-b-2 border-[var(--color-primary)] pb-2">{t("sort_by")}</h3>
-              <div className="space-y-3">
-                {[
-                  "Popularité",
-                  "Nouveautés",
-                  "Prix Croissant",
-                  "Prix Décroissant",
-                ].map((label, i) => (
-                  <label
-                    key={label}
-                    className="flex items-center gap-3 p-3 rounded border border-[var(--color-subtle-light)] cursor-pointer has-[:checked]:border-[var(--color-primary)] has-[:checked]:bg-[var(--color-primary)]/10 transition-all"
-                  >
-                    <input
-                      className="h-5 w-5 border-2 border-[var(--color-subtle-light)] bg-transparent text-transparent checked:border-[var(--color-primary)] checked:bg-[image:var(--radio-dot-svg)] focus:ring-0 focus:ring-offset-0 transition"
-                      name="sort-by"
-                      type="radio"
-                      defaultChecked={i === 0}
-                    />
-                    <span className="font-medium">{label}</span>
-                  </label>
-                ))}
-              </div>
+          {/* Sort */}
+          <div className="bg-gray-100 p-6 rounded-xl">
+            <h3 className="text-xl font-bold mb-4">Trier par</h3>
+            <div className="space-y-3">
+              {["Popularité", "Nouveautés", "Prix Croissant", "Prix Décroissant"].map((label, i) => (
+                <label key={label} className="flex items-center gap-3 cursor-pointer">
+                  <input className="form-radio h-4 w-4 text-black bg-white border-gray-300 focus:ring-black" name="sort" type="radio" defaultChecked={i===1} />
+                  <span className="text-base">{label}</span>
+                </label>
+              ))}
             </div>
           </div>
         </aside>
 
-        <section className="lg:col-span-3 xl:col-span-4">
-          <h1 className="text-4xl font-bold mb-6">{t("products")}</h1>
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* Products grid */}
+        <section className="lg:col-span-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {filtered.map((p) => (
-              <div key={p.name} className="group relative overflow-hidden rounded-lg border border-[var(--color-subtle-light)] bg-[var(--color-background-light)] transition-shadow hover:shadow-xl">
-                <div className="absolute top-2 right-2 z-10">
-                  <button onClick={() => toggle({ id: p.id, name: p.name, image: p.img, price: p.price })} className={`p-2 rounded-full bg-white/60 transition-colors ${has(p.id) ? "text-red-500" : "text-black/70 hover:text-red-500"}`}>
-                    <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-                <Link href={go(p).href}>
-                  <div className="aspect-square w-full bg-cover bg-center" style={{ backgroundImage: `url('${p.img}')` }} />
-                </Link>
-                <div className="p-4">
-                  <Link href={go(p).href} className="font-semibold text-base truncate hover:text-[var(--color-primary)]">
-                    {p.name}
+              <div key={p.id} className="flex flex-col space-y-4">
+                <div className="relative bg-gray-100 rounded-lg overflow-hidden">
+                  <Link href={go(p).href}>
+                    <div className="w-full h-64 bg-cover bg-center" style={{ backgroundImage: `url('${p.img}')` }} />
                   </Link>
-                  <p className="font-bold text-lg text-[var(--color-primary)] mt-1">{fmt(p.price)}</p>
+                  {/* Example badge placeholder: could derive from data in future */}
+                  {/* <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full">Nouveau</div> */}
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[var(--color-background-light)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-4 group-hover:translate-y-0">
-                  <button onClick={() => add(p)} className="w-full bg-[var(--color-primary)] text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors">
-                    Ajouter au Panier
-                  </button>
+                <div className="flex flex-col space-y-3">
+                  <Link href={go(p).href} className="font-bold text-lg truncate hover:underline">{p.name}</Link>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center text-yellow-400">
+                      <span className="material-symbols-outlined text-yellow-400">star</span>
+                      <span className="material-symbols-outlined text-yellow-400">star</span>
+                      <span className="material-symbols-outlined text-yellow-400">star</span>
+                      <span className="material-symbols-outlined text-yellow-400">star</span>
+                      <span className="material-symbols-outlined text-gray-300">star</span>
+                    </div>
+                    <span className="font-semibold text-lg">{fmt(p.price)}</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => add(p)} className="flex-1 bg-white border border-gray-300 text-black py-2 px-4 rounded-full hover:bg-gray-100 transition-colors text-sm">Ajouter au panier</button>
+                    <Link href={go(p).href} className="flex-1 bg-black text-white py-2 px-4 rounded-full hover:bg-black/90 transition-colors text-sm text-center">Acheter</Link>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </section>
       </div>
+
+      {/* Recommendations */}
+      <section className="mt-16">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold">Découvrez nos recommendations</h2>
+          <div className="flex items-center gap-2">
+            <button className="p-2 rounded-full border border-gray-300 hover:bg-gray-100 transition-colors">
+              <span className="material-symbols-outlined">arrow_back</span>
+            </button>
+            <button className="p-2 rounded-full border border-gray-300 hover:bg-gray-100 transition-colors">
+              <span className="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {(filtered.length ? filtered : items).slice(0, 4).map((p) => (
+            <div key={`rec-${p.id}`} className="flex flex-col space-y-4">
+              <div className="relative bg-gray-100 rounded-lg overflow-hidden">
+                <Link href={go(p).href}>
+                  <div className="w-full h-48 bg-cover bg-center" style={{ backgroundImage: `url('${p.img}')` }} />
+                </Link>
+              </div>
+              <div className="flex flex-col space-y-3">
+                <Link href={go(p).href} className="font-bold text-lg truncate hover:underline">{p.name}</Link>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center text-yellow-400">
+                    <span className="material-symbols-outlined text-yellow-400">star</span>
+                    <span className="material-symbols-outlined text-yellow-400">star</span>
+                    <span className="material-symbols-outlined text-yellow-400">star</span>
+                    <span className="material-symbols-outlined text-yellow-400">star</span>
+                    <span className="material-symbols-outlined text-gray-300">star</span>
+                  </div>
+                  <span className="font-semibold text-lg">{fmt(p.price)}</span>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={() => add(p)} className="flex-1 bg-white border border-gray-300 text-black py-2 px-4 rounded-full hover:bg-gray-100 transition-colors text-sm">Ajouter au panier</button>
+                  <Link href={go(p).href} className="flex-1 bg-black text-white py-2 px-4 rounded-full hover:bg-black/90 transition-colors text-sm text-center">Acheter</Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Newsletter CTA */}
+      <section className="bg-gray-800 text-white rounded-[24px] mt-16">
+        <div className="mx-auto max-w-4xl py-16 px-6 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4">Prêt à découvrir nos nouveautés ?</h2>
+          <p className="text-gray-300 mb-8 max-w-2xl mx-auto">Soyez les premiers informés de nos derniers arrivages, de nos offres exclusives et de nos histoires en coulisses. Rejoignez la famille DARNA SHOP !</p>
+          <div className="relative max-w-lg mx-auto">
+            <input className="w-full bg-gray-700 border-transparent rounded-full py-4 pl-6 pr-16 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" placeholder="Entrez votre adresse e-mail" type="email" />
+            <button className="absolute inset-y-0 right-0 flex items-center justify-center w-14 h-14 bg-white text-gray-800 rounded-full my-1 mr-1 hover:bg-gray-200 transition-colors" type="button">
+              <span className="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
