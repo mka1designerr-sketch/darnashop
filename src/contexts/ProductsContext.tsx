@@ -15,6 +15,8 @@ export type Product = {
   categories: string[];
   qty: number;
   variants: ProductVariant[];
+  description?: string;
+  deliveryMethod?: "home" | "desk";
 };
 
 type ProductsState = {
