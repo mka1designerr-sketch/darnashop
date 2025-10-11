@@ -3,16 +3,12 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
 import { useAlgeriaLocations } from "@/hooks/useAlgeriaLocations";
-import { useI18n } from "@/contexts/I18nContext";
 import { useOrderStats } from "@/contexts/OrderStatsContext";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, subtotal: subFromCart, clearCart } = useCart();
   const { wilayas, byWilaya, deliveryPrice } = useAlgeriaLocations();
-  const { lang } = ((): any => {
-    try { return require("@/contexts/I18nContext"); } catch { return {}; }
-  })();
   const { incrementMany } = useOrderStats();
   const [selectedWilaya, setSelectedWilaya] = useState<string>("");
   const [selectedCommune, setSelectedCommune] = useState<string>("");
