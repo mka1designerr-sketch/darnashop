@@ -26,6 +26,8 @@ export default function EditProductPage() {
   const { categories: available } = useCategories();
   const [selectedCats, setSelectedCats] = useState<string[]>(base?.categories || []);
   const [variants, setVariants] = useState<ProductVariant[]>(base?.variants || []);
+  const [description, setDescription] = useState<string>(base?.description || "");
+  const [deliveryMethod, setDeliveryMethod] = useState<"home" | "desk">((base?.deliveryMethod as any) || "home");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -35,6 +37,8 @@ export default function EditProductPage() {
     setQty(base.qty);
     setSelectedCats(base.categories);
     setVariants(base.variants);
+    setDescription(base.description || "");
+    setDeliveryMethod((base.deliveryMethod as any) || "home");
   }, [id]);
 
   if (!base) {
@@ -71,6 +75,8 @@ export default function EditProductPage() {
       qty: Number(qty || 0),
       categories: selectedCats,
       variants,
+      description: description || undefined,
+      deliveryMethod,
     });
     setSaving(false);
     router.push("/admin/products");
@@ -113,6 +119,32 @@ export default function EditProductPage() {
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium">Description</label>
+            <textarea
+              className="mt-1 w-full rounded border p-2"
+              rows={4}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Décrivez le produit..."
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Delivery Method</label>
+            <div className="mt-2 flex gap-3">
+              <label className="flex items-center gap-2">
+                <input type="radio" name="delivery-method" checked={deliveryMethod === 'home'} onChange={() => setDeliveryMethod('home')} />
+                <span>À domicile</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="radio" name="delivery-method" checked={deliveryMethod === 'desk'} onChange={() => setDeliveryMethod('desk')} />
+                <span>Bureau le plus proche</span>
+              </label>
+            </div>
           </div>
         </div>
 
