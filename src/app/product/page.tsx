@@ -23,7 +23,7 @@ export default function ProductPage() {
   const { wilayas, byWilaya, deliveryPrice } = useAlgeriaLocations();
   const [method, setMethod] = useState<"home" | "desk">("home");
   const { increment } = useOrderStats();
-  const [tab, setTab] = useState<"desc" | "delivery">("desc");
+  const [tab, setTab] = useState<"desc" | "delivery" | "reviews">("desc");
 
   useEffect(() => {
     setVariantIdx(0);
@@ -88,12 +88,12 @@ export default function ProductPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <div className="lg:col-span-1">
+    <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8 md:py-12">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-16">
+        <div className="">
           <div className="grid grid-cols-1 gap-4">
-            <div className="relative overflow-hidden rounded-lg border border-[var(--color-subtle-light)] bg-white">
-              <div className="aspect-[4/5] bg-cover bg-center" style={{ backgroundImage: `url('${gallery[imageIdx]}')` }} />
+            <div className="relative overflow-hidden rounded-2xl bg-gray-100">
+              <div className="aspect-[1/1] bg-cover bg-center" style={{ backgroundImage: `url('${gallery[imageIdx]}')` }} />
               {gallery.length > 1 && (
                 <div className="absolute inset-0 flex items-center justify-between px-2">
                   <button
@@ -108,31 +108,37 @@ export default function ProductPage() {
                 </div>
               )}
             </div>
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-4 gap-4">
               {gallery.map((g, idx) => (
-                <button key={g} className={`overflow-hidden rounded-lg border ${idx === imageIdx ? "border-[var(--color-primary)]" : "border-transparent"}`} onClick={() => setImageIdx(idx)}>
-                  <div className="aspect-square bg-cover bg-center" style={{ backgroundImage: `url('${g}')` }} />
+                <button
+                  key={g}
+                  className={`overflow-hidden rounded-2xl border-2 ${idx === imageIdx ? "border-primary-600" : "opacity-75 hover:opacity-100 border-transparent"}`}
+                  onClick={() => setImageIdx(idx)}
+                >
+                  <div className="aspect-[1/1] bg-cover bg-center" style={{ backgroundImage: `url('${g}')` }} />
                 </button>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-3xl font-extrabold tracking-tight">{product.name}</h1>
-            <p className="text-3xl font-bold text-[var(--color-primary)]">{fmt(product.price)}</p>
+        <div className="flex flex-col">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{product.name}</h1>
+            <p className="text-3xl font-bold text-primary-600 mt-2">{fmt(product.price)}</p>
+            <p className="mt-4 text-base text-gray-500">{product.description || "Une élégante pièce parfaite pour les occasions spéciales ou au quotidien."}</p>
           </div>
 
-          <div className="space-y-4">
+          <div className="mt-8 space-y-6">
             <div>
-              <h3 className="text-sm font-medium">Taille</h3>
+              <h3 className="text-sm font-medium text-gray-500">Taille</h3>
               <fieldset className="mt-2">
                 <legend className="sr-only">Choisir une taille</legend>
                 <div className="flex flex-wrap gap-3">
                   {["S", "M", "L", "XL"].map((s) => (
-                    <label key={s} className="cursor-pointer rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 ring-2 ring-transparent transition-all hover:bg-slate-200 has-[:checked]:border-[var(--color-primary)] has-[:checked]:bg-[var(--color-primary)]/10 has-[:checked]:text-[var(--color-primary)] has-[:checked]:ring-[var(--color-primary)]/30">
-                      <input className="sr-only" name="size-choice" type="radio" defaultChecked={s === "M"} onChange={() => setBuyer((b) => ({ ...b, size: s }))} /> {s}
+                    <label key={s} className="cursor-pointer">
+                      <input className="sr-only peer" name="size-choice" type="radio" defaultChecked={s === "M"} onChange={() => setBuyer((b) => ({ ...b, size: s }))} />
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center border border-gray-200 bg-white peer-checked:border-primary-600 peer-checked:bg-primary-50 peer-checked:text-primary-600 font-semibold transition-all">{s}</div>
                     </label>
                   ))}
                 </div>
@@ -140,14 +146,14 @@ export default function ProductPage() {
             </div>
 
             <div>
-              <h3 className="text-sm font-medium">Couleur</h3>
+              <h3 className="text-sm font-medium text-gray-500">Couleur</h3>
               <fieldset className="mt-2">
                 <legend className="sr-only">Choisir une couleur</legend>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap gap-4 mt-2">
                   {product.variants.map((v, i) => (
-                    <label key={v.colorName} className="relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 ring-slate-400 focus:outline-none has-[:checked]:ring has-[:checked]:ring-offset-1">
-                      <input className="sr-only" name="color-choice" type="radio" defaultChecked={i === 0} onChange={() => setVariantIdx(i)} />
-                      <span className="h-8 w-8 rounded-full border border-black/10" style={{ backgroundColor: v.colorHex || "#eee" }} title={v.colorName} />
+                    <label key={v.colorName} className="cursor-pointer">
+                      <input className="sr-only peer" name="color-choice" type="radio" defaultChecked={i === 0} onChange={() => setVariantIdx(i)} />
+                      <div className="w-10 h-10 rounded-full ring-2 ring-offset-2 ring-offset-white peer-checked:ring-primary-600 transition-all border border-gray-200" style={{ backgroundColor: v.colorHex || "#eee" }} title={v.colorName}></div>
                     </label>
                   ))}
                 </div>
@@ -155,47 +161,21 @@ export default function ProductPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium" htmlFor="quantity">
-                Quantité
-              </label>
-              <input
-                className="mt-2 block w-24 rounded-lg border-slate-300 bg-white py-2 shadow-sm focus:border-[var(--color-primary)]/50 focus:ring-[var(--color-primary)]/50"
-                id="quantity"
-                min={1}
-                name="quantity"
-                type="number"
-                value={qty}
-                onChange={(e) => setQty(Math.max(1, Number(e.target.value) || 1))}
-              />
+              <h3 className="text-sm font-medium text-gray-500">Quantité</h3>
+              <div className="relative mt-2 rounded-xl w-32 border border-gray-200">
+                <button type="button" className="absolute left-0 top-0 h-full w-10 flex items-center justify-center text-gray-400 hover:text-gray-600" onClick={() => setQty((q) => Math.max(1, q - 1))}>-</button>
+                <input className="w-full h-12 rounded-xl border-0 bg-transparent text-center font-bold focus:outline-none focus:ring-0" type="text" value={qty} onChange={(e) => setQty(Math.max(1, Number(e.target.value) || 1))} />
+                <button type="button" className="absolute right-0 top-0 h-full w-10 flex items-center justify-center text-gray-400 hover:text-gray-600" onClick={() => setQty((q) => q + 1)}>+</button>
+              </div>
             </div>
           </div>
-
-          {/* Tabs: Description & Delivery */}
-          <div className="mt-6">
-            <div className="border-b border-[var(--color-subtle-light)]">
-              <nav className="-mb-px flex gap-6" aria-label="Tabs">
-                <button onClick={() => setTab("desc")} className={`whitespace-nowrap border-b-2 px-1 py-3 text-sm font-bold ${tab === "desc" ? "border-[var(--color-primary)] text-[var(--color-primary)]" : "border-transparent text-black/60 hover:text-[var(--color-primary)]"}`}>Description</button>
-                <button onClick={() => setTab("delivery")} className={`whitespace-nowrap border-b-2 px-1 py-3 text-sm font-bold ${tab === "delivery" ? "border-[var(--color-primary)] text-[var(--color-primary)]" : "border-transparent text-black/60 hover:text-[var(--color-primary)]"}`}>Infos de Livraison</button>
-              </nav>
-            </div>
-            <div className="py-4 text-sm text-black/80">
-              {tab === "desc" ? (
-                <p>{product.description || "Détails du produit, composition et conseils d'entretien. Les images et couleurs peuvent varier selon les variantes disponibles."}</p>
-              ) : (
-                <div className="space-y-2">
-                  <p>Livraison disponible à domicile ou au bureau le plus proche. Les frais sont calculés selon votre wilaya au moment de la commande.</p>
-                  <p className="text-xs text-black/60">Astuce: sélectionnez votre wilaya plus bas pour estimer les frais de livraison.</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <button onClick={() => setShowForm(true)} className="flex w-full items-center justify-center rounded-lg bg-[var(--color-primary)] px-6 py-3 text-base font-semibold text-white shadow-sm transition-all hover:bg-[var(--color-primary)]/90">
-              Acheter Maintenant
-            </button>
-            <button onClick={() => addItem({ id: product.id, name: product.name, price: product.price, image: gallery[0] || "" }, qty)} className="flex w-full items-center justify-center rounded-lg border border-slate-300 bg-white px-6 py-3 text-base font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-200/70">
+          <div className="mt-auto pt-8 space-y-4">
+            <button onClick={() => addItem({ id: product.id, name: product.name, price: product.price, image: gallery[0] || "" }, qty)} className="w-full bg-primary-600 text-white rounded-xl h-14 text-base font-bold flex items-center justify-center gap-2 hover:bg-primary-700 transition-all duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222A2 2 0 006.48 5h7.78a2 2 0 001.94-1.515l.8-3A1 1 0 0016 0H6a1 1 0 00-.98.804L4.78 2H3z" /><path d="M6 7a1 1 0 000 2h7a1 1 0 100-2H6z" /><path fillRule="evenodd" d="M3 6a1 1 0 011-1h12a1 1 0 011 1v8a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm3 9a1 1 0 100-2 1 1 0 000 2zm8-1a1 1 0 11-2 0 1 1 0 012 0z" clipRule="evenodd" /></svg>
               Ajouter au Panier
+            </button>
+            <button onClick={() => setShowForm(true)} className="w-full bg-gray-900 text-white rounded-xl h-14 text-base font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all duration-300">
+              Acheter Maintenant
             </button>
           </div>
 
@@ -251,7 +231,49 @@ export default function ProductPage() {
         </div>
       </div>
 
-      {/* Moved product details into tabs above */}
+      {/* Tabs below main section */}
+      <div className="mt-16">
+        <div className="border-b border-gray-200">
+          <nav aria-label="Tabs" className="-mb-px flex space-x-8">
+            <button onClick={() => setTab("desc")} className={`whitespace-nowrap py-4 px-1 border-b-2 text-sm ${tab === "desc" ? "border-primary-600 text-primary-600 font-semibold" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium"}`}>Description</button>
+            <button onClick={() => setTab("delivery")} className={`whitespace-nowrap py-4 px-1 border-b-2 text-sm ${tab === "delivery" ? "border-primary-600 text-primary-600 font-semibold" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium"}`}>Informations de Livraison</button>
+            <button onClick={() => setTab("reviews")} className={`whitespace-nowrap py-4 px-1 border-b-2 text-sm ${tab === "reviews" ? "border-primary-600 text-primary-600 font-semibold" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium"}`}>Avis Clients (3)</button>
+          </nav>
+        </div>
+        <div className="py-6">
+          {tab === "desc" && (
+            <p className="text-base text-gray-500 leading-relaxed">{product.description || "Cette pièce est confectionnée avec des matériaux de haute qualité, alliant confort et élégance. Tissu fluide et respirant, idéal pour les climats chauds."}</p>
+          )}
+          {tab === "delivery" && (
+            <ul className="list-disc pl-5 text-gray-600 space-y-1">
+              <li>Livraison à domicile ou au bureau le plus proche</li>
+              <li>Frais variant selon la wilaya</li>
+              <li>Délai moyen: 2-5 jours ouvrés</li>
+            </ul>
+          )}
+          {tab === "reviews" && (
+            <div className="space-y-4 text-sm text-gray-700">
+              <p>⭐️⭐️⭐️⭐️⭐️ "Très belle qualité, je recommande."</p>
+              <p>⭐️⭐️⭐️⭐️ "Coupe flatteuse et confortable."</p>
+              <p>⭐️⭐️⭐️⭐️⭐️ "Livraison rapide, produit conforme."</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Newsletter */}
+      <section className="bg-gray-50 mt-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+          <div className="max-w-2xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">Rejoignez notre newsletter</h2>
+            <p className="mt-4 text-lg text-gray-500">Soyez le premier à connaître les nouveautés, les ventes et les offres exclusives.</p>
+          </div>
+          <form className="mt-8 flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onSubmit={(e)=>e.preventDefault()}>
+            <input className="w-full h-14 px-6 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-400 text-gray-900 placeholder-gray-400" placeholder="Entrez votre e-mail" type="email" />
+            <button className="w-full sm:w-auto bg-gray-900 text-white rounded-xl h-14 px-8 text-base font-bold flex items-center justify-center hover:bg-gray-800 transition-colors" type="submit">S'inscrire</button>
+          </form>
+        </div>
+      </section>
     </main>
   );
 }
