@@ -23,6 +23,8 @@ export default function NewProductPage() {
   const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [mainImages, setMainImages] = useState<string[]>([]);
   const [variants, setVariants] = useState<ProductVariant[]>([]);
+  const [description, setDescription] = useState("");
+  const [deliveryMethod, setDeliveryMethod] = useState<"home" | "desk">("home");
   const [saving, setSaving] = useState(false);
 
   async function onMainUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -59,6 +61,8 @@ export default function NewProductPage() {
       qty: Number(qty || 0),
       categories: selectedCats,
       variants: variants.length ? variants : [{ colorName: "Default", images: mainImages }],
+      description: description || undefined,
+      deliveryMethod,
     };
     add(p);
     setSaving(false);
@@ -108,6 +112,32 @@ export default function NewProductPage() {
             {available.length === 0 && (
               <p className="mt-1 text-xs text-slate-500">No categories yet. Create some in Admin → Categories.</p>
             )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium">Description</label>
+            <textarea
+              className="mt-1 w-full rounded border p-2"
+              rows={4}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Décrivez le produit (matières, coupe, conseils d'entretien, etc.)"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Delivery Method</label>
+            <div className="mt-2 flex gap-3">
+              <label className="flex items-center gap-2">
+                <input type="radio" name="delivery-method" defaultChecked onChange={() => setDeliveryMethod("home")} />
+                <span>À domicile</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="radio" name="delivery-method" onChange={() => setDeliveryMethod("desk")} />
+                <span>Bureau le plus proche</span>
+              </label>
+            </div>
           </div>
         </div>
 
