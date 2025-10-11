@@ -72,10 +72,10 @@ export default function ShopPage() {
           <div className="bg-gray-100 p-6 rounded-xl">
             <h3 className="text-xl font-bold mb-4">Catégories</h3>
             <ul className="space-y-2">
-              {(categories.length ? categories.map((c) => c.name) : ["Vêtements", "Jouets", "Électronique", "Maison"]).map((c) => (
-                <li key={c}>
-                  <button onClick={() => setFilter({ category: c })} className={`block w-full rounded-lg px-4 py-2 text-left ${selectedCategoryName === c ? "bg-white font-semibold text-black" : "hover:bg-white"}`}>
-                    {c}
+              {(categories.length ? categories : [{ id: "vetements", name: "Vêtements", cover: "" }, { id: "jouets", name: "Jouets", cover: "" }, { id: "electronique", name: "Électronique", cover: "" }]).map((c) => (
+                <li key={c.id}>
+                  <button onClick={() => setFilter({ categoryId: c.id, category: undefined })} className={`block w-full rounded-lg px-4 py-2 text-left ${categoryId === c.id || selectedCategoryName === c.name ? "bg-white font-semibold text-black" : "hover:bg-white"}`}>
+                    {c.name}
                   </button>
                 </li>
               ))}

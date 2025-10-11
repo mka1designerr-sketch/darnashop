@@ -40,6 +40,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+      </head>
       <body className={`${plusJakarta.variable} ${elMessiri.variable} ${tajawal.variable} antialiased bg-[var(--color-background-light)] text-[var(--color-text-light)]`}>
         <I18nProvider>
           <CategoriesProvider>
