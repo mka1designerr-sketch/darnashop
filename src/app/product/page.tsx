@@ -23,6 +23,7 @@ export default function ProductPage() {
   const { wilayas, byWilaya, deliveryPrice } = useAlgeriaLocations();
   const [method, setMethod] = useState<"home" | "desk">("home");
   const { increment } = useOrderStats();
+  const [tab, setTab] = useState<"desc" | "delivery">("desc");
 
   useEffect(() => {
     setVariantIdx(0);
@@ -89,10 +90,10 @@ export default function ProductPage() {
   return (
     <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-1">
           <div className="grid grid-cols-1 gap-4">
-            <div className="relative overflow-hidden rounded-lg">
-              <div className="aspect-[3/4] bg-cover bg-center" style={{ backgroundImage: `url('${gallery[imageIdx]}')` }} />
+            <div className="relative overflow-hidden rounded-lg border border-[var(--color-subtle-light)] bg-white">
+              <div className="aspect-[4/5] bg-cover bg-center" style={{ backgroundImage: `url('${gallery[imageIdx]}')` }} />
               {gallery.length > 1 && (
                 <div className="absolute inset-0 flex items-center justify-between px-2">
                   <button
@@ -107,9 +108,9 @@ export default function ProductPage() {
                 </div>
               )}
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-4 gap-3">
               {gallery.map((g, idx) => (
-                <button key={g} className={`overflow-hidden rounded-lg ring-2 ${idx === imageIdx ? "ring-[var(--color-primary)]" : "ring-transparent"}`} onClick={() => setImageIdx(idx)}>
+                <button key={g} className={`overflow-hidden rounded-lg border ${idx === imageIdx ? "border-[var(--color-primary)]" : "border-transparent"}`} onClick={() => setImageIdx(idx)}>
                   <div className="aspect-square bg-cover bg-center" style={{ backgroundImage: `url('${g}')` }} />
                 </button>
               ))}
@@ -166,6 +167,26 @@ export default function ProductPage() {
                 value={qty}
                 onChange={(e) => setQty(Math.max(1, Number(e.target.value) || 1))}
               />
+            </div>
+          </div>
+
+          {/* Tabs: Description & Delivery */}
+          <div className="mt-6">
+            <div className="border-b border-[var(--color-subtle-light)]">
+              <nav className="-mb-px flex gap-6" aria-label="Tabs">
+                <button onClick={() => setTab("desc")} className={`whitespace-nowrap border-b-2 px-1 py-3 text-sm font-bold ${tab === "desc" ? "border-[var(--color-primary)] text-[var(--color-primary)]" : "border-transparent text-black/60 hover:text-[var(--color-primary)]"}`}>Description</button>
+                <button onClick={() => setTab("delivery")} className={`whitespace-nowrap border-b-2 px-1 py-3 text-sm font-bold ${tab === "delivery" ? "border-[var(--color-primary)] text-[var(--color-primary)]" : "border-transparent text-black/60 hover:text-[var(--color-primary)]"}`}>Infos de Livraison</button>
+              </nav>
+            </div>
+            <div className="py-4 text-sm text-black/80">
+              {tab === "desc" ? (
+                <p>{product.description || "Détails du produit, composition et conseils d'entretien. Les images et couleurs peuvent varier selon les variantes disponibles."}</p>
+              ) : (
+                <div className="space-y-2">
+                  <p>Livraison disponible à domicile ou au bureau le plus proche. Les frais sont calculés selon votre wilaya au moment de la commande.</p>
+                  <p className="text-xs text-black/60">Astuce: sélectionnez votre wilaya plus bas pour estimer les frais de livraison.</p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -230,13 +251,7 @@ export default function ProductPage() {
         </div>
       </div>
 
-      <div className="mt-12 border-t border-slate-200 pt-8">
-        <div className="prose prose-slate max-w-none">
-          <p>
-            Détails du produit, composition et conseils d'entretien. Images et couleurs peuvent varier selon les variantes disponibles.
-          </p>
-        </div>
-      </div>
+      {/* Moved product details into tabs above */}
     </main>
   );
 }
