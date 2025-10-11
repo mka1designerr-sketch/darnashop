@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useProducts } from "@/contexts/ProductsContext";
