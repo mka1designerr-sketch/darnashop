@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const webhook = process.env.NEXT_PUBLIC_ORDERS_WEBHOOK_URL || process.env.ORDERS_WEBHOOK_URL;
+    const webhook = process.env.ORDERS_WEBHOOK_URL || process.env.NEXT_PUBLIC_ORDERS_WEBHOOK_URL;
     if (!webhook) {
       return NextResponse.json({ ok: false, error: "Webhook URL not configured" }, { status: 500 });
     }
