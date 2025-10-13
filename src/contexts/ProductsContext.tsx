@@ -16,7 +16,7 @@ export type Product = {
   qty: number;
   variants: ProductVariant[];
   description?: string;
-  deliveryMethod?: "home" | "desk";
+  deliveryInfo?: string;
 };
 
 type ProductsState = {
@@ -85,13 +85,27 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setProducts(JSON.parse(raw));
-      else setProducts(seed);
-    } catch {
-      setProducts(seed);
-    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/admin/products", { cache: "no-store" });
+        if (res.ok) {
+          const list = (await res.json()) as Product[];
+          if (!cancelled && Array.isArray(list) && list.length) {
+            setProducts(list);
+            try { localStorage.setItem(KEY, JSON.stringify(list)); } catch {}
+            return;
+          }
+        }
+      } catch {}
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (!cancelled) setProducts(raw ? JSON.parse(raw) : seed);
+      } catch {
+        if (!cancelled) setProducts(seed);
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -100,13 +114,18 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, [products]);
 
-  const add = useCallback((p: Product) => setProducts((prev) => [...prev, p]), []);
-  const update = useCallback(
-    (id: string, update: Partial<Product>) =>
-      setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, ...update } : p))),
-    []
-  );
-  const remove = useCallback((id: string) => setProducts((prev) => prev.filter((p) => p.id !== id)), []);
+  const add = useCallback((p: Product) => {
+    setProducts((prev) => [...prev, p]);
+    fetch("/api/admin/products", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(p) }).catch(() => {});
+  }, []);
+  const update = useCallback((id: string, patch: Partial<Product>) => {
+    setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch } : p)));
+    fetch(`/api/admin/products/${encodeURIComponent(id)}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(patch) }).catch(() => {});
+  }, []);
+  const remove = useCallback((id: string) => {
+    setProducts((prev) => prev.filter((p) => p.id !== id));
+    fetch(`/api/admin/products/${encodeURIComponent(id)}`, { method: "DELETE" }).catch(() => {});
+  }, []);
   const setAll = useCallback((list: Product[]) => setProducts(list), []);
   const byId = useCallback((id: string) => products.find((p) => p.id === id), [products]);
   const byName = useCallback((name: string) => products.find((p) => p.name === name), [products]);

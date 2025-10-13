@@ -18,6 +18,7 @@ export default function AdminCategoriesList() {
               <h3 className="text-lg font-semibold">{c.name}</h3>
               <p className="text-xs text-slate-500">slug: {c.id}</p>
             </div>
+            <Link href={`/admin/categories/${encodeURIComponent(c.id)}/edit`} className="rounded border px-3 py-2 text-sm mr-2">Edit</Link>
             <button onClick={() => remove(c.id)} className="rounded border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">Remove</button>
           </div>
         ))}

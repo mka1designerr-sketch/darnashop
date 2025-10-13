@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { appendOrders, loadProducts, saveProducts } from "@/lib/storage";
 
 export async function POST(req: NextRequest) {
   try {
@@ -6,6 +7,32 @@ export async function POST(req: NextRequest) {
     const webhook = process.env.ORDERS_WEBHOOK_URL || process.env.NEXT_PUBLIC_ORDERS_WEBHOOK_URL;
     if (!webhook) {
       return NextResponse.json({ ok: false, error: "Webhook URL not configured" }, { status: 500 });
+    }
+
+    // Helper to persist minimal history and update stock
+    async function logAndAdjust(items: Array<{ id: string; name: string; qty: number }>, createdAt: string) {
+      const products = await loadProducts();
+      const ordersToAppend: any[] = [];
+      for (const it of items) {
+        const idx = products.findIndex((p: any) => p.id === it.id);
+        if (idx !== -1) {
+          const prev = Number(products[idx].qty || 0);
+          const nextQty = Math.max(0, prev - Math.max(1, Number(it.qty || 1)));
+          products[idx].qty = nextQty;
+          ordersToAppend.push({
+            id: `${it.id}-${Date.now()}`,
+            productId: it.id,
+            productName: it.name,
+            qty: it.qty,
+            remaining: nextQty,
+            createdAt,
+          });
+        }
+      }
+      if (ordersToAppend.length) {
+        await saveProducts(products);
+        await appendOrders(ordersToAppend);
+      }
     }
 
     // If payload contains a cart with many items, expand into multiple rows
@@ -27,6 +54,13 @@ export async function POST(req: NextRequest) {
       };
 
       const results = [] as Array<{status: number; ok: boolean; body: string}>;
+      // Persist locally and adjust stock
+      try {
+        await logAndAdjust(
+          body.items.map((it: any) => ({ id: it.id, name: it.name, qty: it.qty ?? 1 })),
+          createdAt
+        );
+      } catch {}
       for (const it of body.items) {
         const row = {
           productId: it.id || body.productId || "",
@@ -54,7 +88,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: failCount === 0, sent: okCount, failed: failCount, results });
     }
 
-    // Single-product payload: forward as-is
+    // Single-product payload: persist locally then forward as-is
+    try {
+      const createdAt = body.createdAt || new Date().toISOString();
+      await logAndAdjust([{ id: body.productId || body.id, name: body.productName || body.name, qty: body.qty ?? 1 }], createdAt);
+    } catch {}
+    // Forward to webhook
     const res = await fetch(webhook, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

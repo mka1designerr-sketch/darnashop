@@ -44,6 +44,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <nav className="flex items-center gap-4 text-sm font-semibold">
             <Link href="/admin/products" className="hover:underline">Produits</Link>
             <Link href="/admin/categories" className="hover:underline">Catégories</Link>
+            <Link href="/admin/history" className="hover:underline">Historique</Link>
           </nav>
         </div>
       </header>

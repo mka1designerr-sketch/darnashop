@@ -27,7 +27,7 @@ export default function EditProductPage() {
   const [selectedCats, setSelectedCats] = useState<string[]>(base?.categories || []);
   const [variants, setVariants] = useState<ProductVariant[]>(base?.variants || []);
   const [description, setDescription] = useState<string>(base?.description || "");
-  const [deliveryMethod, setDeliveryMethod] = useState<"home" | "desk">((base?.deliveryMethod as any) || "home");
+  const [deliveryInfo, setDeliveryInfo] = useState<string>((base?.deliveryInfo as any) || "");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function EditProductPage() {
     setSelectedCats(base.categories);
     setVariants(base.variants);
     setDescription(base.description || "");
-    setDeliveryMethod((base.deliveryMethod as any) || "home");
+    setDeliveryInfo((base.deliveryInfo as any) || "");
   }, [id]);
 
   if (!base) {
@@ -76,7 +76,7 @@ export default function EditProductPage() {
       categories: selectedCats,
       variants,
       description: description || undefined,
-      deliveryMethod,
+      deliveryInfo: deliveryInfo || undefined,
     });
     setSaving(false);
     router.push("/admin/products");
@@ -133,18 +133,15 @@ export default function EditProductPage() {
               placeholder="Décrivez le produit..."
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium">Delivery Method</label>
-            <div className="mt-2 flex gap-3">
-              <label className="flex items-center gap-2">
-                <input type="radio" name="delivery-method" checked={deliveryMethod === 'home'} onChange={() => setDeliveryMethod('home')} />
-                <span>À domicile</span>
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="radio" name="delivery-method" checked={deliveryMethod === 'desk'} onChange={() => setDeliveryMethod('desk')} />
-                <span>Bureau le plus proche</span>
-              </label>
-            </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium">Delivery details</label>
+            <textarea
+              className="mt-1 w-full rounded border p-2"
+              rows={3}
+              value={deliveryInfo}
+              onChange={(e) => setDeliveryInfo(e.target.value)}
+              placeholder="Ex: Livraison 2-5 jours via Yalidine; frais variables selon wilaya."
+            />
           </div>
         </div>
 

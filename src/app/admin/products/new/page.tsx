@@ -24,7 +24,7 @@ export default function NewProductPage() {
   const [mainImages, setMainImages] = useState<string[]>([]);
   const [variants, setVariants] = useState<ProductVariant[]>([]);
   const [description, setDescription] = useState("");
-  const [deliveryMethod, setDeliveryMethod] = useState<"home" | "desk">("home");
+  const [deliveryInfo, setDeliveryInfo] = useState("");
   const [saving, setSaving] = useState(false);
 
   async function onMainUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -62,7 +62,7 @@ export default function NewProductPage() {
       categories: selectedCats,
       variants: variants.length ? variants : [{ colorName: "Default", images: mainImages }],
       description: description || undefined,
-      deliveryMethod,
+      deliveryInfo: deliveryInfo || undefined,
     };
     add(p);
     setSaving(false);
@@ -126,18 +126,15 @@ export default function NewProductPage() {
               placeholder="Décrivez le produit (matières, coupe, conseils d'entretien, etc.)"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium">Delivery Method</label>
-            <div className="mt-2 flex gap-3">
-              <label className="flex items-center gap-2">
-                <input type="radio" name="delivery-method" defaultChecked onChange={() => setDeliveryMethod("home")} />
-                <span>À domicile</span>
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="radio" name="delivery-method" onChange={() => setDeliveryMethod("desk")} />
-                <span>Bureau le plus proche</span>
-              </label>
-            </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium">Delivery details (visible in admin only)</label>
+            <textarea
+              className="mt-1 w-full rounded border p-2"
+              rows={3}
+              value={deliveryInfo}
+              onChange={(e) => setDeliveryInfo(e.target.value)}
+              placeholder="Ex: Livraison 2-5 jours via Yalidine; frais variables selon wilaya."
+            />
           </div>
         </div>
 

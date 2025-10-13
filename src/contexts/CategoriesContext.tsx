@@ -53,20 +53,35 @@ export function CategoriesProvider({ children }: { children: React.ReactNode }) 
   ];
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) {
-        const parsed: Category[] = JSON.parse(raw);
-        // Ensure default categories always exist (merge by id)
-        const map = new Map<string, Category>(parsed.map((c) => [c.id, c]));
-        for (const s of seed) if (!map.has(s.id)) map.set(s.id, s);
-        setCategories(Array.from(map.values()));
-      } else {
-        setCategories(seed);
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/admin/categories", { cache: "no-store" });
+        if (res.ok) {
+          const list = (await res.json()) as Category[];
+          if (!cancelled && Array.isArray(list) && list.length) {
+            setCategories(list);
+            try { localStorage.setItem(KEY, JSON.stringify(list)); } catch {}
+            return;
+          }
+        }
+      } catch {}
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (raw) {
+          const parsed: Category[] = JSON.parse(raw);
+          // Ensure default categories always exist (merge by id)
+          const map = new Map<string, Category>(parsed.map((c) => [c.id, c]));
+          for (const s of seed) if (!map.has(s.id)) map.set(s.id, s);
+          if (!cancelled) setCategories(Array.from(map.values()));
+        } else if (!cancelled) {
+          setCategories(seed);
+        }
+      } catch {
+        if (!cancelled) setCategories(seed);
       }
-    } catch {
-      setCategories(seed);
-    }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -75,9 +90,18 @@ export function CategoriesProvider({ children }: { children: React.ReactNode }) 
     } catch {}
   }, [categories]);
 
-  const add = useCallback((c: Category) => setCategories((prev) => [...prev, c]), []);
-  const update = useCallback((id: string, patch: Partial<Category>) => setCategories((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c))), []);
-  const remove = useCallback((id: string) => setCategories((prev) => prev.filter((c) => c.id !== id)), []);
+  const add = useCallback((c: Category) => {
+    setCategories((prev) => [...prev, c]);
+    fetch("/api/admin/categories", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(c) }).catch(() => {});
+  }, []);
+  const update = useCallback((id: string, patch: Partial<Category>) => {
+    setCategories((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+    fetch(`/api/admin/categories/${encodeURIComponent(id)}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(patch) }).catch(() => {});
+  }, []);
+  const remove = useCallback((id: string) => {
+    setCategories((prev) => prev.filter((c) => c.id !== id));
+    fetch(`/api/admin/categories/${encodeURIComponent(id)}`, { method: "DELETE" }).catch(() => {});
+  }, []);
 
   const value = useMemo(() => ({ categories, add, update, remove }), [categories, add, update, remove]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
