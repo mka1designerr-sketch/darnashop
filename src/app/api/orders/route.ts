@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { appendOrders, loadProducts, saveProducts } from "@/lib/storage";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,27 +11,24 @@ export async function POST(req: NextRequest) {
 
     // Helper to persist minimal history and update stock
     async function logAndAdjust(items: Array<{ id: string; name: string; qty: number }>, createdAt: string) {
-      const products = await loadProducts();
-      const ordersToAppend: any[] = [];
+      const rows: { id: string; productId: string; productName: string; qty: number; remaining: number; createdAt: Date }[] = [];
       for (const it of items) {
-        const idx = products.findIndex((p: any) => p.id === it.id);
-        if (idx !== -1) {
-          const prev = Number(products[idx].qty || 0);
-          const nextQty = Math.max(0, prev - Math.max(1, Number(it.qty || 1)));
-          products[idx].qty = nextQty;
-          ordersToAppend.push({
-            id: `${it.id}-${Date.now()}`,
-            productId: it.id,
-            productName: it.name,
-            qty: it.qty,
-            remaining: nextQty,
-            createdAt,
-          });
-        }
+        const p = await prisma.product.findUnique({ where: { id: it.id } });
+        if (!p) continue;
+        const prev = Number(p.qty || 0);
+        const nextQty = Math.max(0, prev - Math.max(1, Number(it.qty || 1)));
+        await prisma.product.update({ where: { id: it.id }, data: { qty: nextQty } });
+        rows.push({
+          id: `${it.id}-${Date.now()}`,
+          productId: it.id,
+          productName: it.name,
+          qty: it.qty,
+          remaining: nextQty,
+          createdAt: new Date(createdAt),
+        });
       }
-      if (ordersToAppend.length) {
-        await saveProducts(products);
-        await appendOrders(ordersToAppend);
+      if (rows.length) {
+        await prisma.orderHistory.createMany({ data: rows });
       }
     }
 

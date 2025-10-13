@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { loadCategories, saveCategories } from "@/lib/storage";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const list = await loadCategories();
+  const list = await prisma.category.findMany();
   return NextResponse.json(list);
 }
 
@@ -12,10 +12,9 @@ export async function POST(req: NextRequest) {
   try {
     const c = await req.json();
     if (!c?.id) return NextResponse.json({ ok: false, error: "missing id" }, { status: 400 });
-    const list = await loadCategories();
-    if (list.find((x: any) => x.id === c.id)) return NextResponse.json({ ok: false, error: "exists" }, { status: 409 });
-    list.push(c);
-    await saveCategories(list);
+    const exists = await prisma.category.findUnique({ where: { id: c.id } });
+    if (exists) return NextResponse.json({ ok: false, error: "exists" }, { status: 409 });
+    await prisma.category.create({ data: { id: c.id, name: c.name, cover: c.cover ?? null } });
     return NextResponse.json({ ok: true });
   } catch (e: any) {
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { loadProducts, saveProducts } from "@/lib/storage";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const list = await loadProducts();
+  const list = await prisma.product.findMany({ include: { variants: true } });
   return NextResponse.json(list);
 }
 
@@ -12,12 +12,29 @@ export async function POST(req: NextRequest) {
   try {
     const p = await req.json();
     if (!p?.id) return NextResponse.json({ ok: false, error: "missing id" }, { status: 400 });
-    const list = await loadProducts();
-    if (list.find((x: any) => x.id === p.id)) {
-      return NextResponse.json({ ok: false, error: "exists" }, { status: 409 });
-    }
-    list.push(p);
-    await saveProducts(list);
+    const exists = await prisma.product.findUnique({ where: { id: p.id } });
+    if (exists) return NextResponse.json({ ok: false, error: "exists" }, { status: 409 });
+    await prisma.product.create({
+      data: {
+        id: p.id,
+        name: p.name,
+        price: Math.round(Number(p.price || 0)),
+        qty: Math.round(Number(p.qty || 0)),
+        categories: Array.isArray(p.categories) ? p.categories : [],
+        description: p.description ?? null,
+        deliveryInfo: p.deliveryInfo ?? null,
+        variants: {
+          create: Array.isArray(p.variants)
+            ? p.variants.map((v: any) => ({
+                colorName: v.colorName,
+                colorHex: v.colorHex ?? null,
+                images: Array.isArray(v.images) ? v.images : [],
+                isPrimary: Boolean(v.isPrimary),
+              }))
+            : [],
+        },
+      },
+    });
     return NextResponse.json({ ok: true });
   } catch (e: any) {
     return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
