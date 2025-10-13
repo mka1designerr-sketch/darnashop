@@ -81,10 +81,14 @@ const ALIASES: Record<string, string> = {
   [norm("Tissemsilet")]: norm("Tissemsilt"),
   [norm("Eloued")]: norm("El Oued"),
   [norm("Sidi Belabes")]: norm("Sidi Bel Abbes"),
+  // From AbderrahmeneDZ dataset variations
+  [norm("Tbessa")]: norm("Tebessa"),
+  [norm("Saefda")]: norm("Saida"),
+  [norm("Ghardaefa")]: norm("Ghardaia"),
 };
 
-const W_KEY = "dz_wilayas_cache_v2"; // bump to refresh from new API
-const C_KEY = "dz_communes_cache_v2";
+const W_KEY = "dz_wilayas_cache_v3"; // bump to refresh from new API/source
+const C_KEY = "dz_communes_cache_v3";
 
 export function useAlgeriaLocations() {
   const [wilayas, setWilayas] = useState<Wilaya[]>([]);

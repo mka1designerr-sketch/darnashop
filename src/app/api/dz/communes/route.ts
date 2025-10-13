@@ -4,10 +4,17 @@ export const revalidate = 60 * 60 * 24; // 24h
 
 export async function GET() {
   try {
-    const res = await fetch("https://raw.githubusercontent.com/dzcode-io/leblad/master/data/communes.json", { cache: "no-store" });
+    const res = await fetch(
+      "https://raw.githubusercontent.com/AbderrahmeneDZ/Wilaya-Of-Algeria/refs/heads/master/Commune_Of_Algeria.json",
+      { cache: "no-store" }
+    );
     if (!res.ok) throw new Error("fetch_failed");
-    const data = await res.json();
-    return NextResponse.json(data, { headers: { "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=3600" } });
+    const raw = (await res.json()) as any[];
+    // Project to the shape expected by the client hook
+    const data = raw.map((c) => ({ name: c.name, name_ar: c.ar_name, wilaya_code: Number(c.wilaya_id) }));
+    return NextResponse.json(data, {
+      headers: { "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=3600" },
+    });
   } catch {
     // minimal fallback if remote unavailable
     return NextResponse.json([
