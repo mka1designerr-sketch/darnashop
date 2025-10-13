@@ -29,7 +29,8 @@ export default function ShopPage() {
   const onlyFav = params.get("fav") === "1";
 
   const items = products.map((p) => {
-    const firstWithImg = p.variants.find((v) => v.images && v.images.length);
+    const primary = p.variants.find((v) => v.isPrimary && v.images && v.images.length);
+    const firstWithImg = primary || p.variants.find((v) => v.images && v.images.length);
     const cover = firstWithImg?.images?.[0] || "";
     return {
       id: p.id,

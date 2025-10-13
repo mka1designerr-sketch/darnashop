@@ -6,6 +6,7 @@ export type ProductVariant = {
   colorName: string;
   colorHex?: string;
   images: string[];
+  isPrimary?: boolean;
 };
 
 export type Product = {
@@ -46,6 +47,7 @@ const seed: Product[] = [
         images: [
           "https://lh3.googleusercontent.com/aida-public/AB6AXuApwks67sac6VrF_M7auwEyzntrUFO6Egej29c61GNHTLIyRuqFguWfXnXw9OhfI2xWTdoQoVw-CFX5kVsArkCPqJ64zkUIlcLIh0h4bi3Wt-yJJnHmWhnh4uJjoRxnyW72MteDdOExzAogzAtIg225BEXPpMtWkEiKjg2hSkGu2zdyYRRZzpp02FYaBOiR9m6Sb3zZI85qfs6IVAyAWCW0MTYiuaKlkNobfDBWW2_xjS60xM6op7QkW3Vz6tUFAYxfhC9qKXGa7ibI",
         ],
+        isPrimary: true,
       },
     ],
   },
@@ -64,6 +66,7 @@ const seed: Product[] = [
           "https://lh3.googleusercontent.com/aida-public/AB6AXuB1hRpED-pkKkVm9xMJtt5AqXFUv18dBeHS3twLvmUp94IJtSHxZ22OLKY6iw8SQKNw1Lz77euCFyrFV733M8H_e3sHFfHwF3CK5APYlwDFj6_BjNx3HKvcAAty0201eQXRrzREaU1LZlOLSvjBIw5NavD091ZYYPyeGgHHOELfiuCrN_z2KSDi2umorFtnPYv6NsMos99YXeKS2X_EScZG8qkgIDQXwo8JI2GY-eLuq4x3hopwGhWw2AWT7tkkL2_S13Ix9txGi8TR",
           "https://lh3.googleusercontent.com/aida-public/AB6AXuAbnqlGN5i5ib4joZ_0n8A6XRppc2528-ldQZ8MrSlKR022yWxCDCD9zJwv5mdRPzrk1A8QV2OV3_qcIunRv383RrGEwTprK-J8t6Bx0Mdmzoy3i4sqw1awnbYudmituiPsVAyr6GYRs0vJpfG61WtTw4EodxqPfH4BE0mIE59-CUoFx1917tvarVMblqytyyyLzkOfxA_FDBsqmyuLPl4S80WmYvO52ZCdXOoIwixk3G1jz74YKrWsnmI4pmV5OZxfJpRqzHgg2iGh",
         ],
+        isPrimary: true,
       },
       { colorName: "Bleu", colorHex: "#336699", images: ["https://picsum.photos/seed/robe-bleu/800/1000"] },
       { colorName: "Jaune", colorHex: "#ffcc33", images: ["https://picsum.photos/seed/robe-jaune/800/1000"] },

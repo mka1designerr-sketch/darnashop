@@ -29,9 +29,21 @@ export default function ProductPage() {
     setVariantIdx(0);
     setImageIdx(0);
   }, [id]);
+  useEffect(() => {
+    if (!product) return;
+    const primaryIdx = product.variants.findIndex((v) => v.isPrimary);
+    setVariantIdx(primaryIdx >= 0 ? primaryIdx : 0);
+    setImageIdx(0);
+  }, [product?.id]);
 
   const currentVariant = useMemo(() => product?.variants[variantIdx], [product, variantIdx]);
-  const firstWithImages = useMemo(() => product?.variants.find((v) => v.images && v.images.length) || { images: [] }, [product]);
+  const firstWithImages = useMemo(
+    () =>
+      product?.variants.find((v) => v.isPrimary && v.images && v.images.length) ||
+      product?.variants.find((v) => v.images && v.images.length) ||
+      { images: [] },
+    [product]
+  );
   const gallery = (currentVariant?.images && currentVariant.images.length ? currentVariant.images : firstWithImages.images) || [];
 
   if (!product) {
@@ -152,7 +164,7 @@ export default function ProductPage() {
                 <div className="flex flex-wrap gap-4 mt-2">
                   {product.variants.map((v, i) => (
                     <label key={v.colorName} className="cursor-pointer">
-                      <input className="sr-only peer" name="color-choice" type="radio" defaultChecked={i === 0} onChange={() => setVariantIdx(i)} />
+                      <input className="sr-only peer" name="color-choice" type="radio" checked={i === variantIdx} onChange={() => setVariantIdx(i)} />
                       <div className="w-10 h-10 rounded-full ring-2 ring-offset-2 ring-offset-white peer-checked:ring-primary-600 transition-all border border-gray-200" style={{ backgroundColor: v.colorHex || "#eee" }} title={v.colorName}></div>
                     </label>
                   ))}
@@ -245,11 +257,15 @@ export default function ProductPage() {
             <p className="text-base text-gray-500 leading-relaxed">{product.description || "Cette pièce est confectionnée avec des matériaux de haute qualité, alliant confort et élégance. Tissu fluide et respirant, idéal pour les climats chauds."}</p>
           )}
           {tab === "delivery" && (
-            <ul className="list-disc pl-5 text-gray-600 space-y-1">
-              <li>Livraison à domicile ou au bureau le plus proche</li>
-              <li>Frais variant selon la wilaya</li>
-              <li>Délai moyen: 2-5 jours ouvrés</li>
-            </ul>
+            product.deliveryInfo ? (
+              <div className="text-base text-gray-600 whitespace-pre-wrap">{product.deliveryInfo}</div>
+            ) : (
+              <ul className="list-disc pl-5 text-gray-600 space-y-1">
+                <li>Livraison à domicile ou au bureau le plus proche</li>
+                <li>Frais variant selon la wilaya</li>
+                <li>Délai moyen: 2-5 jours ouvrés</li>
+              </ul>
+            )
           )}
           {tab === "reviews" && (
             <div className="space-y-4 text-sm text-gray-700">

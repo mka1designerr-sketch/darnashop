@@ -54,13 +54,20 @@ export default function NewProductPage() {
   async function save() {
     if (!id || !name) return alert("ID et nom requis");
     setSaving(true);
+    // Build variants with optional primary from mainImages
+    const variantsOut: ProductVariant[] = [];
+    if (mainImages.length) {
+      variantsOut.push({ colorName: "Couleur principale", images: mainImages, isPrimary: true });
+    }
+    for (const v of variants) variantsOut.push({ ...v, isPrimary: v.isPrimary });
+
     const p: Product = {
       id,
       name,
       price: Number(price || 0),
       qty: Number(qty || 0),
       categories: selectedCats,
-      variants: variants.length ? variants : [{ colorName: "Default", images: mainImages }],
+      variants: variantsOut.length ? variantsOut : [{ colorName: "Couleur principale", images: mainImages, isPrimary: true }],
       description: description || undefined,
       deliveryInfo: deliveryInfo || undefined,
     };
@@ -127,7 +134,7 @@ export default function NewProductPage() {
             />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium">Delivery details (visible in admin only)</label>
+            <label className="block text-sm font-medium">Delivery details (displayed on product page)</label>
             <textarea
               className="mt-1 w-full rounded border p-2"
               rows={3}

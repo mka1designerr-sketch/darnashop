@@ -67,14 +67,23 @@ export default function EditProductPage() {
     setVariants((arr) => arr.filter((_, i) => i !== idx));
   }
 
+  function setPrimary(idx: number) {
+    setVariants((arr) => arr.map((v, i) => ({ ...v, isPrimary: i === idx })));
+  }
+
   async function save() {
     setSaving(true);
+    // ensure exactly one primary
+    let nextVariants = variants;
+    if (!nextVariants.some((v) => v.isPrimary)) {
+      nextVariants = nextVariants.map((v, i) => ({ ...v, isPrimary: i === 0 }));
+    }
     update(id, {
       name,
       price: Number(price || 0),
       qty: Number(qty || 0),
       categories: selectedCats,
-      variants,
+      variants: nextVariants,
       description: description || undefined,
       deliveryInfo: deliveryInfo || undefined,
     });
@@ -153,6 +162,10 @@ export default function EditProductPage() {
           <div className="space-y-4">
             {variants.map((v, idx) => (
               <div key={idx} className="rounded-lg border bg-slate-50 p-4">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-sm font-medium">{v.isPrimary ? "Primary variant" : "Variant"}</span>
+                  {!v.isPrimary && <button onClick={() => setPrimary(idx)} className="text-xs rounded border px-2 py-1">Set as primary</button>}
+                </div>
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                   <input className="rounded border p-2" placeholder="Color name" value={v.colorName} onChange={(e) => updateVariant(idx, { colorName: e.target.value })} />
                   <input className="rounded border p-2" placeholder="#hex (optional)" value={v.colorHex || ""} onChange={(e) => updateVariant(idx, { colorHex: e.target.value })} />
