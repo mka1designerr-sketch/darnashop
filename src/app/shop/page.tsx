@@ -43,7 +43,14 @@ export default function ShopPage() {
   const selectedCategoryName = categoryId ? (categories.find((c) => c.id === categoryId)?.name || "") : category;
   const filtered = items.filter((p) => {
     if (q && !p.name.toLowerCase().includes(q)) return false;
-    if (selectedCategoryName && !p.categories.some((c) => c.toLowerCase().includes(selectedCategoryName.toLowerCase()))) return false;
+    if (categoryId) {
+      const catName = selectedCategoryName.toLowerCase();
+      const hasId = p.categories.includes(categoryId);
+      const hasName = p.categories.some((c) => c.toLowerCase().includes(catName));
+      if (!hasId && !hasName) return false;
+    } else if (selectedCategoryName) {
+      if (!p.categories.some((c) => c.toLowerCase().includes(selectedCategoryName.toLowerCase()))) return false;
+    }
     if (p.price < min || p.price > max) return false;
     if (onlyFav && !has(p.id)) return false;
     return true;
