@@ -9,9 +9,12 @@ export async function GET() {
       { cache: "no-store" }
     );
     if (!res.ok) throw new Error("fetch_failed");
-    const raw = (await res.json()) as Array<{ name: string; ar_name?: string; wilaya_id: number } | unknown>;
+    const raw = (await res.json()) as Array<{ name: unknown; ar_name?: unknown; wilaya_id: unknown }>;
     // Project to the shape expected by the client hook
-    const data = raw.map((c: any) => ({ name: String(c.name), name_ar: c.ar_name as string | undefined, wilaya_code: Number(c.wilaya_id) }));
+    const data = raw.map((c) => {
+      const cc = c as { name: unknown; ar_name?: unknown; wilaya_id: unknown };
+      return { name: String(cc.name), name_ar: (cc.ar_name as string) || undefined, wilaya_code: Number(cc.wilaya_id) };
+    });
     return NextResponse.json(data, {
       headers: { "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=3600" },
     });

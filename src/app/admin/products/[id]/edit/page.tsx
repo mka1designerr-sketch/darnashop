@@ -39,7 +39,7 @@ export default function EditProductPage() {
     setVariants(base.variants);
     setDescription(base.description || "");
     setDeliveryInfo(base.deliveryInfo || "");
-  }, [id]);
+  }, [id, base]);
 
   if (!base) {
     return (
