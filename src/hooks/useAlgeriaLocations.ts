@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Wilaya = { code: string; name: string; name_ar?: string };
 type Commune = { name: string; name_ar?: string; wilaya_code: string };
@@ -119,10 +119,10 @@ export function useAlgeriaLocations() {
           fetch("/api/dz/communes"),
         ]);
         if (!wRes.ok || !cRes.ok) throw new Error("Failed to load DZ data");
-        const wJson = (await wRes.json()) as any[];
-        const cJson = (await cRes.json()) as any[];
-        const ws: Wilaya[] = wJson.map((w) => ({ code: String(w.code), name: w.name, name_ar: w.name_ar }));
-        const cs: Commune[] = cJson.map((c) => ({ name: c.name, name_ar: c.name_ar, wilaya_code: String(c.wilaya_code) }));
+        const wJson = (await wRes.json()) as Array<{ code: string | number; name: string; name_ar?: string }>;
+        const cJson = (await cRes.json()) as Array<{ name: string; name_ar?: string; wilaya_code: string | number }>;
+        const ws: Wilaya[] = wJson.map((w) => ({ code: String(w.code), name: String(w.name), name_ar: w.name_ar }));
+        const cs: Commune[] = cJson.map((c) => ({ name: String(c.name), name_ar: c.name_ar, wilaya_code: String(c.wilaya_code) }));
         if (!cancelled) {
           setWilayas(ws);
           setCommunes(cs);
@@ -132,7 +132,7 @@ export function useAlgeriaLocations() {
           } catch {}
           setLoading(false);
         }
-      } catch (e) {
+      } catch (e: unknown) {
         // fallback minimal list to keep UI functional offline
         const ws: Wilaya[] = [
           { code: "16", name: "Alger", name_ar: "الجزائر" },
@@ -147,7 +147,7 @@ export function useAlgeriaLocations() {
           { name: "Constantine", name_ar: "قسنطينة", wilaya_code: "25" },
         ];
         if (!cancelled) {
-          setError((e as Error)?.message ?? "load_error");
+          setError(e instanceof Error ? e.message : "load_error");
           setWilayas(ws);
           setCommunes(cs);
           setLoading(false);

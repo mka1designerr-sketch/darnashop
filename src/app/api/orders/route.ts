@@ -53,10 +53,9 @@ export async function POST(req: NextRequest) {
       const results = [] as Array<{status: number; ok: boolean; body: string}>;
       // Persist locally and adjust stock
       try {
-        await logAndAdjust(
-          body.items.map((it: any) => ({ id: it.id, name: it.name, qty: it.qty ?? 1 })),
-          createdAt
-        );
+        type OrderItem = { id: string; name: string; qty?: number };
+        const items = (body.items as OrderItem[]).map((it) => ({ id: it.id, name: it.name, qty: it.qty ?? 1 }));
+        await logAndAdjust(items, createdAt);
       } catch {}
       for (const it of body.items) {
         const row = {
@@ -76,8 +75,9 @@ export async function POST(req: NextRequest) {
           });
           const text = await res.text().catch(() => "");
           results.push({ status: res.status, ok: res.ok, body: text });
-        } catch (err: any) {
-          results.push({ status: 0, ok: false, body: String(err?.message || err) });
+        } catch (err: unknown) {
+          const msg = err instanceof Error ? err.message : String(err);
+          results.push({ status: 0, ok: false, body: msg });
         }
       }
       const okCount = results.filter((r) => r.ok).length;
@@ -98,7 +98,8 @@ export async function POST(req: NextRequest) {
     });
     const text = await res.text().catch(() => "");
     return NextResponse.json({ ok: res.ok, status: res.status, body: text });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
 }

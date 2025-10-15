@@ -96,7 +96,7 @@ export default function ShopPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-black/70">0 DZD</span>
-                <span className="text-sm font-semibold">Jusqu'à {fmt(rangeMax)}</span>
+                <span className="text-sm font-semibold">Jusqu&apos;à {fmt(rangeMax)}</span>
               </div>
               <input
                 className="w-full h-1 bg-gray-300 rounded-lg appearance-none cursor-pointer"

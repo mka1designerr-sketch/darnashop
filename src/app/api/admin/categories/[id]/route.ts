@@ -18,8 +18,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       data: { name: patch.name ?? undefined, cover: patch.cover ?? undefined },
     });
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
 }
 
@@ -28,7 +29,8 @@ export async function DELETE(_: NextRequest, { params }: { params: { id: string 
     const id = decodeURIComponent(params.id);
     await prisma.category.delete({ where: { id } });
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
 }

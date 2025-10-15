@@ -9,9 +9,9 @@ export async function GET() {
       { cache: "no-store" }
     );
     if (!res.ok) throw new Error("fetch_failed");
-    const raw = (await res.json()) as any[];
+    const raw = (await res.json()) as Array<{ code: number; name: string; ar_name?: string } | unknown>;
     // Project to the shape expected by the client hook
-    const data = raw.map((w) => ({ code: w.code, name: w.name, name_ar: w.ar_name }));
+    const data = raw.map((w: any) => ({ code: Number(w.code), name: String(w.name), name_ar: w.ar_name as string | undefined }));
     return NextResponse.json(data, {
       headers: { "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=3600" },
     });

@@ -26,7 +26,7 @@ export default function EditCategoryPage() {
     if (!base) return;
     setName(base.name);
     setCover(base.cover);
-  }, [id]);
+  }, [base, id]);
 
   if (!base) {
     return (

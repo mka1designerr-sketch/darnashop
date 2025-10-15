@@ -11,7 +11,7 @@ export default function Header() {
   const { count, items, removeItem, updateQty } = useCart();
   const [openCart, setOpenCart] = useState(false);
   const [query, setQuery] = useState("");
-  const { t, lang } = useI18n() as any;
+  const { t, lang } = useI18n();
   const isRTL = lang === "ar";
   const r = useRouter();
   const submitSearch = () => {

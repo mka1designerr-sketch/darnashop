@@ -21,8 +21,8 @@ export default function AdminHistoryPage() {
         const res = await fetch("/api/admin/orders", { cache: "no-store" });
         const list = await res.json();
         if (!cancelled) setData(list);
-      } catch (e: any) {
-        if (!cancelled) setError(String(e?.message || e));
+      } catch (e: unknown) {
+        if (!cancelled) setError(e instanceof Error ? e.message : String(e));
       }
     })();
     return () => { cancelled = true; };

@@ -16,7 +16,8 @@ export async function POST(req: NextRequest) {
     if (exists) return NextResponse.json({ ok: false, error: "exists" }, { status: 409 });
     await prisma.category.create({ data: { id: c.id, name: c.name, cover: c.cover ?? null } });
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
 }
