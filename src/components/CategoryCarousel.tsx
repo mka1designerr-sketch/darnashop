@@ -29,8 +29,6 @@ export default function CategoryCarousel() {
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [index, setIndex] = useState(0);
-  const visible = 3; // responsive handled via CSS snap; autoplay steps by 1
-
   useEffect(() => {
     const id = setInterval(() => {
       setIndex((i) => (i + 1) % Math.max(1, items.length));

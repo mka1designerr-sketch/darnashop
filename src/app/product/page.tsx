@@ -42,7 +42,7 @@ function ProductPageContent() {
     const primaryIdx = product.variants.findIndex((v) => v.isPrimary);
     setVariantIdx(primaryIdx >= 0 ? primaryIdx : 0);
     setImageIdx(0);
-  }, [product?.id]);
+  }, [product]);
 
   const currentVariant = useMemo(() => product?.variants[variantIdx], [product, variantIdx]);
   const firstWithImages = useMemo(

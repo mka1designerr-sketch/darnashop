@@ -6,7 +6,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useProducts } from "@/contexts/ProductsContext";
 import { useCategories } from "@/contexts/CategoriesContext";
-import { useI18n } from "@/contexts/I18nContext";
+// import { useI18n } from "@/contexts/I18nContext";
 
 export default function ShopPage() {
   return (
@@ -18,12 +18,12 @@ export default function ShopPage() {
 
 function ShopPageContent() {
   const { addItem } = useCart();
-  const { toggle, has } = useFavorites();
+  const { has } = useFavorites();
   const params = useSearchParams();
   const r = useRouter();
   const { products } = useProducts();
   const { categories } = useCategories();
-  const { t } = useI18n();
+  // const { t } = useI18n();
 
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DZD`;
 

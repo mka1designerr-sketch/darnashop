@@ -17,9 +17,7 @@ type CategoriesState = {
 const KEY = "darna_categories_v1";
 const Ctx = createContext<CategoriesState | undefined>(undefined);
 
-export function CategoriesProvider({ children }: { children: React.ReactNode }) {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const seed: Category[] = [
+const SEED: Category[] = [
     {
       id: "nouveautes",
       name: "Nouveautés",
@@ -50,7 +48,10 @@ export function CategoriesProvider({ children }: { children: React.ReactNode }) 
       name: "Promotions",
       cover: "https://picsum.photos/seed/promotions/1200/800",
     },
-  ];
+];
+
+export function CategoriesProvider({ children }: { children: React.ReactNode }) {
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -72,13 +73,13 @@ export function CategoriesProvider({ children }: { children: React.ReactNode }) 
           const parsed: Category[] = JSON.parse(raw);
           // Ensure default categories always exist (merge by id)
           const map = new Map<string, Category>(parsed.map((c) => [c.id, c]));
-          for (const s of seed) if (!map.has(s.id)) map.set(s.id, s);
+          for (const s of SEED) if (!map.has(s.id)) map.set(s.id, s);
           if (!cancelled) setCategories(Array.from(map.values()));
         } else if (!cancelled) {
-          setCategories(seed);
+          setCategories(SEED);
         }
       } catch {
-        if (!cancelled) setCategories(seed);
+        if (!cancelled) setCategories(SEED);
       }
     })();
     return () => { cancelled = true; };
