@@ -3,19 +3,21 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
-  const id = decodeURIComponent(params.id);
-  const p = await prisma.product.findUnique({ where: { id }, include: { variants: true } });
+export async function GET(_: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
+  const safeId = decodeURIComponent(id);
+  const p = await prisma.product.findUnique({ where: { id: safeId }, include: { variants: true } });
   return NextResponse.json(p || null);
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    const id = decodeURIComponent(params.id);
+    const { id } = await context.params;
+    const safeId = decodeURIComponent(id);
     const patch = await req.json();
     // Update scalars
     await prisma.product.update({
-      where: { id },
+      where: { id: safeId },
       data: {
         name: patch.name ?? undefined,
         price: patch.price !== undefined ? Math.round(Number(patch.price)) : undefined,
@@ -28,9 +30,9 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     // If variants provided, replace them for simplicity
     if (Array.isArray(patch.variants)) {
       await prisma.$transaction([
-        prisma.variant.deleteMany({ where: { productId: id } }),
+        prisma.variant.deleteMany({ where: { productId: safeId } }),
         prisma.product.update({
-          where: { id },
+          where: { id: safeId },
           data: {
             variants: {
               create: patch.variants.map((v: { colorName: string; colorHex?: string | null; images?: string[]; isPrimary?: boolean }) => ({
@@ -51,10 +53,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    const id = decodeURIComponent(params.id);
-    await prisma.product.delete({ where: { id } });
+    const { id } = await context.params;
+    const safeId = decodeURIComponent(id);
+    await prisma.product.delete({ where: { id: safeId } });
     return NextResponse.json({ ok: true });
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : String(e);
