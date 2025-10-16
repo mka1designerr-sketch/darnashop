@@ -29,7 +29,7 @@ const ProductInfo = () => {
         <p className="text-2xl font-bold text-[var(--color-primary)] mt-2">{product.price.toLocaleString('fr-DZ')} DZD</p>
         <p className="mt-4 text-base text-[var(--color-text-light)]/80 dark:text-[var(--color-text-dark)]/80">
           Une élégante robe inspirée du patrimoine algérien, parfaite pour les
-          occasions spéciales ou pour ajouter une touche d'authenticité à votre
+          occasions spéciales ou pour ajouter une touche d&apos;authenticité à votre
           garde-robe.
         </p>
       </div>

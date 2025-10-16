@@ -26,8 +26,8 @@ const ProductTabs = () => {
       <div className="py-6">
         <p className="text-base text-text-light/80 dark:text-text-dark/80 leading-relaxed">
           Cette robe est confectionnée avec des matériaux de haute qualité,
-          alliant confort et élégance. Les motifs délicats s'inspirent de
-          l'artisanat traditionnel algérien, offrant une pièce unique et
+          alliant confort et élégance. Les motifs délicats s&apos;inspirent de
+          l&apos;artisanat traditionnel algérien, offrant une pièce unique et
           intemporelle. Tissu fluide et respirant, idéal pour les climats
           chauds. La coupe est flatteuse pour toutes les morphologies.
         </p>

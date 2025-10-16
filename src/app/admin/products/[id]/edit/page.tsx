@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Product, ProductVariant, useProducts } from "@/contexts/ProductsContext";
+import { ProductVariant, useProducts } from "@/contexts/ProductsContext";
 import { useCategories } from "@/contexts/CategoriesContext";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -27,7 +27,7 @@ export default function EditProductPage() {
   const [selectedCats, setSelectedCats] = useState<string[]>(base?.categories || []);
   const [variants, setVariants] = useState<ProductVariant[]>(base?.variants || []);
   const [description, setDescription] = useState<string>(base?.description || "");
-  const [deliveryInfo, setDeliveryInfo] = useState<string>((base?.deliveryInfo as any) || "");
+  const [deliveryInfo, setDeliveryInfo] = useState<string>(base?.deliveryInfo ?? "");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -38,8 +38,8 @@ export default function EditProductPage() {
     setSelectedCats(base.categories);
     setVariants(base.variants);
     setDescription(base.description || "");
-    setDeliveryInfo((base.deliveryInfo as any) || "");
-  }, [id]);
+    setDeliveryInfo(base.deliveryInfo || "");
+  }, [id, base]);
 
   if (!base) {
     return (

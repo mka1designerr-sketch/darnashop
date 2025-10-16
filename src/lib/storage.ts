@@ -1,8 +1,8 @@
 import { promises as fs } from "fs";
 import path from "path";
 
-export type StoredProduct = any;
-export type StoredCategory = any;
+export type StoredProduct = unknown;
+export type StoredCategory = unknown;
 
 const dataDir = path.join(process.cwd(), "data");
 const productsFile = path.join(dataDir, "products.json");

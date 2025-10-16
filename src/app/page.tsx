@@ -3,14 +3,12 @@ import Link from "next/link";
 import { useI18n } from "@/contexts/I18nContext";
 import { useProducts } from "@/contexts/ProductsContext";
 import { useOrderStats } from "@/contexts/OrderStatsContext";
-import { useCategories } from "@/contexts/CategoriesContext";
 import CategoryCarousel from "@/components/CategoryCarousel";
 
 export default function Home() {
   const { t } = useI18n();
   const { products } = useProducts();
   const { top, total } = useOrderStats();
-  const { categories } = useCategories();
 
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DZD`;
 

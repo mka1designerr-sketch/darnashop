@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export const dynamic = "force-dynamic";
-
 export async function GET() {
   const list = await prisma.product.findMany({ include: { variants: true } });
   return NextResponse.json(list);
@@ -25,7 +23,7 @@ export async function POST(req: NextRequest) {
         deliveryInfo: p.deliveryInfo ?? null,
         variants: {
           create: Array.isArray(p.variants)
-            ? p.variants.map((v: any) => ({
+            ? p.variants.map((v: { colorName: string; colorHex?: string | null; images?: string[]; isPrimary?: boolean }) => ({
                 colorName: v.colorName,
                 colorHex: v.colorHex ?? null,
                 images: Array.isArray(v.images) ? v.images : [],
@@ -36,7 +34,8 @@ export async function POST(req: NextRequest) {
       },
     });
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: String(e?.message || e) }, { status: 500 });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
 }

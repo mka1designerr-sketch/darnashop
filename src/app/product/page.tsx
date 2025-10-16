@@ -2,11 +2,19 @@
 import { useCart } from "@/contexts/CartContext";
 import { useProducts } from "@/contexts/ProductsContext";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useAlgeriaLocations } from "@/hooks/useAlgeriaLocations";
 import { useOrderStats } from "@/contexts/OrderStatsContext";
 
 export default function ProductPage() {
+  return (
+    <Suspense fallback={<main className="mx-auto w-full max-w-5xl px-4 py-12"><p>Chargement…</p></main>}>
+      <ProductPageContent />
+    </Suspense>
+  );
+}
+
+function ProductPageContent() {
   const { addItem, clearCart } = useCart();
   const { byId } = useProducts();
   const params = useSearchParams();
@@ -34,7 +42,7 @@ export default function ProductPage() {
     const primaryIdx = product.variants.findIndex((v) => v.isPrimary);
     setVariantIdx(primaryIdx >= 0 ? primaryIdx : 0);
     setImageIdx(0);
-  }, [product?.id]);
+  }, [product]);
 
   const currentVariant = useMemo(() => product?.variants[variantIdx], [product, variantIdx]);
   const firstWithImages = useMemo(
@@ -60,6 +68,7 @@ export default function ProductPage() {
   const total = subtotal + shipping;
 
   async function submitOrder() {
+    if (!product) return;
     setSubmitting(true);
     const payload = {
       productId: product.id,
@@ -193,7 +202,7 @@ export default function ProductPage() {
 
           {showForm && (
             <div className="rounded-lg border border-[var(--color-subtle-light)] bg-white p-4">
-              <h3 className="mb-3 text-lg font-bold">Informations d'achat</h3>
+              <h3 className="mb-3 text-lg font-bold">Informations d&apos;achat</h3>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <input className="rounded border p-2" placeholder="Nom complet" value={buyer.name} onChange={(e) => setBuyer((b) => ({ ...b, name: e.target.value }))} />
                 <input className="rounded border p-2" placeholder="Téléphone" value={buyer.phone} onChange={(e) => setBuyer((b) => ({ ...b, phone: e.target.value }))} />
@@ -269,9 +278,9 @@ export default function ProductPage() {
           )}
           {tab === "reviews" && (
             <div className="space-y-4 text-sm text-gray-700">
-              <p>⭐️⭐️⭐️⭐️⭐️ "Très belle qualité, je recommande."</p>
-              <p>⭐️⭐️⭐️⭐️ "Coupe flatteuse et confortable."</p>
-              <p>⭐️⭐️⭐️⭐️⭐️ "Livraison rapide, produit conforme."</p>
+              <p>⭐️⭐️⭐️⭐️⭐️ &quot;Très belle qualité, je recommande.&quot;</p>
+              <p>⭐️⭐️⭐️⭐️ &quot;Coupe flatteuse et confortable.&quot;</p>
+              <p>⭐️⭐️⭐️⭐️⭐️ &quot;Livraison rapide, produit conforme.&quot;</p>
             </div>
           )}
         </div>

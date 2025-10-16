@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 
-export const revalidate = 60 * 60 * 24; // 24h
-
 export async function GET() {
   try {
     const res = await fetch(
@@ -9,9 +7,12 @@ export async function GET() {
       { cache: "no-store" }
     );
     if (!res.ok) throw new Error("fetch_failed");
-    const raw = (await res.json()) as any[];
+    const raw = (await res.json()) as Array<{ name: unknown; ar_name?: unknown; wilaya_id: unknown }>;
     // Project to the shape expected by the client hook
-    const data = raw.map((c) => ({ name: c.name, name_ar: c.ar_name, wilaya_code: Number(c.wilaya_id) }));
+    const data = raw.map((c) => {
+      const cc = c as { name: unknown; ar_name?: unknown; wilaya_id: unknown };
+      return { name: String(cc.name), name_ar: (cc.ar_name as string) || undefined, wilaya_code: Number(cc.wilaya_id) };
+    });
     return NextResponse.json(data, {
       headers: { "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=3600" },
     });
