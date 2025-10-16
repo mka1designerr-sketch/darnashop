@@ -60,6 +60,7 @@ export default function ProductPage() {
   const total = subtotal + shipping;
 
   async function submitOrder() {
+    if (!product) return;
     setSubmitting(true);
     const payload = {
       productId: product.id,
