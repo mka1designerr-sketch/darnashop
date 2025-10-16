@@ -2,11 +2,19 @@
 import { useCart } from "@/contexts/CartContext";
 import { useProducts } from "@/contexts/ProductsContext";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useAlgeriaLocations } from "@/hooks/useAlgeriaLocations";
 import { useOrderStats } from "@/contexts/OrderStatsContext";
 
 export default function ProductPage() {
+  return (
+    <Suspense fallback={<main className="mx-auto w-full max-w-5xl px-4 py-12"><p>Chargement…</p></main>}>
+      <ProductPageContent />
+    </Suspense>
+  );
+}
+
+function ProductPageContent() {
   const { addItem, clearCart } = useCart();
   const { byId } = useProducts();
   const params = useSearchParams();

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useProducts } from "@/contexts/ProductsContext";
@@ -9,6 +9,14 @@ import { useCategories } from "@/contexts/CategoriesContext";
 import { useI18n } from "@/contexts/I18nContext";
 
 export default function ShopPage() {
+  return (
+    <Suspense fallback={<main className="container mx-auto px-6 py-8 max-w-7xl"><p>Chargement…</p></main>}>
+      <ShopPageContent />
+    </Suspense>
+  );
+}
+
+function ShopPageContent() {
   const { addItem } = useCart();
   const { toggle, has } = useFavorites();
   const params = useSearchParams();
