@@ -4,13 +4,37 @@ import { Product, ProductVariant, useProducts } from "@/contexts/ProductsContext
 import { useCategories } from "@/contexts/CategoriesContext";
 import Link from "next/link";
 
-function readFileAsDataURL(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
+async function readAndCompress(file: File, maxDim = 1200, quality = 0.8): Promise<string> {
+  // Read as DataURL first
+  const dataUrl: string = await new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result));
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
+  // Create image and draw to canvas scaled down
+  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const el = new Image();
+    el.onload = () => resolve(el);
+    el.onerror = reject;
+    el.src = dataUrl;
+  });
+  const { width, height } = img;
+  const scale = Math.min(1, maxDim / Math.max(width, height));
+  const w = Math.max(1, Math.round(width * scale));
+  const h = Math.max(1, Math.round(height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return dataUrl;
+  ctx.drawImage(img, 0, 0, w, h);
+  // export JPEG to reduce size; fall back to original if needed
+  try {
+    return canvas.toDataURL("image/jpeg", quality);
+  } catch {
+    return dataUrl;
+  }
 }
 
 export default function NewProductPage() {
@@ -29,7 +53,7 @@ export default function NewProductPage() {
 
   async function onMainUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []).slice(0, 5);
-    const urls = await Promise.all(files.map(readFileAsDataURL));
+    const urls = await Promise.all(files.map((f) => readAndCompress(f, 1200, 0.8)));
     setMainImages((prev) => [...prev, ...urls].slice(0, 5));
   }
 
@@ -43,7 +67,7 @@ export default function NewProductPage() {
 
   async function uploadVariantImages(idx: number, e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []).slice(0, 6);
-    const urls = await Promise.all(files.map(readFileAsDataURL));
+    const urls = await Promise.all(files.map((f) => readAndCompress(f, 1200, 0.8)));
     setVariants((arr) => arr.map((v, i) => (i === idx ? { ...v, images: [...v.images, ...urls].slice(0, 6) } : v)));
   }
 
@@ -71,7 +95,12 @@ export default function NewProductPage() {
       description: description || undefined,
       deliveryInfo: deliveryInfo || undefined,
     };
-    add(p);
+    const result = await add(p);
+    if (!result.ok) {
+      alert(`Échec de l'enregistrement: ${result.error || "Erreur inconnue"}`);
+      setSaving(false);
+      return;
+    }
     setSaving(false);
     window.location.href = "/admin/products";
   }
