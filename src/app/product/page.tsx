@@ -151,7 +151,25 @@ function ProductPageContent() {
         <div className="flex flex-col">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{product.name}</h1>
-            <p className="text-3xl font-bold text-primary-600 mt-2">{fmt(product.price)}</p>
+            <div className="mt-2 flex items-center gap-2">
+              {Array.from({ length: 5 }).map((_, i) => {
+                const value = i + 1;
+                const rate = product.rating ?? 4;
+                const icon = rate >= value ? "star" : rate >= value - 0.5 ? "star_half" : "star";
+                const color = rate >= value - 0.49 ? "text-yellow-400" : "text-gray-300";
+                return <span key={i} className={`material-symbols-outlined ${color}`}>{icon}</span>;
+              })}
+              <span className="text-sm text-gray-600">{(product.rating ?? 4).toFixed(1)} / 5</span>
+            </div>
+            <div className="mt-3 flex items-center gap-3">
+              {product.oldPrice && product.oldPrice > product.price && (
+                <>
+                  <span className="text-lg text-gray-400 line-through">{fmt(product.oldPrice)}</span>
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">-{Math.round(((product.oldPrice - product.price)/product.oldPrice)*100)}%</span>
+                </>
+              )}
+              <p className="text-3xl font-bold text-primary-600">{fmt(product.price)}</p>
+            </div>
             <p className="mt-4 text-base text-gray-500">{product.description || "Une élégante pièce parfaite pour les occasions spéciales ou au quotidien."}</p>
           </div>
 

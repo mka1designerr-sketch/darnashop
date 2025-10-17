@@ -44,6 +44,8 @@ function ShopPageContent() {
       id: p.id,
       name: p.name,
       price: p.price,
+      oldPrice: p.oldPrice ?? undefined,
+      rating: p.rating ?? 4,
       img: cover,
       categories: p.categories,
     };
@@ -154,13 +156,22 @@ function ShopPageContent() {
                   <Link href={go(p).href} className="font-bold text-lg truncate hover:underline">{p.name}</Link>
                   <div className="flex justify-between items-center">
                     <div className="flex items-center text-yellow-400">
-                      <span className="material-symbols-outlined text-yellow-400">star</span>
-                      <span className="material-symbols-outlined text-yellow-400">star</span>
-                      <span className="material-symbols-outlined text-yellow-400">star</span>
-                      <span className="material-symbols-outlined text-yellow-400">star</span>
-                      <span className="material-symbols-outlined text-gray-300">star</span>
+                      {Array.from({ length: 5 }).map((_, i) => {
+                        const value = (i + 1);
+                        const icon = p.rating >= value ? "star" : p.rating >= value - 0.5 ? "star_half" : "star";
+                        const color = p.rating >= value - 0.49 ? "text-yellow-400" : "text-gray-300";
+                        return <span key={i} className={`material-symbols-outlined ${color}`}>{icon}</span>;
+                      })}
                     </div>
-                    <span className="font-semibold text-lg">{fmt(p.price)}</span>
+                    <div className="flex items-center gap-2">
+                      {p.oldPrice && p.oldPrice > p.price && (
+                        <>
+                          <span className="text-sm text-gray-400 line-through">{fmt(p.oldPrice)}</span>
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">-{Math.round(((p.oldPrice - p.price)/p.oldPrice)*100)}%</span>
+                        </>
+                      )}
+                      <span className="font-semibold text-lg">{fmt(p.price)}</span>
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => add(p)} className="flex-1 bg-white border border-gray-300 text-black py-2 px-4 rounded-full hover:bg-gray-100 transition-colors text-sm">Ajouter au panier</button>
@@ -198,13 +209,22 @@ function ShopPageContent() {
                 <Link href={go(p).href} className="font-bold text-lg truncate hover:underline">{p.name}</Link>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center text-yellow-400">
-                    <span className="material-symbols-outlined text-yellow-400">star</span>
-                    <span className="material-symbols-outlined text-yellow-400">star</span>
-                    <span className="material-symbols-outlined text-yellow-400">star</span>
-                    <span className="material-symbols-outlined text-yellow-400">star</span>
-                    <span className="material-symbols-outlined text-gray-300">star</span>
+                    {Array.from({ length: 5 }).map((_, i) => {
+                      const value = (i + 1);
+                      const icon = p.rating >= value ? "star" : p.rating >= value - 0.5 ? "star_half" : "star";
+                      const color = p.rating >= value - 0.49 ? "text-yellow-400" : "text-gray-300";
+                      return <span key={i} className={`material-symbols-outlined ${color}`}>{icon}</span>;
+                    })}
                   </div>
-                  <span className="font-semibold text-lg">{fmt(p.price)}</span>
+                  <div className="flex items-center gap-2">
+                    {p.oldPrice && p.oldPrice > p.price && (
+                      <>
+                        <span className="text-sm text-gray-400 line-through">{fmt(p.oldPrice)}</span>
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">-{Math.round(((p.oldPrice - p.price)/p.oldPrice)*100)}%</span>
+                      </>
+                    )}
+                    <span className="font-semibold text-lg">{fmt(p.price)}</span>
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => add(p)} className="flex-1 bg-white border border-gray-300 text-black py-2 px-4 rounded-full hover:bg-gray-100 transition-colors text-sm">Ajouter au panier</button>
