@@ -13,6 +13,8 @@ export type Product = {
   id: string;
   name: string;
   price: number;
+  oldPrice?: number | null;
+  rating?: number;
   categories: string[];
   qty: number;
   variants: ProductVariant[];

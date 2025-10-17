@@ -17,6 +17,8 @@ export async function POST(req: NextRequest) {
         id: p.id,
         name: p.name,
         price: Math.round(Number(p.price || 0)),
+        oldPrice: p.oldPrice !== undefined && p.oldPrice !== null ? Math.round(Number(p.oldPrice)) : null,
+        rating: p.rating !== undefined && p.rating !== null ? Number(p.rating) : undefined,
         qty: Math.round(Number(p.qty || 0)),
         categories: Array.isArray(p.categories) ? p.categories : [],
         description: p.description ?? null,

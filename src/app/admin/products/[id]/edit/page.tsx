@@ -43,6 +43,8 @@ export default function EditProductPage() {
   const base = byId(id);
   const [name, setName] = useState(base?.name || "");
   const [price, setPrice] = useState<number>(base?.price || 0);
+  const [oldPrice, setOldPrice] = useState<number>(base?.oldPrice || 0);
+  const [rating, setRating] = useState<number>(base?.rating ?? 4);
   const [qty, setQty] = useState<number>(base?.qty || 0);
   const { categories: available } = useCategories();
   const [selectedCats, setSelectedCats] = useState<string[]>(base?.categories || []);
@@ -55,6 +57,8 @@ export default function EditProductPage() {
     if (!base) return;
     setName(base.name);
     setPrice(base.price);
+    setOldPrice(base.oldPrice || 0);
+    setRating(base.rating ?? 4);
     setQty(base.qty);
     setSelectedCats(base.categories);
     setVariants(base.variants);
@@ -102,6 +106,8 @@ export default function EditProductPage() {
     update(id, {
       name,
       price: Number(price || 0),
+      oldPrice: oldPrice > 0 ? Math.round(Number(oldPrice)) : null,
+      rating: Number(rating || 0),
       qty: Number(qty || 0),
       categories: selectedCats,
       variants: nextVariants,
@@ -130,12 +136,32 @@ export default function EditProductPage() {
             <input className="mt-1 w-full rounded border p-2" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div>
-            <label className="block text-sm font-medium">Price (DZD)</label>
+            <label className="block text-sm font-medium">Current Price (DZD)</label>
             <input className="mt-1 w-full rounded border p-2" type="number" value={price} onChange={(e) => setPrice(Number(e.target.value || 0))} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Old Price (DZD) <span className="text-xs text-slate-500">(optional)</span></label>
+            <input className="mt-1 w-full rounded border p-2" type="number" value={oldPrice} onChange={(e) => setOldPrice(Number(e.target.value || 0))} />
+            {oldPrice > 0 && price > 0 && oldPrice > price && (
+              <p className="mt-1 text-xs text-green-700">Discount: {Math.round(((oldPrice - price) / oldPrice) * 100)}%</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium">Quantity</label>
             <input className="mt-1 w-full rounded border p-2" type="number" value={qty} onChange={(e) => setQty(Number(e.target.value || 0))} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Rating</label>
+            <input
+              className="mt-1 w-full"
+              type="range"
+              min={0}
+              max={5}
+              step={0.5}
+              value={rating}
+              onChange={(e) => setRating(Number(e.target.value))}
+            />
+            <div className="mt-1 text-xs text-slate-600">{rating.toFixed(1)} / 5</div>
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium">Categories</label>
