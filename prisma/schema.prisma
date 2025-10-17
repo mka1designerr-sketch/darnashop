@@ -11,6 +11,8 @@ model Product {
   id           String    @id
   name         String
   price        Int
+  oldPrice     Int?
+  rating       Float     @default(4.0)
   qty          Int       @default(0)
   categories   String[]  @default([])
   description  String?

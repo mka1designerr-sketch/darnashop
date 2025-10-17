@@ -70,13 +70,21 @@ export default function CategoryCarousel() {
         ))}
       </div>
       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
-        <button onClick={() => step(dir === "rtl" ? 1 : -1)} className="pointer-events-auto rounded-full bg-white/80 p-2 text-black shadow hover:bg-white">
-          ‹
+        <button
+          aria-label="Previous"
+          onClick={() => step(dir === "rtl" ? 1 : -1)}
+          className="pointer-events-auto rounded-full bg-white/80 p-2 text-black shadow hover:bg-white"
+        >
+          <span className="material-symbols-outlined">chevron_left</span>
         </button>
       </div>
       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-        <button onClick={() => step(dir === "rtl" ? -1 : 1)} className="pointer-events-auto rounded-full bg-white/80 p-2 text-black shadow hover:bg-white">
-          ›
+        <button
+          aria-label="Next"
+          onClick={() => step(dir === "rtl" ? -1 : 1)}
+          className="pointer-events-auto rounded-full bg-white/80 p-2 text-black shadow hover:bg-white"
+        >
+          <span className="material-symbols-outlined">chevron_right</span>
         </button>
       </div>
     </div>

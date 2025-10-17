@@ -19,6 +19,8 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
       data: {
         name: patch.name ?? undefined,
         price: patch.price !== undefined ? Math.round(Number(patch.price)) : undefined,
+        oldPrice: patch.oldPrice !== undefined ? (patch.oldPrice === null ? null : Math.round(Number(patch.oldPrice))) : undefined,
+        rating: patch.rating !== undefined ? Number(patch.rating) : undefined,
         qty: patch.qty !== undefined ? Math.round(Number(patch.qty)) : undefined,
         categories: Array.isArray(patch.categories) ? patch.categories : undefined,
         description: patch.description ?? undefined,

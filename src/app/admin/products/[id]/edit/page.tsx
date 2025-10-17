@@ -5,13 +5,34 @@ import { useCategories } from "@/contexts/CategoriesContext";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
-function readFileAsDataURL(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
+async function readAndCompress(file: File, maxDim = 1200, quality = 0.8): Promise<string> {
+  const dataUrl: string = await new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result));
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
+  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const el = new Image();
+    el.onload = () => resolve(el);
+    el.onerror = reject;
+    el.src = dataUrl;
+  });
+  const { width, height } = img;
+  const scale = Math.min(1, maxDim / Math.max(width, height));
+  const w = Math.max(1, Math.round(width * scale));
+  const h = Math.max(1, Math.round(height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return dataUrl;
+  ctx.drawImage(img, 0, 0, w, h);
+  try {
+    return canvas.toDataURL("image/jpeg", quality);
+  } catch {
+    return dataUrl;
+  }
 }
 
 export default function EditProductPage() {
@@ -22,6 +43,8 @@ export default function EditProductPage() {
   const base = byId(id);
   const [name, setName] = useState(base?.name || "");
   const [price, setPrice] = useState<number>(base?.price || 0);
+  const [oldPrice, setOldPrice] = useState<number>(base?.oldPrice || 0);
+  const [rating, setRating] = useState<number>(base?.rating ?? 4);
   const [qty, setQty] = useState<number>(base?.qty || 0);
   const { categories: available } = useCategories();
   const [selectedCats, setSelectedCats] = useState<string[]>(base?.categories || []);
@@ -34,6 +57,8 @@ export default function EditProductPage() {
     if (!base) return;
     setName(base.name);
     setPrice(base.price);
+    setOldPrice(base.oldPrice || 0);
+    setRating(base.rating ?? 4);
     setQty(base.qty);
     setSelectedCats(base.categories);
     setVariants(base.variants);
@@ -55,7 +80,7 @@ export default function EditProductPage() {
 
   async function uploadVariantImages(idx: number, e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []).slice(0, 6);
-    const urls = await Promise.all(files.map(readFileAsDataURL));
+    const urls = await Promise.all(files.map((f) => readAndCompress(f, 1200, 0.8)));
     setVariants((arr) => arr.map((v, i) => (i === idx ? { ...v, images: [...v.images, ...urls].slice(0, 6) } : v)));
   }
 
@@ -81,6 +106,8 @@ export default function EditProductPage() {
     update(id, {
       name,
       price: Number(price || 0),
+      oldPrice: oldPrice > 0 ? Math.round(Number(oldPrice)) : null,
+      rating: Number(rating || 0),
       qty: Number(qty || 0),
       categories: selectedCats,
       variants: nextVariants,
@@ -109,12 +136,32 @@ export default function EditProductPage() {
             <input className="mt-1 w-full rounded border p-2" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div>
-            <label className="block text-sm font-medium">Price (DZD)</label>
+            <label className="block text-sm font-medium">Current Price (DZD)</label>
             <input className="mt-1 w-full rounded border p-2" type="number" value={price} onChange={(e) => setPrice(Number(e.target.value || 0))} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Old Price (DZD) <span className="text-xs text-slate-500">(optional)</span></label>
+            <input className="mt-1 w-full rounded border p-2" type="number" value={oldPrice} onChange={(e) => setOldPrice(Number(e.target.value || 0))} />
+            {oldPrice > 0 && price > 0 && oldPrice > price && (
+              <p className="mt-1 text-xs text-green-700">Discount: {Math.round(((oldPrice - price) / oldPrice) * 100)}%</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium">Quantity</label>
             <input className="mt-1 w-full rounded border p-2" type="number" value={qty} onChange={(e) => setQty(Number(e.target.value || 0))} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Rating</label>
+            <input
+              className="mt-1 w-full"
+              type="range"
+              min={0}
+              max={5}
+              step={0.5}
+              value={rating}
+              onChange={(e) => setRating(Number(e.target.value))}
+            />
+            <div className="mt-1 text-xs text-slate-600">{rating.toFixed(1)} / 5</div>
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium">Categories</label>

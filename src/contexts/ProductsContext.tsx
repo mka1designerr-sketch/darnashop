@@ -13,6 +13,8 @@ export type Product = {
   id: string;
   name: string;
   price: number;
+  oldPrice?: number | null;
+  rating?: number;
   categories: string[];
   qty: number;
   variants: ProductVariant[];
@@ -22,7 +24,7 @@ export type Product = {
 
 type ProductsState = {
   products: Product[];
-  add: (p: Product) => void;
+  add: (p: Product) => Promise<{ ok: boolean; error?: string }>;
   update: (id: string, update: Partial<Product>) => void;
   remove: (id: string) => void;
   setAll: (list: Product[]) => void;
@@ -117,9 +119,31 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
     } catch {}
   }, [products]);
 
-  const add = useCallback((p: Product) => {
+  const add = useCallback(async (p: Product) => {
+    // optimistic add
     setProducts((prev) => [...prev, p]);
-    fetch("/api/admin/products", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(p) }).catch(() => {});
+    try {
+      const res = await fetch("/api/admin/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(p),
+      });
+      if (!res.ok) {
+        // rollback optimistic change on failure
+        setProducts((prev) => prev.filter((x) => x.id !== p.id));
+        let msg = `HTTP ${res.status}`;
+        try {
+          const j = (await res.json()) as { error?: string };
+          if (j?.error) msg = j.error;
+        } catch {}
+        return { ok: false, error: msg };
+      }
+      return { ok: true };
+    } catch (e: unknown) {
+      setProducts((prev) => prev.filter((x) => x.id !== p.id));
+      const msg = e instanceof Error ? e.message : String(e);
+      return { ok: false, error: msg };
+    }
   }, []);
   const update = useCallback((id: string, patch: Partial<Product>) => {
     setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch } : p)));
