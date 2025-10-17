@@ -118,13 +118,18 @@ function ProductPageContent() {
               {gallery.length > 1 && (
                 <div className="absolute inset-0 flex items-center justify-between px-2">
                   <button
+                    aria-label="Previous image"
                     onClick={() => setImageIdx((i) => (i - 1 + gallery.length) % gallery.length)}
                     className="rounded-full bg-white/70 p-2 hover:bg-white"
                   >
-                    ‹
+                    <span className="material-symbols-outlined">chevron_left</span>
                   </button>
-                  <button onClick={() => setImageIdx((i) => (i + 1) % gallery.length)} className="rounded-full bg-white/70 p-2 hover:bg-white">
-                    ›
+                  <button
+                    aria-label="Next image"
+                    onClick={() => setImageIdx((i) => (i + 1) % gallery.length)}
+                    className="rounded-full bg-white/70 p-2 hover:bg-white"
+                  >
+                    <span className="material-symbols-outlined">chevron_right</span>
                   </button>
                 </div>
               )}
