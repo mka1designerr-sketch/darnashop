@@ -144,38 +144,58 @@ function ShopPageContent() {
         <section className="lg:col-span-3">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {filtered.map((p) => (
-              <div key={p.id} className="flex flex-col space-y-4">
-                <div className="relative bg-gray-100 rounded-lg overflow-hidden">
-                  <Link href={go(p).href}>
-                    <div className="w-full h-64 bg-cover bg-center" style={{ backgroundImage: `url('${p.img}')` }} />
+              <div
+                key={p.id}
+                className="flex flex-col rounded-xl border border-gray-200 bg-white overflow-hidden h-[420px]"
+              >
+                <Link href={go(p).href}>
+                  <div
+                    className="w-full h-64 bg-gray-100 bg-cover bg-center"
+                    style={{ backgroundImage: `url('${p.img}')` }}
+                  />
+                </Link>
+                <div className="flex flex-col space-y-3 p-4 flex-1">
+                  <Link href={go(p).href} className="font-bold text-lg truncate hover:underline">
+                    {p.name}
                   </Link>
-                  {/* Example badge placeholder: could derive from data in future */}
-                  {/* <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full">Nouveau</div> */}
-                </div>
-                <div className="flex flex-col space-y-3">
-                  <Link href={go(p).href} className="font-bold text-lg truncate hover:underline">{p.name}</Link>
                   <div className="flex justify-between items-center">
-                    <div className="flex items-center text-yellow-400">
+                    <div className="flex items-center">
                       {Array.from({ length: 5 }).map((_, i) => {
-                        const value = (i + 1);
+                        const value = i + 1;
                         const icon = p.rating >= value ? "star" : p.rating >= value - 0.5 ? "star_half" : "star";
                         const color = p.rating >= value - 0.49 ? "text-yellow-400" : "text-gray-300";
-                        return <span key={i} className={`material-symbols-outlined ${color}`}>{icon}</span>;
+                        return (
+                          <span key={i} className={`material-symbols-outlined ${color}`}>
+                            {icon}
+                          </span>
+                        );
                       })}
                     </div>
                     <div className="flex items-center gap-2">
                       {p.oldPrice && p.oldPrice > p.price && (
                         <>
                           <span className="text-sm text-gray-400 line-through">{fmt(p.oldPrice)}</span>
-                          <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">-{Math.round(((p.oldPrice - p.price)/p.oldPrice)*100)}%</span>
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                            -{Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100)}%
+                          </span>
                         </>
                       )}
                       <span className="font-semibold text-lg">{fmt(p.price)}</span>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <button onClick={() => add(p)} className="flex-1 bg-white border border-gray-300 text-black py-2 px-4 rounded-full hover:bg-gray-100 transition-colors text-sm">Ajouter au panier</button>
-                    <Link href={go(p).href} className="flex-1 bg-black text-white py-2 px-4 rounded-full hover:bg-black/90 transition-colors text-sm text-center flex items-center justify-center leading-none">Acheter</Link>
+                  <div className="mt-auto flex gap-2">
+                    <button
+                      onClick={() => add(p)}
+                      className="flex-1 bg-white border border-gray-300 text-black py-2 px-4 rounded-full hover:bg-gray-100 transition-colors text-sm"
+                    >
+                      Ajouter au panier
+                    </button>
+                    <Link
+                      href={go(p).href}
+                      className="flex-1 bg-black text-white py-2 px-4 rounded-full hover:bg-black/90 transition-colors text-sm text-center flex items-center justify-center leading-none"
+                    >
+                      Acheter
+                    </Link>
                   </div>
                 </div>
               </div>
