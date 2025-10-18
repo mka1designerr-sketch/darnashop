@@ -202,9 +202,9 @@ function ShopPageContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {ordered.map((p) => (
               <div key={p.id} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-                <div className="relative w-full h-[240px] bg-gray-100">
+                <div className="relative w-full aspect-square bg-gray-100">
                   <Link href={go(p).href}>
-                    <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url('${p.img}')` }} />
+                    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${p.img}')` }} />
                   </Link>
                   {p.oldPrice && p.oldPrice > p.price && (
                     <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">Solde</div>
