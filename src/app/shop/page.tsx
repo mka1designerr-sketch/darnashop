@@ -199,10 +199,10 @@ function ShopPageContent() {
 
         {/* Products grid */}
         <section className="lg:col-span-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {ordered.map((p) => (
-              <div key={p.id} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-                <div className="relative w-full aspect-square bg-gray-100">
+              <div key={p.id} className="flex flex-col space-y-4">
+                <div className="relative w-full aspect-square bg-gray-100 rounded-lg overflow-hidden">
                   <Link href={go(p).href}>
                     <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${p.img}')` }} />
                   </Link>
@@ -222,11 +222,11 @@ function ShopPageContent() {
                     </span>
                   </button>
                 </div>
-                <div className="p-4">
-                  <Link href={go(p).href} className="font-bold text-lg truncate hover:underline block">
+                <div className="flex flex-col space-y-3">
+                  <Link href={go(p).href} className="font-bold text-lg truncate hover:underline">
                     {p.name}
                   </Link>
-                  <div className="mt-2 flex justify-between items-center">
+                  <div className="flex justify-between items-center">
                     <div className="flex items-center">
                       {Array.from({ length: 5 }).map((_, i) => {
                         const value = i + 1;
@@ -251,7 +251,7 @@ function ShopPageContent() {
                       <span className="font-semibold text-lg">{fmt(p.price)}</span>
                     </div>
                   </div>
-                  <div className="mt-3 flex gap-2">
+                  <div className="flex gap-2">
                     <button
                       onClick={() => add(p)}
                       className="flex-1 bg-white border border-gray-300 text-black py-2 px-4 rounded-full hover:bg-gray-100 transition-colors text-sm"
