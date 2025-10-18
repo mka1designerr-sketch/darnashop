@@ -48,13 +48,20 @@ function ShopPageContent() {
       rating: p.rating ?? 4,
       img: cover,
       categories: p.categories,
+      // try to read createdAt if present (from Prisma); fallback to 0
+      createdAt: (p as unknown as { createdAt?: string | Date } | undefined)?.createdAt
+        ? new Date((p as unknown as { createdAt?: string | Date }).createdAt as string).getTime()
+        : 0,
     };
   });
 
   const selectedCategoryName = categoryId ? (categories.find((c) => c.id === categoryId)?.name || "") : category;
+  const isPromotions = (selectedCategoryName || "").toLowerCase() === "promotions" || categoryId === "promotions";
   const filtered = items.filter((p) => {
     if (q && !p.name.toLowerCase().includes(q)) return false;
-    if (categoryId) {
+    if (isPromotions) {
+      if (!(p.oldPrice && p.oldPrice > p.price)) return false;
+    } else if (categoryId) {
       const catName = selectedCategoryName.toLowerCase();
       const hasId = p.categories.includes(categoryId);
       const hasName = p.categories.some((c) => c.toLowerCase().includes(catName));
@@ -65,6 +72,22 @@ function ShopPageContent() {
     if (p.price < min || p.price > max) return false;
     if (onlyFav && !has(p.id)) return false;
     return true;
+  });
+
+  // Sorting
+  const sort = (params.get("sort") || "new").toLowerCase();
+  const ordered = [...filtered].sort((a, b) => {
+    switch (sort) {
+      case "priceasc":
+        return a.price - b.price;
+      case "pricedesc":
+        return b.price - a.price;
+      case "popular":
+        return (b.rating ?? 0) - (a.rating ?? 0);
+      case "new":
+      default:
+        return (b.createdAt ?? 0) - (a.createdAt ?? 0);
+    }
   });
 
   const go = (p: (typeof items)[number]) => ({
@@ -130,12 +153,46 @@ function ShopPageContent() {
           <div className="bg-gray-100 p-6 rounded-xl">
             <h3 className="text-xl font-bold mb-4">Trier par</h3>
             <div className="space-y-3">
-              {["Popularité", "Nouveautés", "Prix Croissant", "Prix Décroissant"].map((label, i) => (
-                <label key={label} className="flex items-center gap-3 cursor-pointer">
-                  <input className="form-radio h-4 w-4 text-black bg-white border-gray-300 focus:ring-black" name="sort" type="radio" defaultChecked={i===1} />
-                  <span className="text-base">{label}</span>
-                </label>
-              ))}
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  className="form-radio h-4 w-4 text-black bg-white border-gray-300 focus:ring-black"
+                  name="sort"
+                  type="radio"
+                  checked={sort === "popular"}
+                  onChange={() => setFilter({ sort: "popular" })}
+                />
+                <span className="text-base">Popularité</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  className="form-radio h-4 w-4 text-black bg-white border-gray-300 focus:ring-black"
+                  name="sort"
+                  type="radio"
+                  checked={sort === "new"}
+                  onChange={() => setFilter({ sort: "new" })}
+                />
+                <span className="text-base">Nouveautés</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  className="form-radio h-4 w-4 text-black bg-white border-gray-300 focus:ring-black"
+                  name="sort"
+                  type="radio"
+                  checked={sort === "priceasc"}
+                  onChange={() => setFilter({ sort: "priceasc" })}
+                />
+                <span className="text-base">Prix Croissant</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  className="form-radio h-4 w-4 text-black bg-white border-gray-300 focus:ring-black"
+                  name="sort"
+                  type="radio"
+                  checked={sort === "pricedesc"}
+                  onChange={() => setFilter({ sort: "pricedesc" })}
+                />
+                <span className="text-base">Prix Décroissant</span>
+              </label>
             </div>
           </div>
         </aside>
@@ -143,16 +200,18 @@ function ShopPageContent() {
         {/* Products grid */}
         <section className="lg:col-span-3">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {filtered.map((p) => (
+            {ordered.map((p) => (
               <div
                 key={p.id}
                 className="flex flex-col rounded-xl border border-gray-200 bg-white overflow-hidden h-[420px]"
               >
                 <Link href={go(p).href}>
-                  <div
-                    className="w-full h-64 bg-gray-100 bg-cover bg-center"
-                    style={{ backgroundImage: `url('${p.img}')` }}
-                  />
+                  <div className="relative w-full">
+                    <div
+                      className="bg-gray-100 bg-cover bg-center aspect-square w-full"
+                      style={{ backgroundImage: `url('${p.img}')` }}
+                    />
+                  </div>
                 </Link>
                 <div className="flex flex-col space-y-3 p-4 flex-1">
                   <Link href={go(p).href} className="font-bold text-lg truncate hover:underline">
