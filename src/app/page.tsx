@@ -3,17 +3,27 @@ import Link from "next/link";
 import { useI18n } from "@/contexts/I18nContext";
 import { useProducts } from "@/contexts/ProductsContext";
 import { useOrderStats } from "@/contexts/OrderStatsContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
+import { useCart } from "@/contexts/CartContext";
 import CategoryCarousel from "@/components/CategoryCarousel";
 
 export default function Home() {
   const { t } = useI18n();
   const { products } = useProducts();
   const { top, total } = useOrderStats();
+  const { has, toggle } = useFavorites();
+  const { addItem } = useCart();
 
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DZD`;
 
-  const bestIds = total > 0 ? top(5) : [];
-  const best = (bestIds.length ? bestIds.map((id) => products.find((p) => p.id === id)).filter(Boolean) : products.slice(0, 5)) as typeof products;
+  const coverOf = (p: (typeof products)[number]) => {
+    const primary = p.variants.find((v) => v.isPrimary && v.images && v.images.length);
+    const firstWithImg = primary || p.variants.find((v) => v.images && v.images.length);
+    return firstWithImg?.images?.[0] || "";
+  };
+
+  const bestIds = total > 0 ? top(6) : [];
+  const best = (bestIds.length ? bestIds.map((id) => products.find((p) => p.id === id)).filter(Boolean) : products.slice(0, 6)) as typeof products;
   return (
     <div className="flex min-h-screen w-full flex-col bg-[var(--color-background-light)] text-[var(--color-text-light)]">
 
@@ -90,16 +100,76 @@ export default function Home() {
         {/* Best sellers */}
         <section className="mb-12">
           <h2 className="mb-6 text-2xl font-bold">{t("best_sellers")}</h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {best.map((p) => (
-              <Link key={p.id} className="group" href={`/product?id=${encodeURIComponent(p.id)}`}>
-                <div className="mb-2 w-full overflow-hidden rounded-lg bg-cover bg-center">
-                  <div className="aspect-square w-full bg-cover bg-center transition-transform duration-300 group-hover:scale-105" style={{ backgroundImage: `url('${p.variants[0]?.images[0] || ""}')` }} />
+          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            {best.map((p) => {
+              const img = coverOf(p);
+              return (
+                <div key={p.id} className="flex flex-col space-y-3">
+                  <div className="relative w-full aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                    <Link href={`/product?id=${encodeURIComponent(p.id)}`}>
+                      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${img}')` }} />
+                    </Link>
+                    {p.oldPrice && p.oldPrice > p.price && (
+                      <div className="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">Solde</div>
+                    )}
+                    <button
+                      aria-label={has(p.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
+                      onClick={() => toggle({ id: p.id, name: p.name, image: img, price: p.price })}
+                      className="absolute top-2 left-2 grid place-items-center w-8 h-8 rounded-full bg-white/90 text-gray-800 hover:bg-white shadow"
+                    >
+                      <span
+                        className="material-symbols-outlined text-base"
+                        style={{ fontVariationSettings: `'FILL' ${has(p.id) ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 20` }}
+                      >
+                        favorite
+                      </span>
+                    </button>
+                  </div>
+                  <Link href={`/product?id=${encodeURIComponent(p.id)}`} className="font-medium text-sm truncate hover:underline">
+                    {p.name}
+                  </Link>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      {Array.from({ length: 5 }).map((_, i) => {
+                        const value = i + 1;
+                        const icon = (p.rating ?? 4) >= value ? "star" : (p.rating ?? 4) >= value - 0.5 ? "star_half" : "star";
+                        const color = (p.rating ?? 4) >= value - 0.49 ? "text-yellow-400" : "text-gray-300";
+                        return (
+                          <span key={i} className={`material-symbols-outlined ${color} text-sm`}>
+                            {icon}
+                          </span>
+                        );
+                      })}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {p.oldPrice && p.oldPrice > p.price && (
+                        <>
+                          <span className="text-[11px] text-gray-400 line-through">{fmt(p.oldPrice)}</span>
+                          <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
+                            -{Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100)}%
+                          </span>
+                        </>
+                      )}
+                      <span className="font-semibold text-sm">{fmt(p.price)}</span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => addItem({ id: p.id, name: p.name, price: p.price, image: img }, 1)}
+                      className="flex-1 bg-white border border-gray-300 text-black py-1.5 px-3 rounded-full hover:bg-gray-100 transition-colors text-xs"
+                    >
+                      Ajouter au panier
+                    </button>
+                    <Link
+                      href={`/product?id=${encodeURIComponent(p.id)}`}
+                      className="flex-1 bg-black text-white py-1.5 px-3 rounded-full hover:bg-black/90 transition-colors text-xs text-center flex items-center justify-center leading-none"
+                    >
+                      Acheter
+                    </Link>
+                  </div>
                 </div>
-                <h3 className="font-medium text-[var(--color-primary)]">{p.name}</h3>
-                <p className="font-bold text-[var(--color-primary)]">{fmt(p.price)}</p>
-              </Link>
-            ))}
+              );
+            })}
           </div>
         </section>
 
