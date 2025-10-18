@@ -18,7 +18,7 @@ export default function ShopPage() {
 
 function ShopPageContent() {
   const { addItem } = useCart();
-  const { has } = useFavorites();
+  const { has, toggle } = useFavorites();
   const params = useSearchParams();
   const r = useRouter();
   const { products } = useProducts();
@@ -201,26 +201,32 @@ function ShopPageContent() {
         <section className="lg:col-span-3">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {ordered.map((p) => (
-              <div
-                key={p.id}
-                className="flex flex-col rounded-xl border border-gray-200 bg-white overflow-hidden"
-              >
-                <Link href={go(p).href}>
-                  <div className="relative w-full h-[240px] bg-gray-100 flex items-center justify-center">
-                    <div
-                      className="size-[240px] bg-cover bg-center rounded-lg"
-                      style={{ backgroundImage: `url('${p.img}')` }}
-                    />
-                    {p.oldPrice && p.oldPrice > p.price && (
-                      <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">Solde</div>
-                    )}
-                  </div>
-                </Link>
-                <div className="flex flex-col space-y-3 p-4 flex-1">
-                  <Link href={go(p).href} className="font-bold text-lg truncate hover:underline">
+              <div key={p.id} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+                <div className="relative w-full h-[240px] bg-gray-100">
+                  <Link href={go(p).href}>
+                    <div className="w-full h-full bg-cover bg-center" style={{ backgroundImage: `url('${p.img}')` }} />
+                  </Link>
+                  {p.oldPrice && p.oldPrice > p.price && (
+                    <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">Solde</div>
+                  )}
+                  <button
+                    aria-label={has(p.id) ? "Retirer des favoris" : "Ajouter aux favoris"}
+                    onClick={() => toggle({ id: p.id, name: p.name, image: p.img, price: p.price })}
+                    className="absolute top-2 left-2 grid place-items-center w-9 h-9 rounded-full bg-white/90 text-gray-800 hover:bg-white shadow"
+                  >
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontVariationSettings: `'FILL' ${has(p.id) ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 24` }}
+                    >
+                      favorite
+                    </span>
+                  </button>
+                </div>
+                <div className="p-4">
+                  <Link href={go(p).href} className="font-bold text-lg truncate hover:underline block">
                     {p.name}
                   </Link>
-                  <div className="flex justify-between items-center">
+                  <div className="mt-2 flex justify-between items-center">
                     <div className="flex items-center">
                       {Array.from({ length: 5 }).map((_, i) => {
                         const value = i + 1;
@@ -245,7 +251,7 @@ function ShopPageContent() {
                       <span className="font-semibold text-lg">{fmt(p.price)}</span>
                     </div>
                   </div>
-                  <div className="mt-auto flex gap-2">
+                  <div className="mt-3 flex gap-2">
                     <button
                       onClick={() => add(p)}
                       className="flex-1 bg-white border border-gray-300 text-black py-2 px-4 rounded-full hover:bg-gray-100 transition-colors text-sm"
