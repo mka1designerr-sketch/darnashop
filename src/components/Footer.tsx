@@ -11,17 +11,17 @@ export default function Footer() {
             <div>
               <h4 className="font-bold text-lg mb-4">À Propos</h4>
               <ul className="space-y-3 text-sm text-black/60">
-                <li><Link href="#" className="hover:text-black transition-colors">Notre Histoire</Link></li>
-                <li><Link href="#" className="hover:text-black transition-colors">Carrières</Link></li>
-                <li><Link href="#" className="hover:text-black transition-colors">Blog</Link></li>
+                <li><Link href="/a-propos" className="hover:text-black transition-colors">Notre Histoire</Link></li>
+                <li><Link href="/carrieres" className="hover:text-black transition-colors">Carrières</Link></li>
+                <li><Link href="/blog" className="hover:text-black transition-colors">Blog</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold text-lg mb-4">Support</h4>
               <ul className="space-y-3 text-sm text-black/60">
-                <li><Link href="#" className="hover:text-black transition-colors">Contactez-nous</Link></li>
-                <li><Link href="#" className="hover:text-black transition-colors">FAQ</Link></li>
-                <li><Link href="#" className="hover:text-black transition-colors">Livraison & Retours</Link></li>
+                <li><Link href="/contact" className="hover:text-black transition-colors">Contactez-nous</Link></li>
+                <li><Link href="/faq" className="hover:text-black transition-colors">FAQ</Link></li>
+                <li><Link href="/livraison-retours" className="hover:text-black transition-colors">Livraison & Retours</Link></li>
               </ul>
             </div>
           </div>
@@ -43,8 +43,8 @@ export default function Footer() {
         <div className="mt-10 border-t border-[#EAEAEA] pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-black/60">
           <p className="mb-4 md:mb-0">Copyright © {new Date().getFullYear()} DARNA SHOP. Tous droits réservés.</p>
           <div className="flex gap-6">
-            <Link href="#" className="hover:text-black transition-colors">Conditions Générales de Vente</Link>
-            <Link href="#" className="hover:text-black transition-colors">Politique de Confidentialité</Link>
+            <Link href="/cgv" className="hover:text-black transition-colors">Conditions Générales de Vente</Link>
+            <Link href="/confidentialite" className="hover:text-black transition-colors">Politique de Confidentialité</Link>
           </div>
         </div>
       </div>
