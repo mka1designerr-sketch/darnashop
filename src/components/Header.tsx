@@ -42,7 +42,6 @@ export default function Header() {
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3" aria-label="Accueil DARNA SHOP">
             <Image src="/logo.svg" alt="DARNA SHOP" width={32} height={32} priority />
-            <span className="text-2xl font-bold tracking-tight text-[var(--color-primary)]">DARNA SHOP</span>
           </Link>
           <nav className="hidden items-center gap-4 xl:gap-6 lg:flex">
             <Link href="/shop?categoryId=nouveautes" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
