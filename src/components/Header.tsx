@@ -41,7 +41,7 @@ export default function Header() {
       <div className="container mx-auto flex items-center justify-between px-4 py-3 lg:px-8">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3" aria-label="Accueil DARNA SHOP">
-            <Image src="/logo.svg" alt="DARNA SHOP" width={32} height={32} priority />
+            <Image src="/logo.svg" alt="DARNA SHOP" width={96} height={96} priority />
           </Link>
           <nav className="hidden items-center gap-4 xl:gap-6 lg:flex">
             <Link href="/shop?categoryId=nouveautes" className="text-sm font-semibold text-[var(--color-primary)] hover:underline">
