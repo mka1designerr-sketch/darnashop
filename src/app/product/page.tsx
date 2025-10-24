@@ -25,6 +25,7 @@ function ProductPageContent() {
   const [variantIdx, setVariantIdx] = useState(0);
   const [imageIdx, setImageIdx] = useState(0);
   const webhook = process.env.NEXT_PUBLIC_ORDERS_WEBHOOK_URL;
+  const isProd = process.env.NODE_ENV === "production";
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [buyer, setBuyer] = useState({ name: "", phone: "", address: "", size: "M", wilaya: "", commune: "" });
@@ -267,7 +268,7 @@ function ProductPageContent() {
                 </button>
                 <button onClick={() => setShowForm(false)} className="rounded border px-4 py-2">Annuler</button>
               </div>
-              {!webhook && (
+              {!isProd && !webhook && (
                 <p className="mt-2 text-xs text-red-600">Aucune URL de Google Sheet configurée. Définissez NEXT_PUBLIC_ORDERS_WEBHOOK_URL pour envoyer la commande.</p>
               )}
             </div>
