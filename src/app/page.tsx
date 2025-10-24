@@ -125,34 +125,34 @@ export default function Home() {
                       </span>
                     </button>
                   </div>
-                  <div className="flex flex-col space-y-2 min-w-0">
+                  <div className="flex flex-col space-y-2 min-w-0 overflow-hidden">
                     <Link href={`/product?id=${encodeURIComponent(p.id)}`} className="font-medium text-sm truncate hover:underline">
                       {p.name}
                     </Link>
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-0.5">
-                        {Array.from({ length: 5 }).map((_, i) => {
-                          const value = i + 1;
-                          const icon = (p.rating ?? 4) >= value ? "star" : (p.rating ?? 4) >= value - 0.5 ? "star_half" : "star";
-                          const color = (p.rating ?? 4) >= value - 0.49 ? "text-yellow-400" : "text-gray-300";
-                          return (
-                            <span key={i} className={`material-symbols-outlined ${color}`} style={{ fontSize: 16, lineHeight: 1 }}>
-                              {icon}
-                            </span>
-                          );
-                        })}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        {p.oldPrice && p.oldPrice > p.price && (
-                          <>
-                            <span className="text-[11px] text-gray-400 line-through">{fmt(p.oldPrice)}</span>
-                            <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">
-                              -{Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100)}%
-                            </span>
-                          </>
-                        )}
-                        <span className="font-semibold text-sm">{fmt(p.price)}</span>
-                      </div>
+                    {/* Rating row */}
+                    <div className="flex items-center gap-0.5">
+                      {Array.from({ length: 5 }).map((_, i) => {
+                        const value = i + 1;
+                        const icon = (p.rating ?? 4) >= value ? "star" : (p.rating ?? 4) >= value - 0.5 ? "star_half" : "star";
+                        const color = (p.rating ?? 4) >= value - 0.49 ? "text-yellow-400" : "text-gray-300";
+                        return (
+                          <span key={i} className={`material-symbols-outlined ${color}`} style={{ fontSize: 16, lineHeight: 1 }}>
+                            {icon}
+                          </span>
+                        );
+                      })}
+                    </div>
+                    {/* Price row */}
+                    <div className="flex items-center gap-1">
+                      {p.oldPrice && p.oldPrice > p.price && (
+                        <>
+                          <span className="text-[11px] text-gray-400 line-through whitespace-nowrap">{fmt(p.oldPrice)}</span>
+                          <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                            -{Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100)}%
+                          </span>
+                        </>
+                      )}
+                      <span className="font-semibold text-sm whitespace-nowrap">{fmt(p.price)}</span>
                     </div>
                     <div className="flex gap-2">
                       <button
