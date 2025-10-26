@@ -1,8 +1,31 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [hp, setHp] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const subscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, hp }),
+      });
+      if (!res.ok) throw new Error("fail");
+      setStatus("success");
+      setEmail("");
+      setHp("");
+    } catch (e) {
+      setStatus("error");
+    }
+  };
   return (
     <footer className="mt-16 bg-[#F8F9FA]">
       <div className="container mx-auto max-w-7xl px-6 py-10">
@@ -25,7 +48,28 @@ export default function Footer() {
               </ul>
             </div>
           </div>
-
+          {/* Newsletter */}
+          <div className="w-full md:w-auto max-w-md">
+            <h4 className="font-bold text-lg mb-2">Newsletter</h4>
+            <p className="text-sm text-black/60 mb-3">Recevez nos nouveautés et promos.</p>
+            <form onSubmit={subscribe} className="flex gap-2">
+              <input
+                type="email"
+                required
+                placeholder="Votre email"
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              {/* honeypot */}
+              <input type="text" value={hp} onChange={(e) => setHp(e.target.value)} className="hidden" aria-hidden="true" tabIndex={-1} />
+              <button disabled={status === "loading"} className="rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
+                {status === "loading" ? "Envoi..." : "S'inscrire"}
+              </button>
+            </form>
+            {status === "success" && <p className="mt-2 text-sm text-green-700">Merci, inscription confirmée.</p>}
+            {status === "error" && <p className="mt-2 text-sm text-red-600">Erreur. Réessayez.</p>}
+          </div>
           <div className="flex items-center gap-4">
             {/* Social icons */}
             <a href="#" className="w-8 h-8 flex items-center justify-center bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors" aria-label="Facebook">
