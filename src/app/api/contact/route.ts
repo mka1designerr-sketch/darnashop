@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     // Persist message (best-effort)
     try {
       await prisma.contactMessage.create({ data: { name, email, message } });
-    } catch (e) {
+    } catch {
       // ignore persistence errors in API response
     }
 
@@ -24,17 +24,16 @@ export async function POST(req: Request) {
           from: FROM_EMAIL,
           to: CONTACT_TO,
           subject: `Nouveau message de contact — ${name}`,
-          reply_to: email,
           text: `De: ${name} <${email}>
 \nMessage:\n${message}`,
-        } as any);
+        });
       }
-    } catch (e) {
+    } catch {
       // ignore email errors in API response
     }
 
     return NextResponse.json({ ok: true });
-  } catch (e) {
+  } catch {
     return NextResponse.json({ ok: false }, { status: 500 });
   }
 }

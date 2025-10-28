@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
     try {
       await prisma.newsletterSubscription.create({ data: { email } });
-    } catch (e: any) {
+    } catch {
       // unique violation -> already subscribed, treat as success
     }
 
@@ -25,12 +25,12 @@ export async function POST(req: Request) {
           to: CONTACT_TO,
           subject: "Nouvelle inscription à la newsletter",
           text: `Email: ${email}`,
-        } as any);
+        });
       }
-    } catch (e) {}
+    } catch {}
 
     return NextResponse.json({ ok: true });
-  } catch (e) {
+  } catch {
     return NextResponse.json({ ok: false }, { status: 500 });
   }
 }
