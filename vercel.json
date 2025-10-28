@@ -1,5 +1,5 @@
 {
   "framework": "nextjs",
-  "buildCommand": "npm run db:push && npm run db:seed && npm run build",
+  "buildCommand": "node scripts/vercel-build.mjs",
   "installCommand": "npm ci --no-audit --no-fund"
 }
