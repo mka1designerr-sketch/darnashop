@@ -36,6 +36,30 @@ function ShopPageContent() {
   const [rangeMax, setRangeMax] = useState<number>(max && max < 1e9 ? max : 10000);
   const onlyFav = params.get("fav") === "1";
 
+  // Newsletter state (bottom CTA)
+  const [nEmail, setNEmail] = useState("");
+  const [nHp, setNHp] = useState("");
+  const [nStatus, setNStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const subscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nEmail) return;
+    setNStatus("loading");
+    try {
+      const res = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: nEmail, hp: nHp }),
+      });
+      if (!res.ok) throw new Error("fail");
+      setNStatus("success");
+      setNEmail("");
+      setNHp("");
+    } catch {
+      setNStatus("error");
+    }
+  };
+
   const items = products.map((p) => {
     const primary = p.variants.find((v) => v.isPrimary && v.images && v.images.length);
     const firstWithImg = primary || p.variants.find((v) => v.images && v.images.length);
@@ -329,12 +353,28 @@ function ShopPageContent() {
         <div className="mx-auto max-w-4xl py-16 px-6 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">Prêt à découvrir nos nouveautés ?</h2>
           <p className="text-gray-300 mb-8 max-w-2xl mx-auto">Soyez les premiers informés de nos derniers arrivages, de nos offres exclusives et de nos histoires en coulisses. Rejoignez la famille DARNA SHOP !</p>
-          <div className="relative max-w-lg mx-auto">
-            <input className="w-full bg-gray-700 border-transparent rounded-full py-4 pl-6 pr-16 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" placeholder="Entrez votre adresse e-mail" type="email" />
-            <button className="absolute right-1 top-1/2 -translate-y-1/2 grid place-items-center w-12 h-12 bg-white text-gray-800 rounded-full hover:bg-gray-200 transition-colors" type="button">
-              <span className="material-symbols-outlined leading-none">arrow_forward</span>
+          <form onSubmit={subscribe} className="relative max-w-lg mx-auto">
+            <input
+              className="w-full bg-gray-700 border-transparent rounded-full py-4 pl-6 pr-16 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+              placeholder="Entrez votre adresse e-mail"
+              type="email"
+              required
+              value={nEmail}
+              onChange={(e) => setNEmail(e.target.value)}
+            />
+            {/* Honeypot */}
+            <input type="text" value={nHp} onChange={(e) => setNHp(e.target.value)} className="hidden" tabIndex={-1} aria-hidden="true" />
+            <button
+              className="absolute right-1 top-1/2 -translate-y-1/2 grid place-items-center w-12 h-12 bg-white text-gray-800 rounded-full hover:bg-gray-200 transition-colors disabled:opacity-60"
+              type="submit"
+              disabled={nStatus === "loading"}
+              aria-label="S'inscrire à la newsletter"
+            >
+              <span className="material-symbols-outlined leading-none">{nStatus === "loading" ? "progress_activity" : "arrow_forward"}</span>
             </button>
-          </div>
+          </form>
+          {nStatus === "success" && <p className="mt-3 text-sm text-green-300">Merci, inscription confirmée.</p>}
+          {nStatus === "error" && <p className="mt-3 text-sm text-red-300">Erreur. Réessayez.</p>}
         </div>
       </section>
     </main>

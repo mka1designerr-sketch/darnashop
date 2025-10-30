@@ -33,6 +33,10 @@ function ProductPageContent() {
   const [method, setMethod] = useState<"home" | "desk">("home");
   const { increment } = useOrderStats();
   const [tab, setTab] = useState<"desc" | "delivery" | "reviews">("desc");
+  // Newsletter state (product page footer block)
+  const [nEmail, setNEmail] = useState("");
+  const [nHp, setNHp] = useState("");
+  const [nStatus, setNStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   useEffect(() => {
     setVariantIdx(0);
@@ -106,6 +110,25 @@ function ProductPageContent() {
       router.push("/");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function subscribeNewsletter(e: React.FormEvent) {
+    e.preventDefault();
+    if (!nEmail) return;
+    setNStatus("loading");
+    try {
+      const res = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: nEmail, hp: nHp }),
+      });
+      if (!res.ok) throw new Error("subscribe failed");
+      setNStatus("success");
+      setNEmail("");
+      setNHp("");
+    } catch {
+      setNStatus("error");
     }
   }
 
@@ -317,14 +340,34 @@ function ProductPageContent() {
             <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">Rejoignez notre newsletter</h2>
             <p className="mt-4 text-lg text-gray-500">Soyez le premier à connaître les nouveautés, les ventes et les offres exclusives.</p>
           </div>
-          <form className="mt-8 flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onSubmit={(e)=>e.preventDefault()}>
+          <form className="mt-8 flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" onSubmit={subscribeNewsletter}>
             <div className="relative w-full sm:flex-1">
-              <input className="w-full h-14 pl-6 pr-16 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-400 text-gray-900 placeholder-gray-400" placeholder="Entrez votre e-mail" type="email" />
-              <button className="absolute right-1 top-1/2 -translate-y-1/2 grid place-items-center w-12 h-12 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors" type="submit">
-                <span className="material-symbols-outlined leading-none">arrow_forward</span>
+              <input
+                className="w-full h-14 pl-6 pr-16 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-400 text-gray-900 placeholder-gray-400"
+                placeholder="Entrez votre e-mail"
+                type="email"
+                required
+                value={nEmail}
+                onChange={(e) => setNEmail(e.target.value)}
+              />
+              {/* Honeypot */}
+              <input type="text" value={nHp} onChange={(e) => setNHp(e.target.value)} className="hidden" tabIndex={-1} aria-hidden="true" />
+              <button
+                className="absolute right-1 top-1/2 -translate-y-1/2 grid place-items-center w-12 h-12 bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors disabled:opacity-60"
+                type="submit"
+                disabled={nStatus === "loading"}
+                aria-label="S'inscrire à la newsletter"
+              >
+                <span className="material-symbols-outlined leading-none">{nStatus === "loading" ? "progress_activity" : "arrow_forward"}</span>
               </button>
             </div>
           </form>
+          {nStatus === "success" && (
+            <p className="mt-3 text-center text-sm text-green-700">Merci, inscription confirmée.</p>
+          )}
+          {nStatus === "error" && (
+            <p className="mt-3 text-center text-sm text-red-600">Une erreur est survenue. Veuillez réessayer.</p>
+          )}
         </div>
       </section>
     </main>
