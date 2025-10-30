@@ -40,7 +40,10 @@ export default function CategoryCarousel() {
     const el = containerRef.current;
     if (!el) return;
     const child = el.children[index] as HTMLElement | undefined;
-    if (child) child.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    if (child) {
+      const targetLeft = child.offsetLeft - (el.clientWidth - child.clientWidth) / 2;
+      el.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" });
+    }
   }, [index]);
 
   function step(delta: number) {
