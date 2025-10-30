@@ -239,7 +239,7 @@ function ShopPageContent() {
                     className="absolute top-2 left-2 grid place-items-center w-9 h-9 rounded-full bg-white/90 text-gray-800 hover:bg-white shadow"
                   >
                     <span
-                      className="material-symbols-outlined"
+                      className={`material-symbols-outlined ${has(p.id) ? "text-red-500" : "text-gray-800"}`}
                       style={{ fontVariationSettings: `'FILL' ${has(p.id) ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 24` }}
                     >
                       favorite

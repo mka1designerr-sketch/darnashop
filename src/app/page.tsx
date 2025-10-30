@@ -118,7 +118,7 @@ export default function Home() {
                       className="absolute top-2 left-2 grid place-items-center w-8 h-8 rounded-full bg-white/90 text-gray-800 hover:bg-white shadow"
                     >
                       <span
-                        className="material-symbols-outlined"
+                        className={`material-symbols-outlined ${has(p.id) ? "text-red-500" : "text-gray-800"}`}
                         style={{ fontVariationSettings: `'FILL' ${has(p.id) ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 20` }}
                       >
                         favorite
