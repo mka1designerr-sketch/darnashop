@@ -10,22 +10,16 @@ export default function CategoryCarousel() {
   const { categories } = useCategories();
   const { lang } = useI18n();
   const dir = lang === "ar" ? "rtl" : "ltr";
-  const items: Item[] = (categories.length
+  const isDev = process.env.NODE_ENV !== "production";
+  const items: Item[] = categories.length
     ? categories.map((c) => ({ title: c.name, bg: c.cover }))
-    : [
-        {
-          title: "Mode & Vêtements",
-          bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuBbhG36T44DaUGrgaHrkqOgSr6fvLILLocgLSKMBs1E4QaOlB-FVdHrvxviuGCwaHWvSUT-4MUok9kXJl7-0Ix-86EsBH41b1q-kUA6PxK8UaBVFJExbvpw0r19G2p3D6_ZQYq8bfGYtQavb9A8Vep7sFT8TRQVsptlcrScHZkF1Mz_zjGyulGhbXmPxehQfgGsG9MAZ9ZoM1d_3wtTOAYQzqB1XHP37cb2erTKyKAzbTkG7DzSQVMr-O1GjLTLIwig5KQy7zti0F-j",
-        },
-        {
-          title: "Jeux & Jouets",
-          bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuCtPQOipc1QxN_DTgck-843xIv8cvJIIZruLwUzLRy_U385jy3cc-DlYmde8O5dRLLgov86D1saKTFAlebM63AMQXlTIzdItbG8m7foecvcQb42Kvma-21XCZ2LHvNx6rdWQu31VUJBk7w30fnuvGd3m8pFB954PiIcuF68lszu8Pke_CTd_0PmjDTAYoTpcqJkue1wx0z_u-jVkEobfpVdK1-urxV8zZ53hrEQvV-Ysno275cWIMVxV_hjuHvSRPeK1LPo0nSnHVqY",
-        },
-        {
-          title: "Électronique & Gadgets",
-          bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuBxS-merjzq6c37NiF5gQJWBA4o8a3NlrZumKClL8F-9b8BCRxdyHyhU1bOlSBt2Rmif47cP-uer08BK4S1sfs2XNwo_vWcugp_TkMeYa69Rm1t294_Qtj_yH6Mttqu13vajBCrZQUJA66QV6zCPkELlp3CdhtGRrRVazA8pSbiOOEE2mxIxCpVrZmbluZ8yHlFeJIugwAsWiDAQ-7meC5SorXQ4n3w-kbwnddejhCHwWWZHCWMjfoKXHh0Yk61molsTi6Kvro2kie6",
-        },
-      ]);
+    : (isDev
+        ? [
+            { title: "Mode & Vêtements", bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuBbhG36T44DaUGrgaHrkqOgSr6fvLILLocgLSKMBs1E4QaOlB-FVdHrvxviuGCwaHWvSUT-4MUok9kXJl7-0Ix-86EsBH41b1q-kUA6PxK8UaBVFJExbvpw0r19G2p3D6_ZQYq8bfGYtQavb9A8Vep7sFT8TRQVsptlcrScHZkF1Mz_zjGyulGhbXmPxehQfgGsG9MAZ9ZoM1d_3wtTOAYQzqB1XHP37cb2erTKyKAzbTkG7DzSQVMr-O1GjLTLIwig5KQy7zti0F-j" },
+            { title: "Jeux & Jouets", bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuCtPQOipc1QxN_DTgck-843xIv8cvJIIZruLwUzLRy_U385jy3cc-DlYmde8O5dRLLgov86D1saKTFAlebM63AMQXlTIzdItbG8m7foecvcQb42Kvma-21XCZ2LHvNx6rdWQu31VUJBk7w30fnuvGd3m8pFB954PiIcuF68lszu8Pke_CTd_0PmjDTAYoTpcqJkue1wx0z_u-jVkEobfpVdK1-urxV8zZ53hrEQvV-Ysno275cWIMVxV_hjuHvSRPeK1LPo0nSnHVqY" },
+            { title: "Électronique & Gadgets", bg: "https://lh3.googleusercontent.com/aida-public/AB6AXuBxS-merjzq6c37NiF5gQJWBA4o8a3NlrZumKClL8F-9b8BCRxdyHyhU1bOlSBt2Rmif47cP-uer08BK4S1sfs2XNwo_vWcugp_TkMeYa69Rm1t294_Qtj_yH6Mttqu13vajBCrZQUJA66QV6zCPkELlp3CdhtGRrRVazA8pSbiOOEE2mxIxCpVrZmbluZ8yHlFeJIugwAsWiDAQ-7meC5SorXQ4n3w-kbwnddejhCHwWWZHCWMjfoKXHh0Yk61molsTi6Kvro2kie6" },
+          ]
+        : []);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [index, setIndex] = useState(0);

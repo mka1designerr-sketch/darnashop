@@ -16,6 +16,7 @@ type CategoriesState = {
 
 const KEY = "darna_categories_v1";
 const Ctx = createContext<CategoriesState | undefined>(undefined);
+const IS_DEV = process.env.NODE_ENV !== "production";
 
 const SEED: Category[] = [
     {
@@ -71,15 +72,19 @@ export function CategoriesProvider({ children }: { children: React.ReactNode }) 
         const raw = localStorage.getItem(KEY);
         if (raw) {
           const parsed: Category[] = JSON.parse(raw);
-          // Ensure default categories always exist (merge by id)
-          const map = new Map<string, Category>(parsed.map((c) => [c.id, c]));
-          for (const s of SEED) if (!map.has(s.id)) map.set(s.id, s);
-          if (!cancelled) setCategories(Array.from(map.values()));
+          if (IS_DEV) {
+            // In development, ensure demo categories exist (merge by id)
+            const map = new Map<string, Category>(parsed.map((c) => [c.id, c]));
+            for (const s of SEED) if (!map.has(s.id)) map.set(s.id, s);
+            if (!cancelled) setCategories(Array.from(map.values()));
+          } else {
+            if (!cancelled) setCategories(parsed);
+          }
         } else if (!cancelled) {
-          setCategories(SEED);
+          setCategories(IS_DEV ? SEED : []);
         }
       } catch {
-        if (!cancelled) setCategories(SEED);
+        if (!cancelled) setCategories(IS_DEV ? SEED : []);
       }
     })();
     return () => { cancelled = true; };

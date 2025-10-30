@@ -34,6 +34,7 @@ type ProductsState = {
 
 const KEY = "darna_products_v1";
 const Ctx = createContext<ProductsState | undefined>(undefined);
+const IS_DEV = process.env.NODE_ENV !== "production";
 
 const seed: Product[] = [
   {
@@ -105,9 +106,9 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
       } catch {}
       try {
         const raw = localStorage.getItem(KEY);
-        if (!cancelled) setProducts(raw ? JSON.parse(raw) : seed);
+        if (!cancelled) setProducts(raw ? JSON.parse(raw) : (IS_DEV ? seed : []));
       } catch {
-        if (!cancelled) setProducts(seed);
+        if (!cancelled) setProducts(IS_DEV ? seed : []);
       }
     })();
     return () => { cancelled = true; };

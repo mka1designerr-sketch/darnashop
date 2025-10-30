@@ -23,6 +23,7 @@ function ShopPageContent() {
   const r = useRouter();
   const { products } = useProducts();
   const { categories } = useCategories();
+  const isDev = process.env.NODE_ENV !== "production";
   // const { t } = useI18n();
 
   const fmt = (v: number) => `${v.toLocaleString("fr-DZ")} DZD`;
@@ -137,7 +138,13 @@ function ShopPageContent() {
           <div className="bg-gray-100 p-6 rounded-xl">
             <h3 className="text-xl font-bold mb-4">Catégories</h3>
             <ul className="space-y-2">
-              {(categories.length ? categories : [{ id: "vetements", name: "Vêtements", cover: "" }, { id: "jouets", name: "Jouets", cover: "" }, { id: "electronique", name: "Électronique", cover: "" }]).map((c) => (
+              {(
+                categories.length
+                  ? categories
+                  : (isDev
+                      ? [{ id: "vetements", name: "Vêtements", cover: "" }, { id: "jouets", name: "Jouets", cover: "" }, { id: "electronique", name: "Électronique", cover: "" }]
+                      : [])
+                ).map((c) => (
                 <li key={c.id}>
                   <button onClick={() => setFilter({ categoryId: c.id, category: undefined })} className={`block w-full rounded-lg px-4 py-2 text-left ${categoryId === c.id || selectedCategoryName === c.name ? "bg-white font-semibold text-black" : "hover:bg-white"}`}>
                     {c.name}
