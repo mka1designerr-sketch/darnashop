@@ -57,17 +57,23 @@ export default function AdminHeroCarouselPage() {
     setError(null);
     try {
       const fd = new FormData(form);
+      console.log("Upload attempt:", { headers, formData: Array.from(fd.entries()) });
+      
       const res = await fetch("/api/admin/hero-slides", {
         method: "POST",
         headers,
         body: fd,
       });
       const data = await res.json();
+      console.log("Upload response:", { status: res.status, ok: res.ok, data });
+      
       if (!res.ok) throw new Error(data?.error || "Erreur d'upload");
       form.reset();
       await fetchSlides();
     } catch (e) {
-      setError("Échec de l'upload. Vérifiez le token et réessayez.");
+      console.error("Upload error:", e);
+      const errorMsg = e instanceof Error ? e.message : String(e);
+      setError(`Échec de l'upload: ${errorMsg}`);
     } finally {
       setLoading(false);
     }
