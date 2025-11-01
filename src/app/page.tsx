@@ -6,6 +6,7 @@ import { useOrderStats } from "@/contexts/OrderStatsContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useCart } from "@/contexts/CartContext";
 import CategoryCarousel from "@/components/CategoryCarousel";
+import HeroCarousel from "@/components/HeroCarousel";
 
 export default function Home() {
   const { t } = useI18n();
@@ -29,30 +30,7 @@ export default function Home() {
 
       <main className="container mx-auto grow px-4 py-8 lg:px-8">
         {/* Hero */}
-        <section className="relative mb-12 h-[50vh] min-h-[300px] w-full overflow-hidden rounded-lg">
-          <div
-            className="hero-slide absolute inset-0 h-full w-full bg-cover bg-center"
-            style={{
-              // demo image
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              "--bg-image": "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAC2pJKVfM86lYh4oMe_Zkr3ELg0MO4rMuf2idopoWKKZuJzgM3dfusKytCJabo8RlX5c6KDWja6cXrsFdQCSiCy_Q4ldtfaKmD9H0wYNBunrB3mcYbI1Zq4vF3t9AXXKKn6ksOPdIWfe7pGTKB-GOGkDpO3wWLmMKqspO8tjt7OygDOLABN8j7H3CB_BMMKiWnvuQOPakCvUfJgNBYoq1maVrqjkVVnx3mVPzCzDVmlc7yhIIZQvoVPi9O66BNCx01QFCVHeZ0A5aC')",
-            } as React.CSSProperties}
-          >
-            <div className="absolute bottom-0 left-0 right-0 p-8 text-center text-white">
-              <h2 className="mb-2 text-3xl font-bold md:text-4xl">La Mode pour Toute la Famille</h2>
-              <p className="mb-4 text-lg">Collections pour hommes, femmes et enfants.</p>
-              <button className="rounded-full bg-white px-6 py-2 font-bold text-[var(--color-primary)] transition hover:bg-opacity-90">
-                Découvrir
-              </button>
-            </div>
-          </div>
-          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-            <span className="h-2 w-2 cursor-pointer rounded-full bg-white"></span>
-            <span className="h-2 w-2 cursor-pointer rounded-full bg-white/50"></span>
-            <span className="h-2 w-2 cursor-pointer rounded-full bg-white/50"></span>
-          </div>
-        </section>
+        <HeroCarousel />
 
         {/* Trust badges */}
         <section className="mb-12">
