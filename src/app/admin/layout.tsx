@@ -6,13 +6,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pass = process.env.NEXT_PUBLIC_ADMIN_PASS || "0000";
   const [ok, setOk] = useState(false);
   const [input, setInput] = useState("");
-  
-  // Debug environment variables
-  console.log("Environment variables:", {
-    adminPass: process.env.NEXT_PUBLIC_ADMIN_PASS,
-    isProduction: process.env.NODE_ENV === 'production',
-    actualPass: pass
-  });
 
   useEffect(() => {
     try {
@@ -33,9 +26,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return (
       <main className="mx-auto max-w-md px-4 py-12">
         <h1 className="mb-4 text-2xl font-bold">Admin - Connexion</h1>
-        <div className="mb-2 p-2 bg-gray-100 text-xs">
-          <strong>Debug:</strong> Using password from env: {process.env.NEXT_PUBLIC_ADMIN_PASS ? 'YES' : 'NO (using default 0000)'}
-        </div>
         <input className="w-full rounded border p-2" placeholder="Code admin" value={input} onChange={(e) => setInput(e.target.value)} />
         <button onClick={submit} className="mt-3 rounded bg-[var(--color-primary)] px-4 py-2 font-bold text-white">Entrer</button>
         {!process.env.NEXT_PUBLIC_ADMIN_PASS && (

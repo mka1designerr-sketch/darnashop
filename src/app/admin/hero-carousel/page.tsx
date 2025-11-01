@@ -57,21 +57,16 @@ export default function AdminHeroCarouselPage() {
     setError(null);
     try {
       const fd = new FormData(form);
-      console.log("Upload attempt:", { headers, formData: Array.from(fd.entries()) });
-      
       const res = await fetch("/api/admin/hero-slides", {
         method: "POST",
         headers,
         body: fd,
       });
       const data = await res.json();
-      console.log("Upload response:", { status: res.status, ok: res.ok, data });
-      
       if (!res.ok) throw new Error(data?.error || "Erreur d'upload");
       form.reset();
       await fetchSlides();
     } catch (e) {
-      console.error("Upload error:", e);
       const errorMsg = e instanceof Error ? e.message : String(e);
       setError(`Échec de l'upload: ${errorMsg}`);
     } finally {
@@ -146,30 +141,6 @@ export default function AdminHeroCarouselPage() {
           <button onClick={saveSecret} className="rounded-md bg-black px-4 py-2 text-white">Enregistrer</button>
         </div>
         <p className="mt-1 text-xs text-gray-500">Le secret est stocké localement dans votre navigateur.</p>
-        
-        {/* Debug Section */}
-        <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs">
-          <strong>Debug API:</strong>
-          <button
-            onClick={async () => {
-              try {
-                const res = await fetch("/api/admin/hero-slides", { 
-                  headers: { "x-admin-secret": secret },
-                  cache: "no-store" 
-                });
-                const data = await res.json();
-                console.log("API Test Result:", { status: res.status, ok: res.ok, data });
-                alert(`API Test: ${res.ok ? 'SUCCESS' : 'FAILED'}\nStatus: ${res.status}\nCheck console for details`);
-              } catch (e) {
-                console.error("API Test Error:", e);
-                alert(`API Test ERROR: ${e}`);
-              }
-            }}
-            className="ml-2 px-2 py-1 bg-yellow-200 rounded text-yellow-800"
-          >
-            Test API Connection
-          </button>
-        </div>
       </div>
 
       <form
