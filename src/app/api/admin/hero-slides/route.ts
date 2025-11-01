@@ -5,6 +5,16 @@ import { uploadPublicImage } from "@/lib/blob";
 function isAuthed(req: Request) {
   const header = req.headers.get("x-admin-secret");
   const secret = process.env.ADMIN_SECRET;
+  
+  // Debug authentication
+  console.log("API Auth Debug:", {
+    hasHeader: !!header,
+    hasSecret: !!secret,
+    secretValue: secret ? `${secret.slice(0, 3)}...` : 'undefined',
+    headerValue: header ? `${header.slice(0, 3)}...` : 'undefined',
+    match: header === secret
+  });
+  
   return Boolean(secret && header && header === secret);
 }
 

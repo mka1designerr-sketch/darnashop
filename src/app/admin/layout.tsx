@@ -6,6 +6,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pass = process.env.NEXT_PUBLIC_ADMIN_PASS || "0000";
   const [ok, setOk] = useState(false);
   const [input, setInput] = useState("");
+  
+  // Debug environment variables
+  console.log("Environment variables:", {
+    adminPass: process.env.NEXT_PUBLIC_ADMIN_PASS,
+    isProduction: process.env.NODE_ENV === 'production',
+    actualPass: pass
+  });
 
   useEffect(() => {
     try {
