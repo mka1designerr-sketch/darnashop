@@ -34,7 +34,7 @@ export default function AdminHeroCarouselPage() {
       const res = await fetch("/api/admin/hero-slides", { headers, cache: "no-store" });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Erreur");
-      setSlides((Array.isArray(data?.slides) ? data.slides : []).sort((a, b) => a.position - b.position));
+      setSlides((Array.isArray(data?.slides) ? data.slides : []).sort((a: Slide, b: Slide) => a.position - b.position));
     } catch (e) {
       setError("Impossible de charger les slides. Secret invalide ?");
     } finally {
@@ -84,7 +84,7 @@ export default function AdminHeroCarouselPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Erreur de suppression");
-      setSlides((Array.isArray(data?.slides) ? data.slides : []).sort((a, b) => a.position - b.position));
+      setSlides((Array.isArray(data?.slides) ? data.slides : []).sort((a: Slide, b: Slide) => a.position - b.position));
     } catch (e) {
       setError("Échec de la suppression.");
     } finally {
@@ -103,7 +103,7 @@ export default function AdminHeroCarouselPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Erreur de réorganisation");
-      setSlides((Array.isArray(data?.slides) ? data.slides : []).sort((a, b) => a.position - b.position));
+      setSlides((Array.isArray(data?.slides) ? data.slides : []).sort((a: Slide, b: Slide) => a.position - b.position));
     } catch (e) {
       setError("Réorganisation échouée.");
     } finally {
