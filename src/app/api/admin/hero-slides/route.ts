@@ -44,14 +44,20 @@ export async function POST(req: Request) {
   if (count >= 7) return NextResponse.json({ error: "max_reached" }, { status: 400 });
 
   try {
+    console.log("Starting blob upload for file:", file.name, file.size, file.type);
     const imageUrl = await uploadPublicImage(file);
+    console.log("Blob upload successful, URL:", imageUrl);
+    
     const position = count; // append at end
     const slide = await prisma.heroSlide.create({
       data: { imageUrl, title, subtitle, ctaLabel, ctaHref, position },
     });
+    console.log("Slide created successfully:", slide.id);
     return NextResponse.json({ slide }, { status: 201 });
-  } catch {
-    return NextResponse.json({ error: "upload_failed" }, { status: 500 });
+  } catch (error) {
+    console.error("Upload failed:", error);
+    const errorMessage = error instanceof Error ? error.message : "upload_failed";
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
